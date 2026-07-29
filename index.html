@@ -1,26 +1,48 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Krzysztof Gil</title>
-    <style>
-        body {
-            margin: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #ffffff;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gondolier</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background: #111;
+    }
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      font-family: sans-serif;
+      z-index: 1000;
+    }
+    .content {
+      margin-top: 50px; /* żeby zdjęcie nie chowało się pod paskiem */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <img src="DSC03528.jpeg" alt="Gondolier na łodzi">
-    </body>
-    </html>
+  <div class="top-bar">Gondolier w Wenecji</div>
+  <div class="content">
+    <img src="DSC03528.jpeg" alt="Gondolier w pasiastej koszulce na łodzi">
+  </div>
+</body>
+</html>
