@@ -15,26 +15,6 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
     }
 
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: flex-end;
-      gap: 40px;
-      padding: 30px 40px;
-      font-size: 13px;
-      letter-spacing: 0.02em;
-      z-index: 100;
-      mix-blend-mode: difference;
-    }
-
-    nav a {
-      color: #ffffff;
-      text-decoration: none;
-    }
-
     .scroll-track {
       height: 300vh;
       position: relative;
@@ -99,11 +79,6 @@
     }
 
     @media (max-width: 600px) {
-      nav {
-        gap: 20px;
-        font-size: 11px;
-        padding: 20px;
-      }
       footer {
         flex-direction: column;
         align-items: center;
@@ -118,13 +93,6 @@
   </style>
 </head>
 <body>
-  <nav>
-    <a href="#">Fotografia</a>
-    <a href="#">O mnie</a>
-    <a href="#">Korepetycje</a>
-    <a href="#">Kontakt</a>
-  </nav>
-
   <div class="scroll-track" id="scrollTrack">
     <div class="pin">
       <div class="hero">
@@ -150,7 +118,7 @@
     const wordRight = document.getElementById('wordRight');
 
     let startRect = null;
-    let aspectRatio = null; // naturalWidth / naturalHeight
+    let aspectRatio = null;
 
     function measureStart() {
       startRect = placeholder.getBoundingClientRect();
@@ -173,11 +141,10 @@
       const startW = startRect.width;
       const startH = startRect.height;
 
-      // End state: full screen width, height follows the image's own aspect ratio
       const endW = vw;
       const endH = aspectRatio ? vw / aspectRatio : vh;
       const endLeft = 0;
-      const endTop = (vh - endH) / 2; // keep it vertically centered if shorter than the screen
+      const endTop = (vh - endH) / 2;
 
       const left = startLeft + (endLeft - startLeft) * progress;
       const top = startTop + (endTop - startTop) * progress;
@@ -190,7 +157,6 @@
       img.style.width = w + 'px';
       img.style.height = h + 'px';
       img.style.borderRadius = radius + 'px';
-      // Once we're driving exact aspect-correct dimensions, "fill" avoids any cropping
       img.style.objectFit = progress > 0.05 ? 'fill' : 'cover';
 
       const textOpacity = Math.max(0, 1 - progress * 2.5);
@@ -217,3 +183,4 @@
   </script>
 </body>
 </html>
+
