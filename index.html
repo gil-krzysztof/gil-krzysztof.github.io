@@ -9,16 +9,17 @@
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
       margin: 0;
-      min-height: 100vh;
       background: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
     }
 
     nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
       display: flex;
       justify-content: flex-end;
       gap: 40px;
@@ -26,49 +27,69 @@
       font-size: 13px;
       letter-spacing: 0.02em;
       color: #1a1a1a;
+      z-index: 100;
+      mix-blend-mode: difference;
+      color-scheme: light;
     }
 
     nav a {
-      color: inherit;
+      color: #ffffff;
       text-decoration: none;
     }
 
-    main {
-      flex: 1;
+    /* Tall scroll track — controls how long the zoom animation takes */
+    .scroll-track {
+      height: 300vh;
+      position: relative;
+    }
+
+    .pin {
+      position: sticky;
+      top: 0;
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      overflow: hidden;
     }
 
     .hero {
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       font-weight: 800;
-      font-size: clamp(48px, 9vw, 140px);
+      font-size: clamp(40px, 9vw, 140px);
       line-height: 1;
       letter-spacing: -0.02em;
       color: #111111;
+      white-space: nowrap;
     }
 
-    .hero img {
+    .hero .word {
+      transition: opacity 0.2s linear;
+    }
+
+    .hero-img {
       height: clamp(48px, 9vw, 140px);
-      width: auto;
+      width: clamp(72px, 13vw, 210px);
       object-fit: cover;
       margin: 0 4px;
       vertical-align: middle;
+      will-change: transform, width, height, border-radius;
     }
 
     footer {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      padding: 30px 40px;
-      font-size: 12px;
+      padding: 40px;
+      font-size: 13px;
       color: #3b3b3b;
       gap: 20px;
+      background: #ffffff;
+      position: relative;
+      z-index: 1;
     }
 
     footer .right {
@@ -103,16 +124,55 @@
     <a href="#">Kontakt</a>
   </nav>
 
-  <main>
-    <div class="hero">
-      Krzysztof<img src="Zdjecie_1500.jpeg" alt="Zdjęcie z Wenecji">Gil
+  <div class="scroll-track" id="scrollTrack">
+    <div class="pin">
+      <div class="hero">
+        <span class="word" id="wordLeft">Krzysztof</span>
+        <img class="hero-img" id="heroImg" src="Zdjecie_1500.jpeg" alt="Zdjęcie z Wenecji">
+        <span class="word" id="wordRight">Gil</span>
+      </div>
     </div>
-  </main>
+  </div>
 
   <footer>
     <div class="left">Fotografia amatorska<br>Wenecja, 2026</div>
     <div class="right">Dokumentuję podróże i uczę się tworzyć strony internetowe.</div>
   </footer>
+
+  <script>
+    const track = document.getElementById('scrollTrack');
+    const img = document.getElementById('heroImg');
+    const wordLeft = document.getElementById('wordLeft');
+    const wordRight = document.getElementById('wordRight');
+
+    function update() {
+      const rect = track.getBoundingClientRect();
+      const trackHeight = track.offsetHeight - window.innerHeight;
+      // progress: 0 at top of track, 1 when track fully scrolled
+      let progress = -rect.top / trackHeight;
+      progress = Math.max(0, Math.min(1, progress));
+
+      // Image grows from its small inline size to fill the viewport
+      const startW = 210, startH = 140; // roughly matches max clamp values
+      const vw = window.innerWidth, vh = window.innerHeight;
+
+      const w = startW + (vw - startW) * progress;
+      const h = startH + (vh - startH) * progress;
+      const radius = 12 * (1 - progress);
+
+      img.style.width = w + 'px';
+      img.style.height = h + 'px';
+      img.style.borderRadius = radius + 'px';
+
+      // Text fades out as image takes over
+      const textOpacity = Math.max(0, 1 - progress * 2.5);
+      wordLeft.style.opacity = textOpacity;
+      wordRight.style.opacity = textOpacity;
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  </script>
 </body>
 </html>
-
