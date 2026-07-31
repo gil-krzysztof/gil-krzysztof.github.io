@@ -67,8 +67,6 @@
       transition: opacity 0.2s linear;
     }
 
-    /* Placeholder keeps the layout stable in the text row;
-       the real <img> is rendered fixed and positioned on top of it */
     .img-placeholder {
       height: clamp(48px, 9vw, 140px);
       width: clamp(72px, 13vw, 210px);
@@ -152,10 +150,10 @@
     const wordRight = document.getElementById('wordRight');
 
     let startRect = null;
+    let aspectRatio = null; // naturalWidth / naturalHeight
 
     function measureStart() {
       startRect = placeholder.getBoundingClientRect();
-      // Only meaningful when track is at the top of the viewport (progress 0)
     }
 
     function update() {
@@ -175,7 +173,11 @@
       const startW = startRect.width;
       const startH = startRect.height;
 
-      const endLeft = 0, endTop = 0, endW = vw, endH = vh;
+      // End state: full screen width, height follows the image's own aspect ratio
+      const endW = vw;
+      const endH = aspectRatio ? vw / aspectRatio : vh;
+      const endLeft = 0;
+      const endTop = (vh - endH) / 2; // keep it vertically centered if shorter than the screen
 
       const left = startLeft + (endLeft - startLeft) * progress;
       const top = startTop + (endTop - startTop) * progress;
@@ -188,21 +190,30 @@
       img.style.width = w + 'px';
       img.style.height = h + 'px';
       img.style.borderRadius = radius + 'px';
+      // Once we're driving exact aspect-correct dimensions, "fill" avoids any cropping
+      img.style.objectFit = progress > 0.05 ? 'fill' : 'cover';
 
       const textOpacity = Math.max(0, 1 - progress * 2.5);
       wordLeft.style.opacity = textOpacity;
       wordRight.style.opacity = textOpacity;
     }
 
-    window.addEventListener('load', () => {
+    function init() {
+      if (img.naturalWidth && img.naturalHeight) {
+        aspectRatio = img.naturalWidth / img.naturalHeight;
+      }
       measureStart();
       update();
-    });
+    }
+
+    if (img.complete) {
+      init();
+    } else {
+      img.addEventListener('load', init);
+    }
+
     window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', () => {
-      measureStart();
-      update();
-    });
+    window.addEventListener('resize', init);
   </script>
 </body>
 </html>
