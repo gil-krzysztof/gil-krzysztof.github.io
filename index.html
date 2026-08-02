@@ -1,5 +1,5 @@
-<!DOCTYPE html><html lang="pl">
-
+<!DOCTYPE html>
+<html lang="pl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,89 +9,88 @@
       box-sizing: border-box;
     }
 
-html, body {
-margin: 0;
-background: #ffffff;
-font-family: -apple-system, BlinkMacSystemFont, ‘Helvetica Neue’, Arial, sans-serif;
-}
+    html, body {
+      margin: 0;
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    }
 
-.scroll-track {
-height: 300vh;
-position: relative;
-}
+    .scroll-track {
+      height: 300vh;
+      position: relative;
+    }
 
-.pin {
-position: sticky;
-top: 0;
-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-}
+    .pin {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-.hero {
-display: flex;
-align-items: center;
-justify-content: center;
-flex-wrap: nowrap;
-font-weight: 800;
-font-size: clamp(40px, 9vw, 140px);
-line-height: 1;
-letter-spacing: -0.02em;
-color: #111111;
-white-space: nowrap;
-}
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: nowrap;
+      font-weight: 800;
+      font-size: clamp(40px, 9vw, 140px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #111111;
+      white-space: nowrap;
+    }
 
-.hero .word {
-transition: opacity 0.2s linear;
-}
+    .hero .word {
+      transition: opacity 0.2s linear;
+    }
 
-.img-placeholder {
-height: clamp(48px, 9vw, 140px);
-width: clamp(72px, 13vw, 210px);
-margin: 0 4px;
-visibility: hidden;
-}
+    .img-placeholder {
+      height: clamp(48px, 9vw, 140px);
+      width: clamp(72px, 13vw, 210px);
+      margin: 0 4px;
+      visibility: hidden;
+    }
 
-.hero-img {
-position: fixed;
-object-fit: cover;
-will-change: transform, width, height, border-radius, left, top;
-z-index: 10;
-}
+    .hero-img {
+      position: fixed;
+      object-fit: cover;
+      will-change: transform, width, height, border-radius, left, top;
+      z-index: 10;
+    }
 
-footer {
-display: flex;
-justify-content: space-between;
-align-items: flex-end;
-padding: 40px;
-font-size: 13px;
-color: #3b3b3b;
-gap: 20px;
-background: #ffffff;
-position: relative;
-}
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 40px;
+      font-size: 13px;
+      color: #3b3b3b;
+      gap: 20px;
+      background: #ffffff;
+      position: relative;
+    }
 
-footer .right {
-max-width: 320px;
-text-align: right;
-}
+    footer .right {
+      max-width: 320px;
+      text-align: right;
+    }
 
-@media (max-width: 600px) {
-footer {
-flex-direction: column;
-align-items: center;
-text-align: center;
-gap: 10px;
-}
-footer .right {
-text-align: center;
-max-width: none;
-}
-}
-
-</style>
+    @media (max-width: 600px) {
+      footer {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+      }
+      footer .right {
+        text-align: center;
+        max-width: none;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="scroll-track" id="scrollTrack">
@@ -102,104 +101,85 @@ max-width: none;
         <span class="word" id="wordRight">Gil</span>
       </div>
     </div>
-  </div><img class="hero-img" id="heroImg" src="Zdjecie_1500-2.jpeg" alt="Zdjęcie z Wenecji"><footer>
+  </div>
+
+  <img class="hero-img" id="heroImg" src="Zdjecie_1500.jpeg" alt="Zdjęcie z Wenecji">
+
+  <footer>
     <div class="left">Fotografia amatorska<br>Wenecja, 2026</div>
     <div class="right">Dokumentuję podróże i uczę się tworzyć strony internetowe.</div>
-  </footer><script>
+  </footer>
+
+  <script>
     const track = document.getElementById('scrollTrack');
     const img = document.getElementById('heroImg');
     const placeholder = document.getElementById('placeholder');
     const wordLeft = document.getElementById('wordLeft');
     const wordRight = document.getElementById('wordRight');
 
-```
-let startRect = null;
-let aspectRatio = null;
-let isDocked = false; // czy obrazek jest "wpięty" w dokument (position: absolute) po pełnym rozwinięciu
+    let startRect = null;
+    let aspectRatio = null;
 
-function measureStart() {
-  startRect = placeholder.getBoundingClientRect();
-}
-
-function update() {
-  const rect = track.getBoundingClientRect();
-  const trackHeight = track.offsetHeight - window.innerHeight;
-  let progress = -rect.top / trackHeight;
-  progress = Math.max(0, Math.min(1, progress));
-
-  if (progress === 0 || !startRect) {
-    measureStart();
-  }
-
-  const vw = window.innerWidth, vh = window.innerHeight;
-
-  const startLeft = startRect.left;
-  const startTop = startRect.top;
-  const startW = startRect.width;
-  const startH = startRect.height;
-
-  const endW = vw;
-  const endH = aspectRatio ? vw / aspectRatio : vh;
-  const endLeft = 0;
-  const endTop = (vh - endH) / 2;
-
-  if (progress >= 1) {
-    // Pełne rozwinięcie: przełącz na position: absolute, żeby obrazek
-    // przewijał się dalej razem ze stroną, startując z wycentrowanej pozycji
-    if (!isDocked) {
-      const scrollY = window.scrollY || window.pageYOffset;
-      img.style.position = 'absolute';
-      img.style.left = endLeft + 'px';
-      img.style.top = (scrollY + endTop) + 'px';
-      img.style.width = endW + 'px';
-      img.style.height = endH + 'px';
-      img.style.borderRadius = '0px';
-      img.style.objectFit = 'fill';
-      isDocked = true;
+    function measureStart() {
+      startRect = placeholder.getBoundingClientRect();
     }
-  } else {
-    // Faza animacji: obrazek śledzi scroll jako position: fixed
-    if (isDocked) {
-      img.style.position = 'fixed';
-      isDocked = false;
+
+    function update() {
+      const rect = track.getBoundingClientRect();
+      const trackHeight = track.offsetHeight - window.innerHeight;
+      let progress = -rect.top / trackHeight;
+      progress = Math.max(0, Math.min(1, progress));
+
+      if (progress === 0 || !startRect) {
+        measureStart();
+      }
+
+      const vw = window.innerWidth, vh = window.innerHeight;
+
+      const startLeft = startRect.left;
+      const startTop = startRect.top;
+      const startW = startRect.width;
+      const startH = startRect.height;
+
+      const endW = vw;
+      const endH = aspectRatio ? vw / aspectRatio : vh;
+      const endLeft = 0;
+      const endTop = (vh - endH) / 2;
+
+      const left = startLeft + (endLeft - startLeft) * progress;
+      const top = startTop + (endTop - startTop) * progress;
+      const w = startW + (endW - startW) * progress;
+      const h = startH + (endH - startH) * progress;
+      const radius = 12 * (1 - progress);
+
+      img.style.left = left + 'px';
+      img.style.top = top + 'px';
+      img.style.width = w + 'px';
+      img.style.height = h + 'px';
+      img.style.borderRadius = radius + 'px';
+      img.style.objectFit = progress > 0.05 ? 'fill' : 'cover';
+
+      const textOpacity = Math.max(0, 1 - progress * 2.5);
+      wordLeft.style.opacity = textOpacity;
+      wordRight.style.opacity = textOpacity;
     }
-    const left = startLeft + (endLeft - startLeft) * progress;
-    const top = startTop + (endTop - startTop) * progress;
-    const w = startW + (endW - startW) * progress;
-    const h = startH + (endH - startH) * progress;
-    const radius = 12 * (1 - progress);
 
-    img.style.left = left + 'px';
-    img.style.top = top + 'px';
-    img.style.width = w + 'px';
-    img.style.height = h + 'px';
-    img.style.borderRadius = radius + 'px';
-    img.style.objectFit = progress > 0.05 ? 'fill' : 'cover';
-  }
+    function init() {
+      if (img.naturalWidth && img.naturalHeight) {
+        aspectRatio = img.naturalWidth / img.naturalHeight;
+      }
+      measureStart();
+      update();
+    }
 
-  const textOpacity = Math.max(0, 1 - progress * 2.5);
-  wordLeft.style.opacity = textOpacity;
-  wordRight.style.opacity = textOpacity;
-}
+    if (img.complete) {
+      init();
+    } else {
+      img.addEventListener('load', init);
+    }
 
-function init() {
-  if (img.naturalWidth && img.naturalHeight) {
-    aspectRatio = img.naturalWidth / img.naturalHeight;
-  }
-  measureStart();
-  update();
-}
-
-if (img.complete) {
-  init();
-} else {
-  img.addEventListener('load', init);
-}
-
-window.addEventListener('scroll', update, { passive: true });
-window.addEventListener('resize', init);
-```
-
-</script></body>
-
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', init);
+  </script>
+</body>
 </html>
