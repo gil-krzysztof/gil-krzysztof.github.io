@@ -63,6 +63,12 @@ html, body {
   z-index: 10;
 }
 
+.img-dock {
+  position: relative;
+  width: 100%;
+  height: 0;
+}
+
 footer {
   display: flex;
   justify-content: space-between;
@@ -107,6 +113,8 @@ footer .right {
     </div>
   </div>
 
+  <div class="img-dock" id="imgDock"></div>
+
   <img class="hero-img" id="heroImg" src="Zdjecie_1500.jpeg" alt="Zdjęcie z Wenecji">
 
   <footer>
@@ -118,14 +126,36 @@ footer .right {
     const track = document.getElementById('scrollTrack');
     const img = document.getElementById('heroImg');
     const placeholder = document.getElementById('placeholder');
+    const dock = document.getElementById('imgDock');
     const wordLeft = document.getElementById('wordLeft');
     const wordRight = document.getElementById('wordRight');
 
     let startRect = null;
     let aspectRatio = null;
+    let docked = false;
 
     function measureStart() {
       startRect = placeholder.getBoundingClientRect();
+    }
+
+    function undock() {
+      if (!docked) return;
+      docked = false;
+      img.style.position = 'fixed';
+      dock.style.height = '0';
+    }
+
+    function dockImage(endW, endH) {
+      if (docked) return;
+      docked = true;
+      dock.style.height = endH + 'px';
+      img.style.position = 'absolute';
+      img.style.left = '0';
+      img.style.top = '0';
+      img.style.width = endW + 'px';
+      img.style.height = endH + 'px';
+      img.style.borderRadius = '0px';
+      img.style.objectFit = 'cover';
     }
 
     function update() {
@@ -140,15 +170,25 @@ footer .right {
 
       const vw = window.innerWidth, vh = window.innerHeight;
 
+      const endW = vw;
+      const endH = aspectRatio ? vw / aspectRatio : vh;
+
+      if (progress >= 1) {
+        dockImage(endW, endH);
+        wordLeft.style.opacity = 0;
+        wordRight.style.opacity = 0;
+        return;
+      }
+
+      undock();
+
       const startLeft = startRect.left;
       const startTop = startRect.top;
       const startW = startRect.width;
       const startH = startRect.height;
 
-      const endW = vw;
-      const endH = aspectRatio ? vw / aspectRatio : vh;
       const endLeft = 0;
-      const endTop = 0;
+      const endTop = (vh - endH) / 2;
 
       const left = startLeft + (endLeft - startLeft) * progress;
       const top = startTop + (endTop - startTop) * progress;
