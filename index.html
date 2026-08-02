@@ -5,181 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Krzysztof Gil</title>
   <style>
-    * {
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background: #ffffff;
+    }
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #ffffff;
+      color: #3b3b3b;
+      text-align: center;
+      padding: 10px 0;
+      font-family: sans-serif;
+      z-index: 1000;
+    }
+    .content {
+      margin-top: 50px;
+      width: 100%;
+      max-width: 1400px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 10px;
       box-sizing: border-box;
     }
-
-    html, body {
-      margin: 0;
-      background: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-    }
-
-    .scroll-track {
-      height: 300vh;
-      position: relative;
-    }
-
-    .pin {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .hero {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: nowrap;
-      font-weight: 800;
-      font-size: clamp(40px, 9vw, 140px);
-      line-height: 1;
-      letter-spacing: -0.02em;
-      color: #111111;
-      white-space: nowrap;
-    }
-
-    .hero .word {
-      transition: opacity 0.2s linear;
-    }
-
-    .img-placeholder {
-      height: clamp(48px, 9vw, 140px);
-      width: clamp(72px, 13vw, 210px);
-      margin: 0 4px;
-      visibility: hidden;
-    }
-
-    .hero-img {
-      position: fixed;
+    img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      will-change: transform, width, height, border-radius, left, top;
-      z-index: 10;
-    }
-
-    footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding: 40px;
-      font-size: 13px;
-      color: #3b3b3b;
-      gap: 20px;
-      background: #ffffff;
-      position: relative;
-    }
-
-    footer .right {
-      max-width: 320px;
-      text-align: right;
+      display: block;
     }
 
     @media (max-width: 600px) {
-      footer {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 10px;
-      }
-      footer .right {
-        text-align: center;
-        max-width: none;
+      .content {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <div class="scroll-track" id="scrollTrack">
-    <div class="pin">
-      <div class="hero">
-        <span class="word" id="wordLeft">Krzysztof</span>
-        <span class="img-placeholder" id="placeholder"></span>
-        <span class="word" id="wordRight">Gil</span>
-      </div>
-    </div>
+  <div class="top-bar">Wenecja</div>
+  <div class="content">
+    <img src="Zdjecie_1500.jpeg" alt="San Giorgio Maggiore" loading="lazy">
+    <img src="Zdjecie_1500-2.jpeg" alt="Kanał Grande. Kamienice" loading="lazy">
+    <img src="Zdjecie_1500-3.jpeg" alt="Dzwonnica św. Marka w Wenecji" loading="lazy">
+    <img src="Zdjecie_1500-4.jpeg" alt="Fasada Pałacu Dożów" loading="lazy">
+    <img src="Zdjecie_1500-5.jpeg" alt="Gondolier" loading="lazy">
+    <img src="Zdjecie_1500-6.jpeg" alt="Maski karnawałowe" loading="lazy">
   </div>
-
-  <img class="hero-img" id="heroImg" src="Zdjecie_1500.jpeg" alt="Zdjęcie z Wenecji">
-
-  <footer>
-    <div class="left">Fotografia amatorska<br>Wenecja, 2026</div>
-    <div class="right">Dokumentuję podróże i uczę się tworzyć strony internetowe.</div>
-  </footer>
-
-  <script>
-    const track = document.getElementById('scrollTrack');
-    const img = document.getElementById('heroImg');
-    const placeholder = document.getElementById('placeholder');
-    const wordLeft = document.getElementById('wordLeft');
-    const wordRight = document.getElementById('wordRight');
-
-    let startRect = null;
-    let aspectRatio = null;
-
-    function measureStart() {
-      startRect = placeholder.getBoundingClientRect();
-    }
-
-    function update() {
-      const rect = track.getBoundingClientRect();
-      const trackHeight = track.offsetHeight - window.innerHeight;
-      let progress = -rect.top / trackHeight;
-      progress = Math.max(0, Math.min(1, progress));
-
-      if (progress === 0 || !startRect) {
-        measureStart();
-      }
-
-      const vw = window.innerWidth, vh = window.innerHeight;
-
-      const startLeft = startRect.left;
-      const startTop = startRect.top;
-      const startW = startRect.width;
-      const startH = startRect.height;
-
-      const endW = vw;
-      const endH = aspectRatio ? vw / aspectRatio : vh;
-      const endLeft = 0;
-      const endTop = (vh - endH) / 2;
-
-      const left = startLeft + (endLeft - startLeft) * progress;
-      const top = startTop + (endTop - startTop) * progress;
-      const w = startW + (endW - startW) * progress;
-      const h = startH + (endH - startH) * progress;
-      const radius = 12 * (1 - progress);
-
-      img.style.left = left + 'px';
-      img.style.top = top + 'px';
-      img.style.width = w + 'px';
-      img.style.height = h + 'px';
-      img.style.borderRadius = radius + 'px';
-      img.style.objectFit = progress > 0.05 ? 'fill' : 'cover';
-
-      const textOpacity = Math.max(0, 1 - progress * 2.5);
-      wordLeft.style.opacity = textOpacity;
-      wordRight.style.opacity = textOpacity;
-    }
-
-    function init() {
-      if (img.naturalWidth && img.naturalHeight) {
-        aspectRatio = img.naturalWidth / img.naturalHeight;
-      }
-      measureStart();
-      update();
-    }
-
-    if (img.complete) {
-      init();
-    } else {
-      img.addEventListener('load', init);
-    }
-
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', init);
-  </script>
 </body>
 </html>
