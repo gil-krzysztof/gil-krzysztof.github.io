@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
@@ -9,87 +10,90 @@
       box-sizing: border-box;
     }
 
-    html, body {
-      margin: 0;
-      background: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-    }
+```
+html, body {
+  margin: 0;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+}
 
-    .scroll-track {
-      height: 300vh;
-      position: relative;
-    }
+.scroll-track {
+  height: 300vh;
+  position: relative;
+}
 
-    .pin {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-    .hero {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: nowrap;
-      font-weight: 800;
-      font-size: clamp(40px, 9vw, 140px);
-      line-height: 1;
-      letter-spacing: -0.02em;
-      color: #111111;
-      white-space: nowrap;
-    }
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  font-weight: 800;
+  font-size: clamp(40px, 9vw, 140px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #111111;
+  white-space: nowrap;
+}
 
-    .hero .word {
-      transition: opacity 0.2s linear;
-    }
+.hero .word {
+  transition: opacity 0.2s linear;
+}
 
-    .img-placeholder {
-      height: clamp(48px, 9vw, 140px);
-      width: clamp(72px, 13vw, 210px);
-      margin: 0 4px;
-      visibility: hidden;
-    }
+.img-placeholder {
+  height: clamp(48px, 9vw, 140px);
+  width: clamp(72px, 13vw, 210px);
+  margin: 0 4px;
+  visibility: hidden;
+}
 
-    .hero-img {
-      position: fixed;
-      object-fit: cover;
-      will-change: transform, width, height, border-radius, left, top;
-      z-index: 10;
-    }
+.hero-img {
+  position: fixed;
+  object-fit: cover;
+  will-change: transform, width, height, border-radius, left, top;
+  z-index: 10;
+}
 
-    footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding: 40px;
-      font-size: 13px;
-      color: #3b3b3b;
-      gap: 20px;
-      background: #ffffff;
-      position: relative;
-    }
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 40px;
+  font-size: 13px;
+  color: #3b3b3b;
+  gap: 20px;
+  background: #ffffff;
+  position: relative;
+}
 
-    footer .right {
-      max-width: 320px;
-      text-align: right;
-    }
+footer .right {
+  max-width: 320px;
+  text-align: right;
+}
 
-    @media (max-width: 600px) {
-      footer {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 10px;
-      }
-      footer .right {
-        text-align: center;
-        max-width: none;
-      }
-    }
+@media (max-width: 600px) {
+  footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+  footer .right {
+    text-align: center;
+    max-width: none;
+  }
+}
+```
+
   </style>
 </head>
 <body>
@@ -144,7 +148,7 @@
       const endW = vw;
       const endH = aspectRatio ? vw / aspectRatio : vh;
       const endLeft = 0;
-      const endTop = (vh - endH) / 2;
+      const endTop = 0;
 
       const left = startLeft + (endLeft - startLeft) * progress;
       const top = startTop + (endTop - startTop) * progress;
@@ -181,6 +185,6 @@
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', init);
   </script>
+
 </body>
 </html>
-
