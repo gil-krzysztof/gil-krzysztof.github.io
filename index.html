@@ -112,16 +112,16 @@
     overflow: hidden;
     position: relative;
   }
-  .format-grid-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 1440px;
-    height: 650px;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-    pointer-events: none;
-  }
+.format-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
   .format-content {
     flex: 1;
     position: relative;
