@@ -6,28 +6,33 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-body {
-  margin: 0;
-  background-color: #f0f0f0;
-  height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Inter', Arial, sans-serif;
-  position: relative; /* dodane */
-}
-.corner-note {
-  position: absolute;
-  top: 2vh;
-  left: 2vw;
-  font-size: 2vh;
-  color: black;
-}
+  body {
+    margin: 0;
+    background-color: #f0f0f0; /* kolor pasków po bokach */
+    font-family: 'Inter', Arial, sans-serif;
+  }
+  .content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white; /* kolor "środka" strony */
+    position: relative;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .corner-note {
+    position: absolute;
+    top: 1.5vh;
+    left: 1.5vw;
+    font-size: 10px;
+    color: #999;
+  }
   .headline-row {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 60px;
+    gap: 40px;
   }
   .laurel {
     width: 64px;
