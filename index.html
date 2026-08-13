@@ -18,7 +18,8 @@
     position: relative;
     height: 200vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     padding-top: 25vh;
   }
   .corner-note {
@@ -27,6 +28,19 @@
     left: 4vw;
     font-size: 2vh;
     color: black;
+  }
+  .contact-button {
+    position: absolute;
+    top: 4vh;
+    right: 4vw;
+    padding: 10px 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
   }
   .headline-row {
     display: flex;
@@ -47,16 +61,27 @@
     text-align: center;
     margin: 0;
   }
+  .subtitle {
+    max-width: 700px;
+    margin-top: 25px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    color: #333;
+  }
 </style>
 </head>
 <body>
   <div class="content-wrapper">
     <div class="corner-note">Krzysztof Gil</div>
+    <button class="contact-button">Kontakt</button>
     <div class="headline-row">
       <img src="laura_lewy_wektor.svg" alt="" class="laurel">
       <h1>Matematyka rozszerzona online<br>Z wynikiem 100% z matury</h1>
       <img src="laura_prawy_wektor.svg" alt="" class="laurel">
     </div>
+    <p class="subtitle">Cześć! Jestem studentem pierwszego roku Lotnictwa i Kosmonautyki na Politechnice Warszawskiej i pomogę Ci dostać się na wymarzony kierunek.</p>
   </div>
 </body>
 </html>
