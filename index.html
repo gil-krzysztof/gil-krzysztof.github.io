@@ -6,14 +6,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin: 0;
-    height: 70vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Inter', Arial, sans-serif;
-  }
+body {
+  margin: 0;
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', Arial, sans-serif;
+  position: relative; /* dodane */
+}
+
+.corner-note {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 10px;
+  color: #999;
+}
   .headline-row {
     display: flex;
     align-items: center;
