@@ -107,12 +107,25 @@
     display: flex;
     gap: 60px;
     align-items: center;
-    height: 650px;
+    height: 800px;
     box-sizing: border-box;
     overflow: hidden;
+    position: relative;
+  }
+  .format-grid-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1440px;
+    height: 650px;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
   }
   .format-content {
     flex: 1;
+    position: relative;
+    z-index: 1;
   }
   .format-content h2 {
     font-family: 'Inter', Arial, sans-serif;
@@ -121,7 +134,7 @@
     margin: 0 0 20px 0;
   }
   .format-item {
-    margin-bottom: 40px;
+    margin-bottom: 50px;
   }
   .format-item-title {
     display: flex;
@@ -149,6 +162,8 @@
     background-color: #d9d9d9;
     border-radius: 10px;
     min-height: 500px;
+    position: relative;
+    z-index: 1;
   }
 </style>
 </head>
@@ -164,27 +179,29 @@
       </div>
       <p class="subtitle">Cześć! Jestem studentem pierwszego roku Lotnictwa i Kosmonautyki na Politechnice Warszawskiej i pomogę Ci dostać się na wymarzony kierunek.</p>
     </div>
- 
+
     <div class="profile-section">
       <h2>Planujesz maturę z matematyki rozszerzonej?</h2>
       <p>Zajmiemy się bieżącą nauką, traktując maturę jako główny cel, bądź stworzymy plan przygotowania przed egzaminem.</p>
       <p>Przewiduję pracę z maksymalnie kilkoma osobami w charakterze długoterminowym.</p>
     </div>
- 
+
     <div class="format-section">
+      <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
+
       <div class="format-content">
         <h2>Format korepetycji</h2>
- 
+
         <div class="format-item">
           <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
           <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
         </div>
- 
+
         <div class="format-item">
           <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
           <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
         </div>
- 
+
         <div class="format-item">
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
           <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
