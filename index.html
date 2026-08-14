@@ -154,7 +154,7 @@
     z-index: 1;
   }
 
- .format-card {
+.format-card {
   flex: 1;
   position: relative;
   background: rgba(0,0,0,0);
@@ -172,26 +172,15 @@
   --rim-thickness: 2px;
   --rim-blur: 3px;
   --rim-max: rgba(255,255,255,1);
-  --rim-main: rgba(255,255,255,0.9);     /* jasność w rogu głównym (mocna poświata) */
-  --rim-mid: rgba(255,255,255,0.2); 
-  --rim-min: rgba(255,255,255,0);            /* jasność w pozostałych dwóch rogach (ciemno) */
+  --rim-main: rgba(255,255,255,0.9);
+  --rim-mid: rgba(255,255,255,0.2);
+  --rim-min: rgba(255,255,255,0);
+  
   --glow-main: rgba(255,255,255,0.9);
-  --glow-min: rgba(255,255,255,0);
+  --glow-mid: rgba(255,255,255,0.3); /* Dopisana brakująca zmienna */
+  --glow-min: rgba(255,255,255,0);   /* Dopisany średnik */
 }
 
-/*
-  Zamiast funkcji schodkowej (bevel) z jednym max i jednym min,
-  używamy teraz CIĄGŁEJ funkcji z CZTEREMA punktami kontrolnymi
-  rozmieszczonymi co 25% obwodu (4 rogi):
-    0%   -> --rim-main       (róg główny, najjaśniejszy)
-    25%  -> --rim-min        (róg sąsiedni, ciemny)
-    50%  -> --rim-secondary  (róg przeciwległy, mała poświata)
-    75%  -> --rim-min        (drugi róg sąsiedni, ciemny)
-    100% -> --rim-main       (powrót do rogu głównego)
-  Brak plateau/skoków - płynne przejścia między wszystkimi punktami,
-  co daje efekt "rozlewania się" światła z dwóch przeciwległych rogów
-  o różnej intensywności, a nie jednolitą ramę wokół krawędzi.
-*/
 .format-card::after {
   content: "";
   position: absolute;
@@ -200,7 +189,9 @@
   padding: var(--rim-thickness);
   filter: blur(var(--rim-blur));
 
+  /* Dodano przecinek między gradientami */
   background: 
+    /* EFEKT 1: Główna ramka (kąt startowy 180deg) */
     conic-gradient(
       from calc(180deg - var(--corner-angle)),
       var(--rim-main) 0deg,
@@ -214,16 +205,21 @@
       var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
       var(--rim-main) calc(2 * var(--corner-angle) + 190deg),
       var(--rim-main) 360deg
-  ),
-      conic-gradient(
+    ),
+    /* EFEKT 2: Dodatkowa warstwa poświaty (kąt startowy 360deg) */
+    conic-gradient(
       from calc(360deg - var(--corner-angle)),
       var(--glow-main) 0deg,
       var(--glow-main) calc(2 * var(--corner-angle) - 10deg),
       var(--glow-min) calc(2 * var(--corner-angle)),
+      var(--glow-mid) 190deg,
       var(--glow-min) calc(2 * var(--corner-angle) + 180deg),
       var(--glow-main) calc(2 * var(--corner-angle) + 190deg),
       var(--glow-main) 360deg
-  );
+    );
+
+  /* Sprawia, że nakładające się światła z obu gradientów wzmacniają się nawzajem */
+  background-blend-mode: screen;
 
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
