@@ -171,10 +171,9 @@
   /* --- Parametry funkcji poświaty krawędzi --- */
   --rim-thickness: 2px;
   --rim-blur: 3px;
-  --rim-angle: calc(360deg - var(--corner-angle));                    /* kierunek GŁÓWNEGO źródła (0deg = góra, zgodnie z ruchem wskazówek) */
   --rim-main: rgba(255,255,255,0.9);     /* jasność w rogu głównym (mocna poświata) */
-  --rim-secondary: rgba(255,255,255,0.8);/* jasność w rogu przeciwległym (mała poświata) */
-  --rim-min: rgba(255,255,255,0.1);            /* jasność w pozostałych dwóch rogach (ciemno) */
+  --rim-mid: rgba(255,255,255,0.4); 
+  --rim-min: rgba(255,255,255,0.05);            /* jasność w pozostałych dwóch rogach (ciemno) */
 }
 
 /*
@@ -201,8 +200,9 @@
   background: conic-gradient(
     from calc(360deg - var(--corner-angle)),
     var(--rim-main) 0deg,
-    var(--rim-main) calc(2 * var(--corner-angle)),
-    var(--rim-min) 180deg,
+    var(--rim-main) calc(2 * var(--corner-angle) - 20deg),
+    var(--rim-min) calc(2 * var(--corner-angle)),
+    var(--rim-mid) calc(2 * var(--corner-angle) + 20deg),
     var(--rim-main) calc(180deg + 2 * var(--corner-angle)),
     var(--rim-main) 360deg
   );
