@@ -157,65 +157,30 @@
 .format-card {
   flex: 1;
   position: relative;
-  background: rgba(0, 0, 0, 0);
+  background: rgba(0,0,0,0);
   border-radius: 32px;
   padding: 25px;
   box-sizing: border-box;
-  overflow: hidden; /* KLUCZOWE: ucina zewnętrzne rozmycie na krawędzi karty */
+  overflow: hidden;
 
-  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.20);
+  box-shadow: 10px 10px 10px rgba(0,0,0,0.20);
 
   backdrop-filter: blur(1.5px) saturate(100%);
   -webkit-backdrop-filter: blur(1.5px) saturate(100%);
 
-  /* --- Parametry głębi poświaty (GLOW) --- */
-  --glow-depth: 22px;            /* Jak szeroki jest pas światła wnikający do środka */
-  --glow-blur: 10px;             /* Miękkość przejścia prostopadłego */
-  --glow-main: rgba(255, 255, 255, 0.85);
-  --glow-mid: rgba(255, 255, 255, 0.15);
-  --glow-min: rgba(255, 255, 255, 0);
-
-  /* --- Parametry ostrej krawędzi (RIM) --- */
-  --rim-thickness: 1.5px;
-  --rim-blur: 0.5px;
-  --rim-max: rgba(255, 255, 255, 1);
-  --rim-main: rgba(255, 255, 255, 0.9);
-  --rim-mid: rgba(255, 255, 255, 0.2);
-  --rim-min: rgba(255, 255, 255, 0);
+  /* --- Parametry funkcji poświaty krawędzi --- */
+  --rim-thickness: 2px;
+  --rim-blur: 3px;
+  --rim-max: rgba(255,255,255,1);
+  --rim-main: rgba(255,255,255,0.9);
+  --rim-mid: rgba(255,255,255,0.2);
+  --rim-min: rgba(255,255,255,0);
+  
+  --glow-main: rgba(255,255,255,0.9);
+  --glow-mid: rgba(255,255,255,0.3); /* Dopisana brakująca zmienna */
+  --glow-min: rgba(255,255,255,0);   /* Dopisany średnik */
 }
 
-/* --- 1. WOLUMETRYCZNE ŚWIATŁO WNIKAJĄCE (GLOW) --- */
-.format-card::before {
-  content: "";
-  position: absolute;
-  inset: -1px; /* Lekkie wysunięcie, aby światło startowało idealnie od obrysu */
-  border-radius: 33px;
-  padding: var(--glow-depth);
-  pointer-events: none;
-
-  background: conic-gradient(
-    from calc(360deg - var(--corner-angle)),
-    var(--glow-main) 0deg,
-    var(--glow-main) calc(2 * var(--corner-angle) - 10deg),
-    var(--glow-min) calc(2 * var(--corner-angle)),
-    var(--glow-mid) 190deg,
-    var(--glow-min) calc(2 * var(--corner-angle) + 180deg),
-    var(--glow-main) calc(2 * var(--corner-angle) + 190deg),
-    var(--glow-main) 360deg
-  );
-
-  /* Maska geometryczna dopasowana do zaokrąglenia 32px */
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-
-  /* Rozmywa pas, a overflow:hidden na rodzicu przycina zewnętrzne rozmycie */
-  filter: blur(var(--glow-blur));
-}
-
-/* --- 2. OSTRA STRUKTURA KRAWĘDZI (RIM STROKE) --- */
 .format-card::after {
   content: "";
   position: absolute;
@@ -224,20 +189,37 @@
   padding: var(--rim-thickness);
   filter: blur(var(--rim-blur));
 
-  background: conic-gradient(
-    from calc(180deg - var(--corner-angle)),
-    var(--rim-main) 0deg,
-    var(--rim-main) calc(2 * var(--corner-angle) - 10deg),
-    var(--rim-min) calc(2 * var(--corner-angle)),
-    var(--rim-mid) calc(2 * var(--corner-angle) + 10deg),
-    var(--rim-mid) 170deg,
-    var(--rim-max) 180deg,
-    var(--rim-mid) 190deg,
-    var(--rim-mid) calc(2 * var(--corner-angle) + 170deg),
-    var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
-    var(--rim-main) calc(2 * var(--corner-angle) + 190deg),
-    var(--rim-main) 360deg
-  );
+  /* Dodano przecinek między gradientami */
+  background: 
+    /* EFEKT 1: Główna ramka (kąt startowy 180deg) */
+    conic-gradient(
+      from calc(180deg - var(--corner-angle)),
+      var(--rim-main) 0deg,
+      var(--rim-main) calc(2 * var(--corner-angle) - 10deg),
+      var(--rim-min) calc(2 * var(--corner-angle)),
+      var(--rim-mid) calc(2 * var(--corner-angle) + 10deg),
+      var(--rim-mid) 170deg,
+      var(--rim-max) 180deg,
+      var(--rim-mid) 190deg,
+      var(--rim-mid) calc(2 * var(--corner-angle) + 170deg),
+      var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
+      var(--rim-main) calc(2 * var(--corner-angle) + 190deg),
+      var(--rim-main) 360deg
+    ),
+    /* EFEKT 2: Dodatkowa warstwa poświaty (kąt startowy 360deg) */
+    conic-gradient(
+      from calc(360deg - var(--corner-angle)),
+      var(--glow-main) 0deg,
+      var(--glow-main) calc(2 * var(--corner-angle) - 10deg),
+      var(--glow-min) calc(2 * var(--corner-angle)),
+      var(--glow-mid) 190deg,
+      var(--glow-min) calc(2 * var(--corner-angle) + 180deg),
+      var(--glow-main) calc(2 * var(--corner-angle) + 190deg),
+      var(--glow-main) 360deg
+    );
+
+  /* Sprawia, że nakładające się światła z obu gradientów wzmacniają się nawzajem */
+  background-blend-mode: screen;
 
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
