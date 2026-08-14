@@ -161,50 +161,38 @@
   border-radius: 32px;
   padding: 25px;
   box-sizing: border-box;
-  overflow: hidden; /* KLUCZOWE: ucina rozmycie wychodzące na zewnątrz karty */
+  overflow: hidden; /* KLUCZOWE: ucina zewnętrzne rozmycie na krawędzi karty */
 
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.20);
 
   backdrop-filter: blur(1.5px) saturate(100%);
   -webkit-backdrop-filter: blur(1.5px) saturate(100%);
 
-  /* --- Parametry ostrej krawędzi (rim) --- */
+  /* --- Parametry głębi poświaty (GLOW) --- */
+  --glow-depth: 22px;            /* Jak szeroki jest pas światła wnikający do środka */
+  --glow-blur: 10px;             /* Miękkość przejścia prostopadłego */
+  --glow-main: rgba(255, 255, 255, 0.85);
+  --glow-mid: rgba(255, 255, 255, 0.15);
+  --glow-min: rgba(255, 255, 255, 0);
+
+  /* --- Parametry ostrej krawędzi (RIM) --- */
   --rim-thickness: 1.5px;
   --rim-blur: 0.5px;
   --rim-max: rgba(255, 255, 255, 1);
-  --rim-main: rgba(255, 255, 255, 0.85);
-  --rim-mid: rgba(255, 255, 255, 0.25);
+  --rim-main: rgba(255, 255, 255, 0.9);
+  --rim-mid: rgba(255, 255, 255, 0.2);
   --rim-min: rgba(255, 255, 255, 0);
-
-  /* --- Parametry poświaty wnikającej (glow) --- */
-  --glow-depth: 16px;                  /* Szerokość paska światła przy krawędzi */
-  --glow-blur: 10px;                   /* Głębokość prostopadłego rozlania w głąb */
-  --glow-main: rgba(255, 255, 255, 0.75);
-  --glow-mid: rgba(255, 255, 255, 0.15);
-  --glow-min: rgba(255, 255, 255, 0);
 }
 
-/* --- 1. POŚWIATA PROSTOPADŁA DO KRAWĘDZI (INWARD GLOW) --- */
-.format-card {
-  /* ... Twoje dotychczasowe style ... */
-
-  /* Głębokość, na jaką światło wnika prostopadle do środka */
-  --glow-depth: 24px; 
-  
-  --glow-main: rgba(255, 255, 255, 0.9);
-  --glow-mid: rgba(255, 255, 255, 0.2);
-  --glow-min: rgba(255, 255, 255, 0);
-}
-
-/* --- POŚWIATA LINIOWO ZANIKAJĄCA W GŁĄB KARTY --- */
+/* --- 1. WOLUMETRYCZNE ŚWIATŁO WNIKAJĄCE (GLOW) --- */
 .format-card::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  inset: -1px; /* Lekkie wysunięcie, aby światło startowało idealnie od obrysu */
+  border-radius: 33px;
+  padding: var(--glow-depth);
   pointer-events: none;
 
-  /* 1. Rozkład kolorów na obwodzie (zgodnie z kątem) */
   background: conic-gradient(
     from calc(360deg - var(--corner-angle)),
     var(--glow-main) 0deg,
@@ -216,20 +204,18 @@
     var(--glow-main) 360deg
   );
 
-  /* 2. Liniowy profil opadania światła (100% na krawędzi -> 0% na głębokości --glow-depth) */
-  -webkit-mask: radial-gradient(
-    ellipse at center, 
-    transparent calc(100% - var(--glow-depth)), 
-    #000 100%
-  );
-          mask: radial-gradient(
-    ellipse at center, 
-    transparent calc(100% - var(--glow-depth)), 
-    #000 100%
-  );
+  /* Maska geometryczna dopasowana do zaokrąglenia 32px */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+
+  /* Rozmywa pas, a overflow:hidden na rodzicu przycina zewnętrzne rozmycie */
+  filter: blur(var(--glow-blur));
 }
 
-/* --- 2. OSTRA, CIENKA RAMKA ZEWNĘTRZNA (RIM STROKE) --- */
+/* --- 2. OSTRA STRUKTURA KRAWĘDZI (RIM STROKE) --- */
 .format-card::after {
   content: "";
   position: absolute;
@@ -260,11 +246,6 @@
           mask-composite: exclude;
   pointer-events: none;
 }
-  .format-item-title .icon {
-    width: 22px;
-    height: 22px;
-  }
-
   .format-card p {
     margin: 0;
     font-size: 15px;
