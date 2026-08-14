@@ -165,16 +165,20 @@
 
     /* Zewnętrzny cień - "unoszenie" karty nad tłem (osobny efekt, nie część funkcji krawędzi) */
     box-shadow: 10px 10px 10px rgba(0,0,0,0.20);
-
+    
     backdrop-filter: blur(1.5px) saturate(100%);
     -webkit-backdrop-filter: blur(1.5px) saturate(100%);
 
     /* --- Parametry funkcji poświaty krawędzi (JEDNO miejsce do edycji) --- */
     --rim-thickness: 2px;      /* jak gruba jest sama linia/poświata */
     --rim-blur: 3px;           /* jak bardzo rozmyta / miękka */
-    --rim-angle: 315deg;       /* kierunek maksimum: 315deg = lewy-górny róg */
+    --rim-angle: 45deg;        /* kierunek maksimum: 45deg = prawy-górny róg */
     --rim-max: rgba(255,255,255,0.55);  /* kolor/jasność w punkcie maks */
     --rim-min: rgba(0,0,0,0.4);         /* kolor/jasność w punkcie min */
+    --rim-transition: 6%;      /* szerokość przejścia w rogu - MAŁA wartość (4-10%)
+                                   = płaskie boki, zmiana tylko w rogu (jak bevel
+                                   w Photoshopie). Wartość 50% = z powrotem gładka,
+                                   ciągła funkcja liniowa jak poprzednio. */
   }
 
   /*
@@ -183,17 +187,23 @@
     border-radius, tak jak inset box-shadow, ale bez szwów w rogach).
 
     Jasność wzdłuż pierścienia opisuje JEDNA linia - conic-gradient -
-    czyli funkcja jasność(kąt). Obecnie jest LINIOWA:
-      0%   (kąt = --rim-angle)              -> --rim-max
-      50%  (kąt przeciwny, prawy-dolny róg) -> --rim-min
-      100% (powrót do --rim-angle)          -> --rim-max
-    Dzięki symetrycznemu powrotowi do 100% nie ma szwu w miejscu zamknięcia koła.
+    czyli funkcja jasność(kąt). Teraz to funkcja SCHODKOWA z płynnym
+    przejściem tylko w --rim-transition wokół każdego punktu zmiany:
+      0%                      -> --rim-max  (płaskie plateau)
+      (50% - --rim-transition) -> --rim-max  (koniec plateau, tu zaczyna się róg)
+      (50% + --rim-transition) -> --rim-min  (koniec przejścia w rogu)
+      100% - to samo dla powrotu do --rim-max
+
+    To dokładnie odwzorowuje zachowanie bevela z Photoshopa: proste boki
+    mają STAŁĄ jasność (bo normalna powierzchni się tam nie zmienia),
+    a cała zmiana jest upakowana w wąskim wycinku kątowym zaokrąglonego
+    rogu, gdzie normalna faktycznie się obraca.
 
     Żeby podać INNĄ funkcję później, wystarczy zmienić WYŁĄCZNIE listę
     stopni w tym jednym background - reszta (grubość, rozmycie, kształt
     podążający za rogami) zostaje bez zmian. Np. pasiasty wzór (flagi)
     z Twojego zdjęcia to conic-gradient z wieloma naprzemiennymi stopami
-    zamiast trzech - patrz przykład w komentarzu niżej.
+    zamiast czterech - patrz przykład w komentarzu niżej.
   */
   .format-card::after {
     content: "";
@@ -206,7 +216,9 @@
     background: conic-gradient(
       from var(--rim-angle),
       var(--rim-max) 0%,
-      var(--rim-min) 50%,
+      var(--rim-max) calc(50% - var(--rim-transition)),
+      var(--rim-min) calc(50% + var(--rim-transition)),
+      var(--rim-min) calc(100% - var(--rim-transition)),
       var(--rim-max) 100%
     );
 
@@ -233,7 +245,6 @@
     gap: 10px;
     font-size: 18px;
     font-weight: 600;
-    margin-top: 20px;
     margin-bottom: 12px;
   }
 
@@ -248,7 +259,6 @@
     font-weight: 400;
     line-height: 1.5;
     color: #e8dede;
-    margin-bottom: 20px;
   }
 </style>
 </head>
@@ -292,7 +302,7 @@
 
         <div class="format-card">
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
-          <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz do wspólnego omówienia.</p>
+          <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
         </div>
       </div>
     </div>
