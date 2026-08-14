@@ -179,6 +179,21 @@
     inset 6px 6px 16px -2px rgba(255, 255, 255, 0.3),
     10px 10px 10px rgba(0, 0, 0, 0.20);
   }
+  
+  .format-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+
+  /* Czarny inset box-shadow przesunięty np. na dół i prawą stronę */
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+
+  /* Odpowiednik linear-burn w CSS */
+  mix-blend-mode: color-burn; /* Możesz też przetestować: color-burn */
+}
 
   /* --- JEDNA PROSTA RAMKA NA KRAWĘDZI --- */
   .format-card::after {
