@@ -3,145 +3,431 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Działająca Szklana Karta</title>
+<title>Krzysztof Gil - Korepetycje z matematyki rozszerzonej</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
+  /* --- Globalne ustawienia --- */
   html, body {
     margin: 0;
-    padding: 0;
-    background-color: #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    background-color: #f0f0f0;
+    font-family: 'Inter', Arial, sans-serif;
   }
 
-  .wrapper {
+  .content-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: white;
     position: relative;
-    width: 600px;
-    height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='20' height='20' fill='%23000000'/%3E%3Crect x='20' width='20' height='20' fill='%23ffffff'/%3E%3Crect y='20' width='20' height='20' fill='%23ffffff'/%3E%3Crect x='20' y='20' width='20' height='20' fill='%23000000'/%3E%3C/svg%3E");
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-    overflow: hidden;
   }
 
-  .glass-card {
-    width: 400px;
-    height: 250px;
-    border-radius: 40px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    
-    /* Wywołanie filtru SVG z odpowiednią skalą refrakcji */
-    backdrop-filter: url(#glass-lens);
-    -webkit-backdrop-filter: url(#glass-lens);
-    
-    box-shadow: 
-      inset 0 1px 2px rgba(255, 255, 255, 0.6),
-      inset 0 -1px 3px rgba(0, 0, 0, 0.4),
-      0 15px 35px rgba(0, 0, 0, 0.3);
-    
+  /* --- Sekcja hero --- */
+  .hero {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 240px;
+    padding-bottom: 240px;
+    overflow: hidden;
+  }
+
+  .hero-grid-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1440px;
+    height: 650px;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .corner-note {
+    position: absolute;
+    top: 4vh;
+    left: 4vw;
+    font-size: 20px;
+    color: black;
+    z-index: 1;
+  }
+
+  .contact-button {
+    position: absolute;
+    top: 4vh;
+    right: 4vw;
+    padding: 15px 25px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: black;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  .headline-row {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    gap: 40px;
+    height: fit-content;
+    position: relative;
+    z-index: 1;
+  }
+
+  .laurel {
+    width: 40px;
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin: 0;
+  }
+
+  .subtitle {
+    max-width: 950px;
+    margin-top: 30px;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    color: #333;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* --- Sekcja "Profil ucznia" --- */
+  .profile-section {
+    padding: 80px 20px;
+    text-align: center;
+    box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.15);
+    position: relative;
+  }
+
+  .profile-section h2 {
+    font-size: 36px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .profile-section p {
+    padding: 15px;
+    max-width: 750px;
+    margin: 0 auto;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #333;
+  }
+
+  /* --- Sekcja "Format korepetycji" --- */
+  .format-section {
+    background-color: #663737;
+    color: white;
+    font-weight: 500;
+    padding: 80px 60px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .format-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* --- KONTENER DLA KART --- */
+  .format-cards {
+    display: flex;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* --- KARTA --- */
+  .format-card {
+    flex: 1;
+    position: relative;
+    border-radius: 40px;
+    padding: 40px;
+    box-sizing: border-box;
+    overflow: hidden;
+    isolation: isolate;
+
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    /* Dynamiczne przypisanie filtru refrakcji zdefiniowanego w locie przez JS */
+    backdrop-filter: var(--glass-filter-ref);
+    -webkit-backdrop-filter: var(--glass-filter-ref);
+
+    --rim-thickness: 2.5px;
+    --rim-blur: 0.5px;
+    --rim-max: rgba(255, 255, 255, 1);
+    --rim-main: rgba(255, 255, 255, 0.6);
+    --rim-mid: rgba(255, 255, 255, 0.25);
+    --rim-min: rgba(255, 255, 255, 0);
+
+    box-shadow:
+      inset 6px 6px 16px -2px rgba(255, 255, 255, 0.25),
+      5px 5px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  /* --- 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM / DYSPERSJĄ --- */
+  .format-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: var(--rim-thickness);
+    filter: blur(var(--rim-blur));
+    z-index: 1;
+
+    background: conic-gradient(
+      from calc(180deg - var(--corner-angle, 45deg)),
+      var(--rim-main) 0deg,
+      var(--rim-main) calc(2 * var(--corner-angle, 45deg) - 10deg),
+      var(--rim-min) calc(2 * var(--corner-angle, 45deg)),
+      var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
+      var(--rim-mid) 170deg,
+      
+      rgba(255, 100, 200, 0.8) 175deg,
+      rgba(100, 220, 255, 0.8) 178deg,
+      var(--rim-max) 180deg,
+      rgba(255, 230, 130, 0.8) 182deg,
+      rgba(180, 120, 255, 0.8) 185deg,
+
+      var(--rim-mid) 190deg,
+      var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
+      var(--rim-min) calc(2 * var(--corner-angle, 45deg) + 180deg),
+      var(--rim-main) calc(2 * var(--corner-angle, 45deg) + 190deg),
+      var(--rim-main) 360deg
+    );
+    
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+                mask-composite: exclude;
+    
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+
+  /* --- 2. CZARNY COLOR BURN --- */
+  .format-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 2;
+
+    box-shadow:
+      inset -3px -3px 8px 0px rgba(0, 0, 0, 0.25),
+      inset 0 0 6px 0px rgba(0, 0, 0, 0.25);
+
+    mix-blend-mode: color-burn; 
+  }
+
+  /* --- 3. TEKST I IKONY --- */
+  .format-item-title,
+  .format-card p {
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  .format-item-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #ffffff;
+  }
+
+  .format-item-title .icon {
+    width: 22px;
+    height: 22px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+  }
+
+  .format-card p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #f3ecec;
   }
 </style>
 </head>
 <body>
+  <div class="content-wrapper">
 
-  <!-- Definicja filtru SVG z wstrzykiwaną mapą -->
-  <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
-    <filter id="glass-lens" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
-      <!-- Mapa ładuje się dynamicznie jako Base64 z JS -->
-      <feImage id="svg-map-image" href="" result="displacementMap" preserveAspectRatio="none" />
-      <feDisplacementMap in="SourceGraphic" in2="displacementMap" scale="35" xChannelSelector="R" yChannelSelector="G" />
-    </filter>
-  </svg>
+    <div class="hero">
+      <img src="siatka_czerwona_wektor.svg" alt="" class="hero-grid-overlay">
 
-  <div class="wrapper">
-    <div class="glass-card">
-      <h2 style="margin:0 0 5px 0; font-size:22px;">Krzysztof</h2>
-      <p style="margin:0; font-size:13px; opacity:0.85;">Działający efekt refrakcji szkła</p>
+      <div class="corner-note">Krzysztof Gil</div>
+      <button class="contact-button">Kontakt</button>
+
+      <div class="headline-row">
+        <img src="laura_lewy_wektor.svg" alt="" class="laurel">
+        <h1>Matematyka rozszerzona online<br>Z wynikiem 100% z matury</h1>
+        <img src="laura_prawy_wektor.svg" alt="" class="laurel">
+      </div>
+
+      <p class="subtitle">Cześć! Jestem studentem pierwszego roku Lotnictwa i Kosmonautyki na Politechnice Warszawskiej i pomogę Ci dostać się na wymarzony kierunek.</p>
     </div>
+
+    <div class="profile-section">
+      <h2>Planujesz maturę z matematyki rozszerzonej?</h2>
+      <p>Zajmiemy się bieżącą nauką, traktując maturę jako główny cel, bądź stworzymy plan przygotowania przed egzaminem.</p>
+      <p>Przewiduję pracę z maksymalnie kilkoma osobami w charakterze długoterminowym.</p>
+    </div>
+
+    <div class="format-section">
+      <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
+
+      <div class="format-cards">
+        
+        <!-- KARTA 1 -->
+        <div class="format-card">
+          <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
+          <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
+        </div>
+
+        <!-- KARTA 2 -->
+        <div class="format-card">
+          <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
+          <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
+        </div>
+
+        <!-- KARTA 3 -->
+        <div class="format-card">
+          <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
+          <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
-  <canvas id="mapCanvas" width="400" height="250" style="display:none;"></canvas>
+  <!-- Dynamicznie generowane filtry SVG dla poszczególnych kart osadzone będą tutaj -->
+  <svg id="svg-filters-container" style="position: absolute; width: 0; height: 0;" aria-hidden="true"></svg>
 
   <script>
-    function initGlassEffect() {
-      const canvas = document.getElementById('mapCanvas');
-      const ctx = canvas.getContext('2d');
+    function updateCornerAnglesAndRefraction() {
+      const cards = document.querySelectorAll('.format-card');
+      const svgContainer = document.getElementById('svg-filters-container');
       
-      const w = canvas.width;
-      const h = canvas.height;
-      
-      const imgData = ctx.createImageData(w, h);
-      const data = imgData.data;
+      // Wyczyszczenie starych filtrów SVG
+      svgContainer.innerHTML = '';
 
-      const cornerRadius = 40; 
-      const rimWidth = 40;     
+      cards.forEach((card, index) => {
+        const w = card.offsetWidth;
+        const h = card.offsetHeight;
+        if (w === 0 || h === 0) return;
 
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          
-          let qx = Math.abs(x - w / 2) - (w / 2 - cornerRadius);
-          let qy = Math.abs(y - h / 2) - (h / 2 - cornerRadius);
-          
-          let distCorner = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2);
-          let distEdge = distCorner + Math.min(Math.max(qx, qy), 0) - cornerRadius;
-          let depthFromBorder = -distEdge;
+        // 1. Kąt narożnika do gradientu obramowania
+        const angle = Math.atan2(w, h) * (180 / Math.PI);
+        card.style.setProperty('--corner-angle', angle + 'deg');
 
-          let shiftX = 0;
-          let shiftY = 0;
+        // 2. Generowanie mapy refrakcji (fizyka soczewki) dla dokładnych wymiarów karty
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        
+        const imgData = ctx.createImageData(w, h);
+        const data = imgData.data;
 
-          if (depthFromBorder >= 0 && depthFromBorder <= rimWidth) {
-            let normalizedDist = depthFromBorder / rimWidth;
-            let lensProfile = Math.sin(normalizedDist * Math.PI) * (1 - normalizedDist);
+        const cornerRadius = 40; 
+        const rimWidth = 40;     
 
-            let nx = 0, ny = 0;
-            if (qx > 0 || qy > 0) {
-              let len = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) || 1;
-              nx = (Math.max(qx, 0) / len) * Math.sign(x - w / 2);
-              ny = (Math.max(qy, 0) / len) * Math.sign(y - h / 2);
-            } else {
-              if (qx > qy) nx = Math.sign(x - w / 2);
-              else ny = Math.sign(y - h / 2);
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            let qx = Math.abs(x - w / 2) - (w / 2 - cornerRadius);
+            let qy = Math.abs(y - h / 2) - (h / 2 - cornerRadius);
+            
+            let distCorner = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2);
+            let distEdge = distCorner + Math.min(Math.max(qx, qy), 0) - cornerRadius;
+            let depthFromBorder = -distEdge;
+
+            let shiftX = 0;
+            let shiftY = 0;
+
+            if (depthFromBorder >= 0 && depthFromBorder <= rimWidth) {
+              let normalizedDist = depthFromBorder / rimWidth;
+              let lensProfile = Math.sin(normalizedDist * Math.PI) * (1 - normalizedDist);
+
+              let nx = 0, ny = 0;
+              if (qx > 0 || qy > 0) {
+                let len = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) || 1;
+                nx = (Math.max(qx, 0) / len) * Math.sign(x - w / 2);
+                ny = (Math.max(qy, 0) / len) * Math.sign(y - h / 2);
+              } else {
+                if (qx > qy) nx = Math.sign(x - w / 2);
+                else ny = Math.sign(y - h / 2);
+              }
+
+              shiftX = nx * lensProfile;
+              shiftY = ny * lensProfile;
             }
 
-            shiftX = nx * lensProfile;
-            shiftY = ny * lensProfile;
+            let redChannel   = Math.min(255, Math.max(0, 128 + shiftX * 127));
+            let greenChannel = Math.min(255, Math.max(0, 128 + shiftY * 127));
+            let blueChannel  = 128;
+
+            let pixelIndex = (y * w + x) * 4;
+            data[pixelIndex]     = redChannel;
+            data[pixelIndex + 1] = greenChannel;
+            data[pixelIndex + 2] = blueChannel;
+            data[pixelIndex + 3] = 255;
           }
-
-          let redChannel   = Math.min(255, Math.max(0, 128 + shiftX * 127));
-          let greenChannel = Math.min(255, Math.max(0, 128 + shiftY * 127));
-          let blueChannel  = 128;
-
-          let index = (y * w + x) * 4;
-          data[index]     = redChannel;
-          data[index + 1] = greenChannel;
-          data[index + 2] = blueChannel;
-          data[index + 3] = 255;
         }
-      }
 
-      ctx.putImageData(imgData, 0, 0);
+        ctx.putImageData(imgData, 0, 0);
+        const dataUrl = canvas.toDataURL('image/png');
 
-      // Przekazujemy wygenerowany canvas bezpośrednio do filtru SVG jako Base64
-      const dataUrl = canvas.toDataURL('image/png');
-      document.getElementById('svg-map-image.href', dataUrl); // Dla kompatybilności
-      document.getElementById('svg-map-image').setAttribute('href', dataUrl);
+        // 3. Tworzenie unikalnego filtru SVG dla tej karty
+        const filterId = `glass-lens-${index}`;
+        const filterEl = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+        filterEl.setAttribute('id', filterId);
+        filterEl.setAttribute('x', '0%');
+        filterEl.setAttribute('y', '0%');
+        filterEl.setAttribute('width', '100%');
+        filterEl.setAttribute('height', '100%');
+        filterEl.setAttribute('filterUnits', 'objectBoundingBox');
+
+        filterEl.innerHTML = `
+          <feImage href="${dataUrl}" result="displacementMap" preserveAspectRatio="none" />
+          <feDisplacementMap in="SourceGraphic" in2="displacementMap" scale="30" xChannelSelector="R" yChannelSelector="G" />
+        `;
+        svgContainer.appendChild(filterEl);
+
+        // 4. Przypisanie filtra do danej karty w stylach inline
+        card.style.setProperty('--glass-filter-ref', `url(#${filterId})`);
+      });
     }
 
-    initGlassEffect();
-  </script>
-
+    window.addEventListener('load', updateCornerAnglesAndRefraction);
+    window.addEventListener('resize', updateCornerAnglesAndRefraction);
+  </script>  
 </body>
 </html>
