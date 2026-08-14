@@ -6,17 +6,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
+  /* --- Globalne ustawienia --- */
   html, body {
     margin: 0;
     background-color: #f0f0f0;
     font-family: 'Inter', Arial, sans-serif;
   }
+
   .content-wrapper {
     max-width: 1400px;
     margin: 0 auto;
     background-color: white;
     position: relative;
   }
+
+  /* --- Sekcja hero --- */
   .hero {
     position: relative;
     display: flex;
@@ -26,6 +30,7 @@
     padding-bottom: 240px;
     overflow: hidden;
   }
+
   .hero-grid-overlay {
     position: absolute;
     top: 50%;
@@ -36,15 +41,16 @@
     z-index: 0;
     pointer-events: none;
   }
+
   .corner-note {
     position: absolute;
     top: 4vh;
     left: 4vw;
     font-size: 20px;
-    font-family: 'Inter', Arial, sans-serif;
     color: black;
     z-index: 1;
   }
+
   .contact-button {
     position: absolute;
     top: 4vh;
@@ -53,13 +59,13 @@
     background-color: white;
     border: 2px solid black;
     border-radius: 8px;
-    font-family: 'Inter', Arial, sans-serif;
     font-size: 16px;
     font-weight: 500;
-    cursor: pointer;
     color: black;
+    cursor: pointer;
     z-index: 1;
   }
+
   .headline-row {
     display: flex;
     align-items: center;
@@ -69,12 +75,13 @@
     position: relative;
     z-index: 1;
   }
+
   .laurel {
     width: 40px;
     flex-shrink: 0;
   }
+
   h1 {
-    font-family: 'Inter', Arial, sans-serif;
     font-size: 40px;
     font-weight: 600;
     line-height: 1.22;
@@ -82,10 +89,10 @@
     text-align: center;
     margin: 0;
   }
+
   .subtitle {
     max-width: 950px;
     margin-top: 30px;
-    font-family: 'Inter', Arial, sans-serif;
     font-size: 20px;
     font-weight: 400;
     line-height: 1.5;
@@ -94,28 +101,31 @@
     position: relative;
     z-index: 1;
   }
+
+  /* --- Sekcja "Profil ucznia" --- */
   .profile-section {
     padding: 80px 20px;
     text-align: center;
-    font-family: 'Inter', Arial, sans-serif;
     box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.15);
     position: relative;
   }
+
   .profile-section h2 {
-    font-family: 'Inter', Arial, sans-serif;
     font-size: 36px;
     font-weight: 600;
     margin: 0;
   }
+
   .profile-section p {
     padding: 15px;
     max-width: 750px;
     margin: 0 auto;
-    font-family: 'Inter', Arial, sans-serif;
     font-size: 20px;
     line-height: 1.5;
     color: #333;
   }
+
+  /* --- Sekcja "Format korepetycji" --- */
   .format-section {
     background-color: #663737;
     color: white;
@@ -129,6 +139,7 @@
     overflow: hidden;
     position: relative;
   }
+
   .format-grid-overlay {
     position: absolute;
     top: 0;
@@ -139,20 +150,23 @@
     z-index: 0;
     pointer-events: none;
   }
+
   .format-content {
     flex: 1;
     position: relative;
     z-index: 1;
   }
+
   .format-content h2 {
-    font-family: 'Inter', Arial, sans-serif;
     font-size: 36px;
     font-weight: 500;
     margin: 0 0 20px 0;
   }
+
   .format-item {
     margin-bottom: 50px;
   }
+
   .format-item-title {
     display: flex;
     align-items: center;
@@ -161,33 +175,37 @@
     font-weight: 500;
     margin-bottom: 8px;
   }
+
   .format-item-title .icon {
     width: 30px;
     height: 30px;
     margin-right: 5px;
   }
+
   .format-item p {
-    margin: 0;
+    margin: 0 0 30px 0;
     font-size: 20px;
-    font-weight: 400px;
+    font-weight: 400;
     line-height: 1.5;
     color: #d8cfce;
-    margin-bottom: 30px;
   }
 </style>
 </head>
 <body>
   <div class="content-wrapper">
+
     <div class="hero">
       <img src="siatka_czerwona_wektor.svg" alt="" class="hero-grid-overlay">
 
       <div class="corner-note">Krzysztof Gil</div>
       <button class="contact-button">Kontakt</button>
+
       <div class="headline-row">
         <img src="laura_lewy_wektor.svg" alt="" class="laurel">
         <h1>Matematyka rozszerzona online<br>Z wynikiem 100% z matury</h1>
         <img src="laura_prawy_wektor.svg" alt="" class="laurel">
       </div>
+
       <p class="subtitle">Cześć! Jestem studentem pierwszego roku Lotnictwa i Kosmonautyki na Politechnice Warszawskiej i pomogę Ci dostać się na wymarzony kierunek.</p>
     </div>
 
@@ -219,6 +237,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </body>
 </html>
