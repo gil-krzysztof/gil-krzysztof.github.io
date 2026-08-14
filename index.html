@@ -167,12 +167,12 @@
     overflow: hidden;
     isolation: isolate;
 
-    /* Bardzo delikatny odcień szkła (bez rozjaśniania) */
-    background: rgba(255, 255, 255, 0);
+    /* Brak dodatkowego rozjaśniania */
+    background: rgba(255, 255, 255, 0.02);
 
-    /* Efekt powiększenia lupy bez rozjaśniania */
-    -webkit-backdrop-filter: url(#magnifier-filter);
-    backdrop-filter: url(#magnifier-filter);
+    /* Efekt powiększenia z zakrzywianiem na krawędziach */
+    -webkit-backdrop-filter: url(#magnifier-refraction-filter);
+    backdrop-filter: url(#magnifier-refraction-filter);
 
     --rim-thickness: 2.5px;
     --rim-blur: 0.5px;
@@ -329,17 +329,30 @@
 
   </div>
 
-  <!-- FILTR SVG DLA LUPY I DELIKATNEGO ZAŁAMANIA OCB -->
+  <!-- FILTR SVG Z REFRAKCJĄ NA KRAWĘDZIACH I POWIĘKSZENIEM -->
   <svg style="display: none;">
     <defs>
-      <filter id="magnifier-filter" x="-20%" y="-20%" width="140%" height="140%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.005" numOctaves="1" result="noise" />
+      <!-- Mapa zakrzywiania krawędzi (soczewka) -->
+      <radialGradient id="edge-lens-map">
+        <stop offset="0%" stop-color="#808080" />
+        <stop offset="70%" stop-color="#808080" />
+        <stop offset="95%" stop-color="#ffffff" />
+        <stop offset="100%" stop-color="#000000" />
+      </radialGradient>
+      
+      <filter id="magnifier-refraction-filter" x="-20%" y="-20%" width="140%" height="140%">
+        <!-- Delikatny szum szklany -->
+        <feTurbulence type="fractalNoise" baseFrequency="0.004" numOctaves="1" result="noise" />
         <feComponentTransfer result="displacement">
           <feFuncR type="linear" slope="0.03" />
           <feFuncG type="linear" slope="0.03" />
         </feComponentTransfer>
-        <!-- Parametr scale="16" odpowiada za mocniejsze powiększenie tła -->
-        <feDisplacementMap in="SourceGraphic" in2="displacement" scale="16" xChannelSelector="R" yChannelSelector="G" />
+        
+        <!-- Powiększenie podstawowe -->
+        <feDisplacementMap in="SourceGraphic" in2="displacement" scale="14" xChannelSelector="R" yChannelSelector="G" result="magnified" />
+        
+        <!-- Dalsze ugięcie światła (refrakcja) blisko krawędzi -->
+        <feDisplacementMap in="magnified" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
       </filter>
     </defs>
   </svg>
