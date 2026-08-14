@@ -8,7 +8,16 @@
   html, body {
     margin: 0;
     padding: 0;
-    background-color: #111;
+    /* Tło w delikatną kratkę */
+    background-color: #161616;
+    background-image: 
+      linear-gradient(45deg, #1f1f1f 25%, transparent 25%), 
+      linear-gradient(-45deg, #1f1f1f 25%, transparent 25%), 
+      linear-gradient(45deg, transparent 75%, #1f1f1f 75%), 
+      linear-gradient(-45deg, transparent 75%, #1f1f1f 75%);
+    background-size: 40px 40px;
+    background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -16,18 +25,16 @@
   }
 
   canvas {
-    /* Możesz tutaj zmienić rozmiar wyświetlania w CSS, 
-       a mapa dopasuje się do atrybutów width/height w HTML */
     width: 400px;
     height: 300px;
     border-radius: 40px;
     background-color: #808080;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
 </style>
 </head>
 <body>
 
-  <!-- Zmieniając te atrybutach width i height, mapa przeliczy się na nową rozdzielczość -->
   <canvas id="mapCanvas" width="400" height="250"></canvas>
 
   <script>
@@ -35,14 +42,12 @@
       const canvas = document.getElementById('mapCanvas');
       const ctx = canvas.getContext('2d');
       
-      // Pobieramy aktualne wymiary z canvasu
       const w = canvas.width;
       const h = canvas.height;
       
       const imgData = ctx.createImageData(w, h);
       const data = imgData.data;
 
-      // Sztywny, niezmienny promień rogów (zawsze 40px)
       const cornerRadius = 40; 
       const rimWidth = 40;     
 
