@@ -3,151 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poprawiona Mapa Refrakcji Karty</title>
+<title>Responsywny Szklany Efekt SVG</title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
-    background-color: #1a1a1a;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* Kontener testowy z siatką w tle, żeby było widać refrakcję */
+  .bg-grid {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    height: 450px;
+    background-image: 
+      radial-gradient(circle, rgba(255,255,255,0.15) 2px, transparent 2px),
+      linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    overflow: hidden;
+  }
+
+  /* Szklana karta responsywna */
+  .glass-card {
+    width: 60%;
+    height: 60%;
+    min-width: 280px;
+    min-height: 180px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 40px; /* Zgodne z Twoim promieniem rogów */
+    backdrop-filter: url(#glass-lens) blur(0px); /* Użycie filtra refrakcji wektorowej */
+    -webkit-backdrop-filter: url(#glass-lens) blur(0px);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.4),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+      0 15px 35px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-  }
-
-  .container {
+    color: white;
+    padding: 20px;
     text-align: center;
-    background: #2a2a2a;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
   }
 
-  h1 {
-    font-size: 20px;
-    margin-bottom: 10px;
+  .glass-card h2 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
   }
 
-  p {
-    color: #b0b0b0;
+  .glass-card p {
+    margin: 0;
     font-size: 14px;
-    max-width: 450px;
-    margin: 0 auto 20px auto;
-    line-height: 1.4;
-  }
-
-  canvas {
-    border: 2px solid #444;
-    border-radius: 40px; /* Wizualne dopasowanie podglądu do rogów karty */
-    background-color: #808080;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
   }
 </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Poprawiona Mapa Dyspersji</h1>
-    <p>Teraz zaokrąglenia rogów idealnie pokrywają się z promieniem 40px Twoich kart, tworząc gładką ramkę soczewkową.</p>
-    
-    <canvas id="mapCanvas" width="400" height="250"></canvas>
+  <!-- Ukryta definicja wektorowego filtra SVG -->
+  <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+    <filter id="glass-lens" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+      
+      <!-- Krok 1: Generujemy wewnętrzną mapę gradientową na bazie obiektowej przestrzeni -->
+      <feImage href="#lens-gradient" result="map" preserveAspectRatio="none" />
+      
+      <!-- Krok 2: Używamy mapy do fizycznego zniekształcenia pikseli tła (skala określa głębię soczewki) -->
+      <feDisplacementMap in="SourceGraphic" in2="map" scale="25" xChannelSelector="R" yChannelSelector="G" result="refracted" />
+      
+      <!-- Krok 3: Dodanie delikatnego podbicia kontrastu/koloru -->
+      <feComposite in="refracted" in2="SourceAlpha" operator="in" />
+    </filter>
+
+    <!-- Wektorowy wzorzec mapy refrakcji dopasowujący się automatycznie do proporcji elementu -->
+    <linearGradient id="g-horiz" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff0000" />    <!-- Przesunięcie w lewo/prawo -->
+      <stop offset="5%" stop-color="#808080" />
+      <stop offset="95%" stop-color="#808080" />
+      <stop offset="100%" stop-color="#ff0000" />
+    </linearGradient>
+  </svg>
+
+  <div class="bg-grid">
+    <div class="glass-card">
+      <h2>Krzysztof</h2>
+      <p>W 100% responsywna szklana karta z filtrem wektorowym SVG</p>
+    </div>
   </div>
-
-  <script>
-    function generateCorrectedMap() {
-      const canvas = document.getElementById('mapCanvas');
-      const ctx = canvas.getContext('2d');
-      
-      const w = canvas.width;
-      const h = canvas.height;
-      
-      const imgData = ctx.createImageData(w, h);
-      const data = imgData.data;
-
-      const cornerRadius = 40; 
-      const rimWidth = 30;     
-
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          
-          // 1. Określamy strefy dla rogów i krawędzi
-          let leftBound = cornerRadius;
-          let rightBound = w - cornerRadius;
-          let topBound = cornerRadius;
-          let bottomBound = h - cornerRadius;
-
-          let distFromEdge = 0;
-          let nx = 0, ny = 0;
-
-          // Sprawdzamy, czy piksel jest w jednym z 4 rogów
-          let isTopLeft = x < leftBound && y < topBound;
-          let isTopRight = x > rightBound && y < topBound;
-          let isBottomLeft = x < leftBound && y > bottomBound;
-          let isBottomRight = x > rightBound && y > bottomBound;
-
-          if (isTopLeft || isTopRight || isBottomLeft || isBottomRight) {
-            // Logika dla rogów (promień łuku)
-            let cx = isTopLeft || isBottomLeft ? leftBound : rightBound;
-            let cy = isTopLeft || isTopRight ? topBound : bottomBound;
-            
-            let dx = x - cx;
-            let dy = y - cy;
-            let distFromCenter = Math.sqrt(dx * dx + dy * dy);
-            
-            distFromEdge = cornerRadius - distFromCenter;
-            
-            if (distFromCenter > 0) {
-              nx = dx / distFromCenter;
-              ny = dy / distFromCenter;
-            }
-          } else {
-            // Logika dla prostych krawędzi (góra, dół, lewo, prawo)
-            let distLeft = x;
-            let distRight = w - x;
-            let distTop = y;
-            let distBottom = h - y;
-
-            let minDist = Math.min(distLeft, distRight, distTop, distBottom);
-            distFromEdge = minDist;
-
-            if (minDist === distLeft) { nx = 1; ny = 0; }
-            else if (minDist === distRight) { nx = -1; ny = 0; }
-            else if (minDist === distTop) { nx = 0; ny = 1; }
-            else if (minDist === distBottom) { nx = 0; ny = -1; }
-          }
-
-          let shiftX = 0;
-          let shiftY = 0;
-
-          // 2. Profil soczewki w pasie krawędziowym
-          if (distFromEdge >= 0 && distFromEdge <= rimWidth) {
-            let normalized = distFromEdge / rimWidth; // Od 0 (zewnętrzny brzeg) do 1 (wnętrze)
-            let lens = Math.sin(normalized * Math.PI); // Płynna fala wypukłości
-
-            shiftX = nx * lens;
-            shiftY = ny * lens;
-          }
-
-          // 3. Mapowanie na kanały RGB (128 to neutralna szarość)
-          let red   = Math.min(255, Math.max(0, 128 + shiftX * 127));
-          let green = Math.min(255, Math.max(0, 128 + shiftY * 127));
-          let blue  = 128;
-
-          let index = (y * w + x) * 4;
-          data[index]     = red;
-          data[index + 1] = green;
-          data[index + 2] = blue;
-          data[index + 3] = 255;
-        }
-      }
-
-      ctx.putImageData(imgData, 0, 0);
-    }
-
-    generateCorrectedMap();
-  </script>
 
 </body>
 </html>
