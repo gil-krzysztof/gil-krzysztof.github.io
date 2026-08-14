@@ -157,37 +157,36 @@
 .format-card {
   flex: 1;
   position: relative;
-  background: rgba(255, 255, 255, 0.10);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
   padding: 25px;
   box-sizing: border-box;
   overflow: hidden;
 
-  /* Rozmycie i lekkie "gięcie" tła pod kartą */
-  backdrop-filter: blur(6px) saturate(140%) contrast(1.05);
-  -webkit-backdrop-filter: blur(6px) saturate(140%) contrast(1.05);
+  backdrop-filter: blur(14px) saturate(110%);
+  -webkit-backdrop-filter: blur(14px) saturate(110%);
 
-  /* Cień rzucany przez kartę (X:10 Y:10 Blur:30 Spread:0 kolor #000 25%) */
-  box-shadow: 10px 10px 30px 0px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    10px 10px 30px 0px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.03);
 }
 
-/* Symulacja światła padającego pod kątem -45° (górny-lewy róg) */
 .format-card::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 60%;
+  height: 2px;
   background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.18) 0%,
-    rgba(255, 255, 255, 0.05) 40%,
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 30%,
     rgba(255, 255, 255, 0) 70%
   );
   pointer-events: none;
-  border-radius: 12px 12px 0 0;
 }
 
   .format-item-title {
