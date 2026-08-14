@@ -154,20 +154,22 @@
     z-index: 1;
   }
 
-  /* Karta - bazowe style wizualne (kolor, tekst).
-     Prawdziwy efekt szkła (backdrop-filter: url(#...)) dokłada JS na dole strony,
-     bo wymaga wygenerowania unikalnego filtra SVG dopasowanego do rozmiaru karty. */
+  /* Karta - kształt i rozmiar. Sam efekt szkła (wypukły brzeg, refrakcja,
+     rozmycie, cień) dokłada biblioteka liquidGL (patrz <script> na dole strony) -
+     dlatego nie ma tu już ręcznego background/box-shadow/backdrop-filter. */
   .format-card {
     flex: 1;
     position: relative;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 12px;
-    padding: 25px;
     box-sizing: border-box;
-    box-shadow:
-      10px 10px 30px 0px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  /* Treść wewnątrz karty - liquidGL renderuje efekt szkła NA .format-card,
+     więc tekst musi być w osobnym, wewnętrznym elemencie nad warstwą szkła. */
+  .format-card .content {
+    position: relative;
+    z-index: 3; /* nad soczewką, zgodnie z zaleceniem biblioteki */
+    padding: 25px;
   }
 
   .format-item-title {
@@ -221,19 +223,25 @@
       <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
 
       <div class="format-cards">
-        <div class="format-card" data-liquid-glass>
-          <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
-          <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
+        <div class="format-card liquidGL">
+          <div class="content">
+            <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
+            <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
+          </div>
         </div>
 
-        <div class="format-card" data-liquid-glass>
-          <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
-          <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
+        <div class="format-card liquidGL">
+          <div class="content">
+            <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
+            <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
+          </div>
         </div>
 
-        <div class="format-card" data-liquid-glass>
-          <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
-          <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
+        <div class="format-card liquidGL">
+          <div class="content">
+            <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
+            <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -241,171 +249,28 @@
   </div>
 
   <!--
-    Efekt liquid glass (prawdziwa refrakcja przez SVG feDisplacementMap),
-    zaadaptowany z https://github.com/shuding/liquid-glass
-    Oryginał tworzy JEDEN, przeciągany myszką dymek doczepiony do <body>.
-    Poniższa wersja: tworzy STATYCZNY filtr SVG dla KAŻDEJ karty .format-card,
-    dopasowany do jej własnej szerokości/wysokości, bez logiki przeciągania.
+    Efekt liquid glass - biblioteka liquidGL (https://github.com/naughtyduk/liquidGL)
+    Renderuje szkło w WebGL, z równomiernie zaokrąglonym, wypukłym brzegiem
+    (opcja bevelWidth) na całym obwodzie każdej karty, dopasowanym automatycznie
+    do border-radius elementu.
   -->
+  <script src="https://cdn.jsdelivr.net/gh/naughtyduk/liquidGL@main/scripts/liquidGL.js" defer></script>
   <script>
-  (function () {
-    'use strict';
-
-    function smoothStep(a, b, t) {
-      t = Math.max(0, Math.min(1, (t - a) / (b - a)));
-      return t * t * (3 - 2 * t);
-    }
-
-    function length(x, y) {
-      return Math.sqrt(x * x + y * y);
-    }
-
-    // Kształt karty (zaokrąglony prostokąt) opisany jako "signed distance field" -
-    // mówi, jak daleko dany punkt jest od krawędzi karty. Na tej podstawie
-    // liczymy, jak bardzo "wygiąć" (przesunąć) piksele tła pod danym miejscem.
-    function roundedRectSDF(x, y, width, height, radius) {
-      const qx = Math.abs(x) - width + radius;
-      const qy = Math.abs(y) - height + radius;
-      return Math.min(Math.max(qx, qy), 0) + length(Math.max(qx, 0), Math.max(qy, 0)) - radius;
-    }
-
-    function generateId() {
-      return 'liquid-glass-' + Math.random().toString(36).slice(2, 9);
-    }
-
-    // Promień zaokrąglenia karty w pikselach - MUSI pasować do border-radius w CSS (.format-card)
-    const CARD_RADIUS = 12;
-    // Jak szeroki jest "wypukły brzeg" soczewki (w pikselach, licząc od krawędzi karty do środka)
-    const BEZEL_WIDTH = 22;
-    // Siła załamania - większa wartość = mocniejsze wygięcie
-    const REFRACTION_STRENGTH = 14;
-
-    // Wysokość "kopuły" szkła w danym punkcie karty (0 = płasko, 1 = szczyt wybrzuszenia).
-    // Liczona na podstawie odległości od NAJBLIŻSZEJ krawędzi (zaokrąglonego prostokąta),
-    // więc wybrzuszenie jest identyczne na prostych bokach i w rogach - to jest klucz
-    // do efektu "soczewki dookoła", a nie tylko w narożnikach.
-    function bezelHeight(px, py, width, height, radius, bezel) {
-      const x = px - width / 2;
-      const y = py - height / 2;
-      // Odległość od krawędzi zaokrąglonego prostokąta (ujemna = wewnątrz kształtu)
-      const dist = roundedRectSDF(x, y, width / 2, height / 2, radius);
-      // Interesuje nas tylko pas o szerokości `bezel` tuż przy krawędzi, od wewnątrz
-      const t = smoothStep(0, -bezel, dist);
-      // Profil kopuły: płynne wzniesienie i opadnięcie (a nie ostry stożek)
-      return Math.sin(t * Math.PI * 0.5);
-    }
-
-    // Buduje mapę przesunięcia na podstawie GRADIENTU mapy wysokości (czyli kierunku,
-    // w który "opada" powierzchnia szkła w danym punkcie) - to symuluje załamanie
-    // światła jak w prawdziwej soczewce, równomiernie na całym obwodzie karty.
-    function applyLiquidGlass(card) {
-      const rect = card.getBoundingClientRect();
-      const width = Math.round(rect.width);
-      const height = Math.round(rect.height);
-      if (width === 0 || height === 0) return;
-
-      const id = generateId();
-      const radius = CARD_RADIUS;
-      const bezel = BEZEL_WIDTH;
-
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-
-      const data = new Uint8ClampedArray(width * height * 4);
-      let maxScale = 0;
-      const rawValues = [];
-      const step = 1; // krok próbkowania gradientu (w px)
-
-      for (let i = 0; i < data.length; i += 4) {
-        const px = (i / 4) % width;
-        const py = Math.floor(i / 4 / width);
-
-        // Gradient liczony numerycznie: różnica wysokości szkła tuż obok punktu
-        const hL = bezelHeight(px - step, py, width, height, radius, bezel);
-        const hR = bezelHeight(px + step, py, width, height, radius, bezel);
-        const hT = bezelHeight(px, py - step, width, height, radius, bezel);
-        const hB = bezelHeight(px, py + step, width, height, radius, bezel);
-
-        const gradX = (hR - hL) / (2 * step);
-        const gradY = (hB - hT) / (2 * step);
-
-        // Przesunięcie proporcjonalne do nachylenia "powierzchni szkła" w tym punkcie
-        const dx = -gradX * REFRACTION_STRENGTH * bezel;
-        const dy = -gradY * REFRACTION_STRENGTH * bezel;
-
-        maxScale = Math.max(maxScale, Math.abs(dx), Math.abs(dy));
-        rawValues.push(dx, dy);
-      }
-
-      maxScale = Math.max(maxScale, 1);
-
-      let index = 0;
-      for (let i = 0; i < data.length; i += 4) {
-        const r = rawValues[index++] / maxScale + 0.5;
-        const g = rawValues[index++] / maxScale + 0.5;
-        data[i] = r * 255;
-        data[i + 1] = g * 255;
-        data[i + 2] = 0;
-        data[i + 3] = 255;
-      }
-
-      ctx.putImageData(new ImageData(data, width, height), 0, 0);
-
-      // Tworzymy filtr SVG odwołujący się do wygenerowanej mapy
-      const svgNS = 'http://www.w3.org/2000/svg';
-      const svg = document.createElementNS(svgNS, 'svg');
-      svg.setAttribute('width', '0');
-      svg.setAttribute('height', '0');
-      svg.style.position = 'absolute';
-
-      const defs = document.createElementNS(svgNS, 'defs');
-      const filter = document.createElementNS(svgNS, 'filter');
-      filter.setAttribute('id', id + '_filter');
-      filter.setAttribute('filterUnits', 'userSpaceOnUse');
-      filter.setAttribute('colorInterpolationFilters', 'sRGB');
-      filter.setAttribute('x', '0');
-      filter.setAttribute('y', '0');
-      filter.setAttribute('width', width);
-      filter.setAttribute('height', height);
-
-      const feImage = document.createElementNS(svgNS, 'feImage');
-      feImage.setAttribute('width', width);
-      feImage.setAttribute('height', height);
-      feImage.setAttributeNS('http://www.w3.org/1999/xlink', 'href', canvas.toDataURL());
-
-      const feDisplacementMap = document.createElementNS(svgNS, 'feDisplacementMap');
-      feDisplacementMap.setAttribute('in', 'SourceGraphic');
-      feDisplacementMap.setAttribute('in2', id + '_map');
-      feDisplacementMap.setAttribute('xChannelSelector', 'R');
-      feDisplacementMap.setAttribute('yChannelSelector', 'G');
-      feDisplacementMap.setAttribute('scale', maxScale.toString());
-
-      feImage.setAttribute('id', id + '_map');
-
-      filter.appendChild(feImage);
-      filter.appendChild(feDisplacementMap);
-      defs.appendChild(filter);
-      svg.appendChild(defs);
-      document.body.appendChild(svg);
-
-      // Podpinamy filtr do backdrop-filter karty, razem z lekkim blurem/kontrastem
-      card.style.backdropFilter = `url(#${id}_filter) blur(1px) saturate(115%)`;
-      card.style.webkitBackdropFilter = `url(#${id}_filter) blur(1px) saturate(115%)`;
-    }
-
-    function init() {
-      const cards = document.querySelectorAll('[data-liquid-glass]');
-      cards.forEach(applyLiquidGlass);
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
-  })();
+    document.addEventListener("DOMContentLoaded", () => {
+      liquidGL({
+        snapshot: ".format-section",
+        target: ".liquidGL",
+        resolution: 2.0,
+        refraction: 0.015,
+        bevelDepth: 0.09,
+        bevelWidth: 0.18,
+        frost: 1,
+        shadow: true,
+        specular: true,
+        reveal: "none",
+      });
+    });
   </script>
+
 </body>
 </html>
