@@ -125,7 +125,7 @@
     color: #333;
   }
 
-  /* --- Sekcja "Format korepetycji" (karty liquid glass) --- */
+  /* --- Sekcja "Format korepetycji" (karty szklane) --- */
   .format-section {
     background-color: #663737;
     color: white;
@@ -154,24 +154,54 @@
     z-index: 1;
   }
 
-  /* Karta - kształt i rozmiar. Sam efekt szkła (wypukły brzeg, refrakcja,
-     rozmycie, cień) dokłada biblioteka liquidGL (patrz <script> na dole strony) -
-     dlatego nie ma tu już ręcznego background/box-shadow/backdrop-filter. */
-  .format-card {
-    flex: 1;
-    position: relative;
-    border-radius: 12px;
-    box-sizing: border-box;
-  }
+.format-card {
+  flex: 1;
+  position: relative;
+  background: rgba(255, 255, 255, 0.05); /* zmniejszone z 0.10 */
+  border: 1px solid rgba(255, 255, 255, 0.10); /* zmniejszone z 0.18 */
+  border-radius: 12px;
+  padding: 25px;
+  box-sizing: border-box;
 
-  /* Treść wewnątrz karty - liquidGL renderuje efekt szkła NA .format-card,
-     więc tekst musi być w osobnym, wewnętrznym elemencie nad warstwą szkła. */
-  .format-card .content {
-    position: relative;
-    z-index: 3; /* nad soczewką, zgodnie z zaleceniem biblioteki */
-    padding: 25px;
-  }
+  backdrop-filter: blur(1.5px) saturate(130%);
+  -webkit-backdrop-filter: blur(1.5px) saturate(130%);
 
+  box-shadow:
+    10px 10px 30px 0px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1), /* zmniejszone z 0.2 */
+    inset 0 0 20px rgba(255, 255, 255, 0.02); /* zmniejszone z 0.03 */
+}
+
+.format-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 30%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+}
+.format-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 30%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+}
   .format-item-title {
     display: flex;
     align-items: center;
@@ -223,54 +253,23 @@
       <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
 
       <div class="format-cards">
-        <div class="format-card liquidGL">
-          <div class="content">
-            <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
-            <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
-          </div>
+        <div class="format-card">
+          <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
+          <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
         </div>
 
-        <div class="format-card liquidGL">
-          <div class="content">
-            <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
-            <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
-          </div>
+        <div class="format-card">
+          <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
+          <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
         </div>
 
-        <div class="format-card liquidGL">
-          <div class="content">
-            <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
-            <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
-          </div>
+        <div class="format-card">
+          <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
+          <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
         </div>
       </div>
     </div>
 
   </div>
-
-  <!--
-    Efekt liquid glass - biblioteka liquidGL (https://github.com/naughtyduk/liquidGL)
-    Renderuje szkło w WebGL, z równomiernie zaokrąglonym, wypukłym brzegiem
-    (opcja bevelWidth) na całym obwodzie każdej karty, dopasowanym automatycznie
-    do border-radius elementu.
-  -->
-  <script src="https://cdn.jsdelivr.net/gh/naughtyduk/liquidGL@main/scripts/liquidGL.js" defer></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      liquidGL({
-        snapshot: ".format-section",
-        target: ".liquidGL",
-        resolution: 2.0,
-        refraction: 0.015,
-        bevelDepth: 0.09,
-        bevelWidth: 0.18,
-        frost: 1,
-        shadow: true,
-        specular: true,
-        reveal: "none",
-      });
-    });
-  </script>
-
 </body>
 </html>
