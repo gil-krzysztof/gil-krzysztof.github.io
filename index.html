@@ -167,9 +167,10 @@
     overflow: hidden;
     isolation: isolate;
 
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0);
     border: 1px solid rgba(255, 255, 255, 0.3);
 
+    /* Dynamiczne przypisanie filtru refrakcji zdefiniowanego w locie przez JS */
     backdrop-filter: var(--glass-filter-ref);
     -webkit-backdrop-filter: var(--glass-filter-ref);
 
@@ -327,6 +328,7 @@
 
   </div>
 
+  <!-- Dynamicznie generowane filtry SVG dla poszczególnych kart osadzone będą tutaj -->
   <svg id="svg-filters-container" style="position: absolute; width: 0; height: 0;" aria-hidden="true"></svg>
 
   <script>
@@ -334,6 +336,7 @@
       const cards = document.querySelectorAll('.format-card');
       const svgContainer = document.getElementById('svg-filters-container');
       
+      // Wyczyszczenie starych filtrów SVG
       svgContainer.innerHTML = '';
 
       cards.forEach((card, index) => {
@@ -341,9 +344,11 @@
         const h = card.offsetHeight;
         if (w === 0 || h === 0) return;
 
+        // 1. Kąt narożnika do gradientu obramowania
         const angle = Math.atan2(w, h) * (180 / Math.PI);
         card.style.setProperty('--corner-angle', angle + 'deg');
 
+        // 2. Generowanie mapy refrakcji (fizyka soczewki) dla dokładnych wymiarów karty
         const canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
@@ -352,31 +357,41 @@
         const imgData = ctx.createImageData(w, h);
         const data = imgData.data;
 
-        const centerX = w / 2;
-        const centerY = h / 2;
-        const maxRadius = Math.sqrt(centerX * centerX + centerY * centerY);
+        const cornerRadius = 40; 
+        const rimWidth = 60;     
 
         for (let y = 0; y < h; y++) {
           for (let x = 0; x < w; x++) {
-            const dx = x - centerX;
-            const dy = y - centerY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            let qx = Math.abs(x - w / 2) - (w / 2 - cornerRadius);
+            let qy = Math.abs(y - h / 2) - (h / 2 - cornerRadius);
+            
+            let distCorner = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2);
+            let distEdge = distCorner + Math.min(Math.max(qx, qy), 0) - cornerRadius;
+            let depthFromBorder = -distEdge;
 
             let shiftX = 0;
             let shiftY = 0;
 
-            if (dist < maxRadius && dist > 0) {
-              // Profil soczewki wypukłej: najsilniejsze zagięcie i rozpychanie od środka na zewnątrz
-              const norm = dist / maxRadius;
-              const intensity = Math.sin(norm * Math.PI) * 1.5;
+            if (depthFromBorder >= 0 && depthFromBorder <= rimWidth) {
+              let normalizedDist = depthFromBorder / rimWidth;
+              let lensProfile = Math.sin(normalizedDist * Math.PI) * (1 - normalizedDist);
 
-              shiftX = (dx / dist) * intensity * 30;
-              shiftY = (dy / dist) * intensity * 30;
+              let nx = 0, ny = 0;
+              if (qx > 0 || qy > 0) {
+                let len = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) || 1;
+                nx = (Math.max(qx, 0) / len) * Math.sign(x - w / 2);
+                ny = (Math.max(qy, 0) / len) * Math.sign(y - h / 2);
+              } else {
+                if (qx > qy) nx = Math.sign(x - w / 2);
+                else ny = Math.sign(y - h / 2);
+              }
+
+              shiftX = nx * lensProfile;
+              shiftY = ny * lensProfile;
             }
 
-            // Mapowanie kanałów RGB (128 to punkt zero dla feDisplacementMap)
-            let redChannel   = Math.min(255, Math.max(0, 128 + shiftX * 2));
-            let greenChannel = Math.min(255, Math.max(0, 128 + shiftY * 2));
+            let redChannel   = Math.min(255, Math.max(0, 128 + shiftX * 127));
+            let greenChannel = Math.min(255, Math.max(0, 128 + shiftY * 127));
             let blueChannel  = 128;
 
             let pixelIndex = (y * w + x) * 4;
@@ -390,6 +405,7 @@
         ctx.putImageData(imgData, 0, 0);
         const dataUrl = canvas.toDataURL('image/png');
 
+        // 3. Tworzenie unikalnego filtru SVG dla tej karty
         const filterId = `glass-lens-${index}`;
         const filterEl = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
         filterEl.setAttribute('id', filterId);
@@ -401,17 +417,16 @@
 
         filterEl.innerHTML = `
           <feImage href="${dataUrl}" result="displacementMap" preserveAspectRatio="none" />
-          <feDisplacementMap in="SourceGraphic" in2="displacementMap" scale="40" xChannelSelector="R" yChannelSelector="G" />
+          <feDisplacementMap in="SourceGraphic" in2="displacementMap" scale="60" xChannelSelector="R" yChannelSelector="G" />
         `;
         svgContainer.appendChild(filterEl);
 
+        // 4. Przypisanie filtra do danej karty w stylach inline
         card.style.setProperty('--glass-filter-ref', `url(#${filterId})`);
       });
     }
 
-    window.addEventListener('load', () => {
-      setTimeout(updateCornerAnglesAndRefraction, 50);
-    });
+    window.addEventListener('load', updateCornerAnglesAndRefraction);
     window.addEventListener('resize', updateCornerAnglesAndRefraction);
   </script>  
 </body>
