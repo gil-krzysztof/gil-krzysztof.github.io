@@ -180,6 +180,32 @@
   --glow-min: rgba(255,255,255,0);
 }
 
+/* --- 1. ROZLANE ŚWIATŁO (GLOW) DO ŚRODKA KARTY --- */
+.format-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  /* Brak maski! Światło swobodnie wlewa się do środka */
+  background: conic-gradient(
+    from calc(360deg - var(--corner-angle)),
+    var(--glow-main) 0deg,
+    var(--glow-main) calc(2 * var(--corner-angle) - 10deg),
+    var(--glow-min) calc(2 * var(--corner-angle)),
+    var(--glow-mid) 190deg,
+    var(--glow-min) calc(2 * var(--corner-angle) + 180deg),
+    var(--glow-main) calc(2 * var(--corner-angle) + 190deg),
+    var(--glow-main) 360deg
+  );
+
+  /* Mocniejsza poświata i lekka przezroczystość */
+  filter: blur(16px);
+  opacity: 0.4;
+}
+
+/* --- 2. OSTRA, ZAMASKOWANA RAMKA NA KRAWĘDZI --- */
 .format-card::after {
   content: "";
   position: absolute;
@@ -188,36 +214,20 @@
   padding: var(--rim-thickness);
   filter: blur(var(--rim-blur));
 
-  background: 
-    /* EFEKT 1: Główna ramka (kąt startowy 180deg) */
-    conic-gradient(
-      from calc(180deg - var(--corner-angle)),
-      var(--rim-main) 0deg,
-      var(--rim-main) calc(2 * var(--corner-angle) - 10deg),
-      var(--rim-min) calc(2 * var(--corner-angle)),
-      var(--rim-mid) calc(2 * var(--corner-angle) + 10deg),
-      var(--rim-mid) 170deg,
-      var(--rim-max) 180deg,
-      var(--rim-mid) 190deg,
-      var(--rim-mid) calc(2 * var(--corner-angle) + 170deg),
-      var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
-      var(--rim-main) calc(2 * var(--corner-angle) + 190deg),
-      var(--rim-main) 360deg
-    ),
-    /* EFEKT 2: Dodatkowa warstwa poświaty (kąt startowy 360deg) */
-    conic-gradient(
-      from calc(360deg - var(--corner-angle)),
-      var(--glow-main) 0deg,
-      var(--glow-main) calc(2 * var(--corner-angle) - 10deg),
-      var(--glow-min) calc(2 * var(--corner-angle)),
-      var(--glow-mid) 190deg,
-      var(--glow-min) calc(2 * var(--corner-angle) + 180deg),
-      var(--glow-main) calc(2 * var(--corner-angle) + 190deg),
-      var(--glow-main) 360deg
-    );
-
-  /* Sprawia, że nakładające się światła z obu gradientów wzmacniają się nawzajem */
-  background-blend-mode: screen;
+  background: conic-gradient(
+    from calc(180deg - var(--corner-angle)),
+    var(--rim-main) 0deg,
+    var(--rim-main) calc(2 * var(--corner-angle) - 10deg),
+    var(--rim-min) calc(2 * var(--corner-angle)),
+    var(--rim-mid) calc(2 * var(--corner-angle) + 10deg),
+    var(--rim-mid) 170deg,
+    var(--rim-max) 180deg,
+    var(--rim-mid) 190deg,
+    var(--rim-mid) calc(2 * var(--corner-angle) + 170deg),
+    var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
+    var(--rim-main) calc(2 * var(--corner-angle) + 190deg),
+    var(--rim-main) 360deg
+  );
 
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
