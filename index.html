@@ -3,110 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Responsywny Szklany Efekt SVG</title>
+<title>Podgląd Mapy Refrakcji Szkła</title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-
-  /* Kontener testowy z siatką w tle, żeby było widać refrakcję */
-  .bg-grid {
-    position: relative;
-    width: 100%;
-    max-width: 700px;
-    height: 450px;
-    background-image: 
-      radial-gradient(circle, rgba(255,255,255,0.15) 2px, transparent 2px),
-      linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
-    background-size: 30px 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    overflow: hidden;
-  }
-
-  /* Szklana karta responsywna */
-  .glass-card {
-    width: 60%;
-    height: 60%;
-    min-width: 280px;
-    min-height: 180px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 40px; /* Zgodne z Twoim promieniem rogów */
-    backdrop-filter: url(#glass-lens) blur(0px); /* Użycie filtra refrakcji wektorowej */
-    -webkit-backdrop-filter: url(#glass-lens) blur(0px);
-    box-shadow: 
-      inset 0 1px 1px rgba(255, 255, 255, 0.4),
-      inset 0 -1px 2px rgba(0, 0, 0, 0.3),
-      0 15px 35px rgba(0, 0, 0, 0.3);
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: white;
-    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .container {
     text-align: center;
-    box-sizing: border-box;
+    background: #2a2a2a;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   }
 
-  .glass-card h2 {
-    margin: 0 0 10px 0;
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
   }
 
-  .glass-card p {
-    margin: 0;
+  p {
+    color: #b0b0b0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    max-width: 450px;
+    margin: 0 auto 20px auto;
+    line-height: 1.4;
+  }
+
+  canvas {
+    border: 2px solid #444;
+    border-radius: 12px;
+    background-color: #808080;
   }
 </style>
 </head>
 <body>
 
-  <!-- Ukryta definicja wektorowego filtra SVG -->
-  <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
-    <filter id="glass-lens" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
-      
-      <!-- Krok 1: Generujemy wewnętrzną mapę gradientową na bazie obiektowej przestrzeni -->
-      <feImage href="#lens-gradient" result="map" preserveAspectRatio="none" />
-      
-      <!-- Krok 2: Używamy mapy do fizycznego zniekształcenia pikseli tła (skala określa głębię soczewki) -->
-      <feDisplacementMap in="SourceGraphic" in2="map" scale="25" xChannelSelector="R" yChannelSelector="G" result="refracted" />
-      
-      <!-- Krok 3: Dodanie delikatnego podbicia kontrastu/koloru -->
-      <feComposite in="refracted" in2="SourceAlpha" operator="in" />
-    </filter>
-
-    <!-- Wektorowy wzorzec mapy refrakcji dopasowujący się automatycznie do proporcji elementu -->
-    <linearGradient id="g-horiz" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#ff0000" />    <!-- Przesunięcie w lewo/prawo -->
-      <stop offset="5%" stop-color="#808080" />
-      <stop offset="95%" stop-color="#808080" />
-      <stop offset="100%" stop-color="#ff0000" />
-    </linearGradient>
-  </svg>
-
-  <div class="bg-grid">
-    <div class="glass-card">
-      <h2>Krzysztof</h2>
-      <p>W 100% responsywna szklana karta z filtrem wektorowym SVG</p>
-    </div>
+  <div class="container">
+    <h1>Podgląd Mapy Dyspersji (Displacement Map)</h1>
+    <p>Szare tło (rgb 128, 128) oznacza brak przesunięcia. Kolorowe obrzeża na krawędziach i rogach sterują poziomym (R) i pionowym (G) zagięciem światła.</p>
+    
+    <!-- Canvas na którym generujemy mapę -->
+    <canvas id="mapCanvas" width="400" height="250"></canvas>
   </div>
+
+  <script>
+    function generateRefractionMap() {
+      const canvas = document.getElementById('mapCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      const w = canvas.width;
+      const h = canvas.height;
+      
+      const imgData = ctx.createImageData(w, h);
+      const data = imgData.data;
+
+      // Geometria karty
+      const cornerRadius = 35; // Promień zaokrąglenia rogów
+      const rimWidth = 35;     // Szerokość strefy krawędziowej (ramki soczewki)
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          
+          // Obliczanie odległości od zaokrąglonych krawędzi prostokąta
+          let qx = Math.abs(x - w / 2) - (w / 2 - cornerRadius);
+          let qy = Math.abs(y - h / 2) - (h / 2 - cornerRadius);
+          
+          let distCorner = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2);
+          let distEdge = distCorner + Math.min(Math.max(qx, qy), 0) - cornerRadius;
+          let depthFromBorder = -distEdge; // Głębokość wnikania od zewnętrznej krawędzi
+
+          let shiftX = 0;
+          let shiftY = 0;
+
+          // Działamy tylko w pasie krawędziowym
+          if (depthFromBorder >= 0 && depthFromBorder <= rimWidth) {
+            let normalizedDist = depthFromBorder / rimWidth; // 0 (brzeg) do 1 (wnętrze)
+            
+            // Profil soczewki oparty na funkcji sinus
+            let lensProfile = Math.sin(normalizedDist * Math.PI) * (1 - normalizedDist);
+
+            let nx = 0, ny = 0;
+            if (qx > 0 || qy > 0) {
+              let len = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) || 1;
+              nx = (Math.max(qx, 0) / len) * Math.sign(x - w / 2);
+              ny = (Math.max(qy, 0) / len) * Math.sign(y - h / 2);
+            } else {
+              if (qx > qy) nx = Math.sign(x - w / 2);
+              else ny = Math.sign(y - h / 2);
+            }
+
+            shiftX = nx * lensProfile;
+            shiftY = ny * lensProfile;
+          }
+
+          // Mapowanie na kanały RGB (128 to punkt neutralny)
+          let redChannel   = Math.min(255, Math.max(0, 128 + shiftX * 127));
+          let greenChannel = Math.min(255, Math.max(0, 128 + shiftY * 127));
+          let blueChannel  = 128; // Nieużywany
+
+          let index = (y * w + x) * 4;
+          data[index]     = redChannel;   // Kanał Red (Oś X)
+          data[index + 1] = greenChannel; // Kanał Green (Oś Y)
+          data[index + 2] = blueChannel;  // Kanał Blue
+          data[index + 3] = 255;          // Alpha
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    // Uruchomienie generowania po załadowaniu skryptu
+    generateRefractionMap();
+  </script>
 
 </body>
 </html>
