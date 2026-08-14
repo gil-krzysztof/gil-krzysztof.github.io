@@ -3,39 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Responsywna Mapa Refrakcji</title>
+<title>Mapa Refrakcji na Biało-Czarnej Kratce</title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
-    /* Tło w delikatną kratkę */
-    background-color: #161616;
-    background-image: 
-      linear-gradient(45deg, #1f1f1f 25%, transparent 25%), 
-      linear-gradient(-45deg, #1f1f1f 25%, transparent 25%), 
-      linear-gradient(45deg, transparent 75%, #1f1f1f 75%), 
-      linear-gradient(-45deg, transparent 75%, #1f1f1f 75%);
-    background-size: 40px 40px;
-    background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
-    
+    background-color: #111;
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
   }
 
+  .wrapper {
+    position: relative;
+    width: 500px;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    /* Stabilna biało-czarna kratka SVG jako tło */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='20' height='20' fill='%23000000'/%3E%3Crect x='20' width='20' height='20' fill='%23ffffff'/%3E%3Crect y='20' width='20' height='20' fill='%23ffffff'/%3E%3Crect x='20' y='20' width='20' height='20' fill='%23000000'/%3E%3C/svg%3E");
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  }
+
   canvas {
     width: 400px;
-    height: 300px;
+    height: 250px;
     border-radius: 40px;
     background-color: #808080;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   }
 </style>
 </head>
 <body>
 
-  <canvas id="mapCanvas" width="400" height="250"></canvas>
+  <div class="wrapper">
+    <canvas id="mapCanvas" width="400" height="250"></canvas>
+  </div>
 
   <script>
     function generateResponsiveMap() {
