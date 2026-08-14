@@ -125,7 +125,7 @@
     color: #333;
   }
 
-  /* --- Sekcja "Format korepetycji" (karty szklane) --- */
+  /* --- Sekcja "Format korepetycji" (karty liquid glass) --- */
   .format-section {
     background-color: #663737;
     color: white;
@@ -154,54 +154,22 @@
     z-index: 1;
   }
 
-.format-card {
-  flex: 1;
-  position: relative;
-  background: rgba(255, 255, 255, 0.05); /* zmniejszone z 0.10 */
-  border: 1px solid rgba(255, 255, 255, 0.10); /* zmniejszone z 0.18 */
-  border-radius: 12px;
-  padding: 25px;
-  box-sizing: border-box;
+  /* Karta - bazowe style wizualne (kolor, tekst).
+     Prawdziwy efekt szkła (backdrop-filter: url(#...)) dokłada JS na dole strony,
+     bo wymaga wygenerowania unikalnego filtra SVG dopasowanego do rozmiaru karty. */
+  .format-card {
+    flex: 1;
+    position: relative;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    padding: 25px;
+    box-sizing: border-box;
+    box-shadow:
+      10px 10px 30px 0px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
 
-  backdrop-filter: blur(1.5px) saturate(100%);
-  -webkit-backdrop-filter: blur(1.5px) saturate(100%);
-
-  box-shadow:
-    10px 10px 30px 0px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1), /* zmniejszone z 0.2 */
-    inset 0 0 20px rgba(255, 255, 255, 0.02); /* zmniejszone z 0.03 */
-}
-
-.format-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.5) 30%,
-    rgba(255, 255, 255, 0) 70%
-  );
-  pointer-events: none;
-}
-.format-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.5) 30%,
-    rgba(255, 255, 255, 0) 70%
-  );
-  pointer-events: none;
-}
   .format-item-title {
     display: flex;
     align-items: center;
@@ -253,17 +221,17 @@
       <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
 
       <div class="format-cards">
-        <div class="format-card">
+        <div class="format-card" data-liquid-glass>
           <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
           <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
         </div>
 
-        <div class="format-card">
+        <div class="format-card" data-liquid-glass>
           <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
           <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
         </div>
 
-        <div class="format-card">
+        <div class="format-card" data-liquid-glass>
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
           <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
         </div>
@@ -271,5 +239,153 @@
     </div>
 
   </div>
+
+  <!--
+    Efekt liquid glass (prawdziwa refrakcja przez SVG feDisplacementMap),
+    zaadaptowany z https://github.com/shuding/liquid-glass
+    Oryginał tworzy JEDEN, przeciągany myszką dymek doczepiony do <body>.
+    Poniższa wersja: tworzy STATYCZNY filtr SVG dla KAŻDEJ karty .format-card,
+    dopasowany do jej własnej szerokości/wysokości, bez logiki przeciągania.
+  -->
+  <script>
+  (function () {
+    'use strict';
+
+    function smoothStep(a, b, t) {
+      t = Math.max(0, Math.min(1, (t - a) / (b - a)));
+      return t * t * (3 - 2 * t);
+    }
+
+    function length(x, y) {
+      return Math.sqrt(x * x + y * y);
+    }
+
+    // Kształt karty (zaokrąglony prostokąt) opisany jako "signed distance field" -
+    // mówi, jak daleko dany punkt jest od krawędzi karty. Na tej podstawie
+    // liczymy, jak bardzo "wygiąć" (przesunąć) piksele tła pod danym miejscem.
+    function roundedRectSDF(x, y, width, height, radius) {
+      const qx = Math.abs(x) - width + radius;
+      const qy = Math.abs(y) - height + radius;
+      return Math.min(Math.max(qx, qy), 0) + length(Math.max(qx, 0), Math.max(qy, 0)) - radius;
+    }
+
+    function generateId() {
+      return 'liquid-glass-' + Math.random().toString(36).slice(2, 9);
+    }
+
+    // Buduje mapę przesunięcia (obrazek, w którym kolor R/G każdego piksela
+    // koduje "o ile przesunąć" ten piksel w poziomie/pionie) i podpina ją
+    // jako filtr SVG (feImage + feDisplacementMap) do danej karty.
+    function applyLiquidGlass(card) {
+      const rect = card.getBoundingClientRect();
+      const width = Math.round(rect.width);
+      const height = Math.round(rect.height);
+      if (width === 0 || height === 0) return;
+
+      const id = generateId();
+
+      // Ukryty canvas, na którym rysujemy mapę przesunięcia
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      const data = new Uint8ClampedArray(width * height * 4);
+      let maxScale = 0;
+      const rawValues = [];
+
+      for (let i = 0; i < data.length; i += 4) {
+        const px = (i / 4) % width;
+        const py = Math.floor(i / 4 / width);
+
+        // Współrzędne znormalizowane do środka karty (-0.5 .. 0.5)
+        const ix = px / width - 0.5;
+        const iy = py / height - 0.5;
+
+        // Odległość od krawędzi zaokrąglonego prostokąta karty
+        const distanceToEdge = roundedRectSDF(ix, iy, 0.42, 0.42, 0.15);
+
+        // Im bliżej krawędzi, tym mocniejsze "wygięcie" - efekt soczewki na brzegu
+        const displacement = smoothStep(0.55, 0, distanceToEdge - 0.12);
+        const scaled = smoothStep(0, 1, displacement);
+
+        const targetX = (ix * scaled + 0.5) * width;
+        const targetY = (iy * scaled + 0.5) * height;
+
+        const dx = targetX - px;
+        const dy = targetY - py;
+
+        maxScale = Math.max(maxScale, Math.abs(dx), Math.abs(dy));
+        rawValues.push(dx, dy);
+      }
+
+      maxScale = Math.max(maxScale * 0.6, 1); // 0.6 = siła refrakcji, mniejsza = subtelniejszy efekt
+
+      let index = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        const r = rawValues[index++] / maxScale + 0.5;
+        const g = rawValues[index++] / maxScale + 0.5;
+        data[i] = r * 255;
+        data[i + 1] = g * 255;
+        data[i + 2] = 0;
+        data[i + 3] = 255;
+      }
+
+      ctx.putImageData(new ImageData(data, width, height), 0, 0);
+
+      // Tworzymy filtr SVG odwołujący się do wygenerowanej mapy
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(svgNS, 'svg');
+      svg.setAttribute('width', '0');
+      svg.setAttribute('height', '0');
+      svg.style.position = 'absolute';
+
+      const defs = document.createElementNS(svgNS, 'defs');
+      const filter = document.createElementNS(svgNS, 'filter');
+      filter.setAttribute('id', id + '_filter');
+      filter.setAttribute('filterUnits', 'userSpaceOnUse');
+      filter.setAttribute('colorInterpolationFilters', 'sRGB');
+      filter.setAttribute('x', '0');
+      filter.setAttribute('y', '0');
+      filter.setAttribute('width', width);
+      filter.setAttribute('height', height);
+
+      const feImage = document.createElementNS(svgNS, 'feImage');
+      feImage.setAttribute('width', width);
+      feImage.setAttribute('height', height);
+      feImage.setAttributeNS('http://www.w3.org/1999/xlink', 'href', canvas.toDataURL());
+
+      const feDisplacementMap = document.createElementNS(svgNS, 'feDisplacementMap');
+      feDisplacementMap.setAttribute('in', 'SourceGraphic');
+      feDisplacementMap.setAttribute('in2', id + '_map');
+      feDisplacementMap.setAttribute('xChannelSelector', 'R');
+      feDisplacementMap.setAttribute('yChannelSelector', 'G');
+      feDisplacementMap.setAttribute('scale', maxScale.toString());
+
+      feImage.setAttribute('id', id + '_map');
+
+      filter.appendChild(feImage);
+      filter.appendChild(feDisplacementMap);
+      defs.appendChild(filter);
+      svg.appendChild(defs);
+      document.body.appendChild(svg);
+
+      // Podpinamy filtr do backdrop-filter karty, razem z lekkim blurem/kontrastem
+      card.style.backdropFilter = `url(#${id}_filter) blur(1px) saturate(115%)`;
+      card.style.webkitBackdropFilter = `url(#${id}_filter) blur(1px) saturate(115%)`;
+    }
+
+    function init() {
+      const cards = document.querySelectorAll('[data-liquid-glass]');
+      cards.forEach(applyLiquidGlass);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
 </body>
 </html>
