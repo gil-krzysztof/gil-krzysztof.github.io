@@ -91,7 +91,7 @@
   }
 
   .subtitle {
-    max-width: 950px;
+    -width: 950px;
     margin-top: 30px;
     font-size: 20px;
     font-weight: 400;
@@ -118,14 +118,14 @@
 
   .profile-section p {
     padding: 15px;
-    max-width: 750px;
+    -width: 750px;
     margin: 0 auto;
     font-size: 20px;
     line-height: 1.5;
     color: #333;
   }
 
-  /* --- Sekcja "Format korepetycji" (karty szklane) --- */
+  /* --- Sekcja "Format korepetycji" --- */
   .format-section {
     background-color: #663737;
     color: white;
@@ -147,54 +147,40 @@
     pointer-events: none;
   }
 
+  /* --- KONTENER DLA KART (DODANE: układ obok siebie) --- */
   .format-cards {
     display: flex;
-    gap: 30px;
+    gap: 24px;
     position: relative;
     z-index: 1;
   }
 
+  /* --- KARTA --- */
   .format-card {
     flex: 1;
     position: relative;
-    background: rgba(0,0,0,0);
+    background: rgba(0, 0, 0, 0);
     border-radius: 32px;
     padding: 25px;
     box-sizing: border-box;
-    overflow: hidden; /* przycina poświatę, żeby nie wychodziła poza kartę */
-
-    /* Zewnętrzny cień - "unoszenie" karty nad tłem (osobny efekt, nie część funkcji krawędzi) */
-    box-shadow: 10px 10px 10px rgba(0,0,0,0.20);
-
+    overflow: hidden;
     backdrop-filter: blur(1.5px) saturate(100%);
     -webkit-backdrop-filter: blur(1.5px) saturate(100%);
 
-    /* --- Parametry funkcji poświaty krawędzi (JEDNO miejsce do edycji) --- */
-    --rim-thickness: 2px;      /* jak gruba jest sama linia/poświata */
-    --rim-blur: 3px;           /* jak bardzo rozmyta / miękka */
-    --rim-angle: 315deg;       /* kierunek maksimum: 315deg = lewy-górny róg */
-    --rim-max: rgba(255,255,255,0.55);  /* kolor/jasność w punkcie maks */
-    --rim-min: rgba(0,0,0,0.4);         /* kolor/jasność w punkcie min */
+    /* Parametry pojedynczej ostrej ramki */
+    --rim-thickness: 2.5px;
+    --rim-blur: 0.5px;
+    --rim-max: rgba(255, 255, 255, 1);
+    --rim-main: rgba(255, 255, 255, 0.6);
+    --rim-mid: rgba(255, 255, 255, 0.25);
+    --rim-min: rgba(255, 255, 255, 0);
+    box-shadow:
+    /* Główna miękka poświata wnikająca na ~18px prostopadle od całej krawędzi */
+    inset 0 0 18px 2px rgba(255, 255, 255, 0.45),
+    10px 10px 10px rgba(0, 0, 0, 0.20);
   }
 
-  /*
-    ::after rysuje CIENKI PIERŚCIEŃ dokładnie na krawędzi karty (dzięki
-    padding + mask-composite: exclude, co matematycznie podąża za
-    border-radius, tak jak inset box-shadow, ale bez szwów w rogach).
-
-    Jasność wzdłuż pierścienia opisuje JEDNA linia - conic-gradient -
-    czyli funkcja jasność(kąt). Obecnie jest LINIOWA:
-      0%   (kąt = --rim-angle)              -> --rim-max
-      50%  (kąt przeciwny, prawy-dolny róg) -> --rim-min
-      100% (powrót do --rim-angle)          -> --rim-max
-    Dzięki symetrycznemu powrotowi do 100% nie ma szwu w miejscu zamknięcia koła.
-
-    Żeby podać INNĄ funkcję później, wystarczy zmienić WYŁĄCZNIE listę
-    stopni w tym jednym background - reszta (grubość, rozmycie, kształt
-    podążający za rogami) zostaje bez zmian. Np. pasiasty wzór (flagi)
-    z Twojego zdjęcia to conic-gradient z wieloma naprzemiennymi stopami
-    zamiast trzech - patrz przykład w komentarzu niżej.
-  */
+  /* --- JEDNA PROSTA RAMKA NA KRAWĘDZI --- */
   .format-card::after {
     content: "";
     position: absolute;
@@ -204,21 +190,20 @@
     filter: blur(var(--rim-blur));
 
     background: conic-gradient(
-      from var(--rim-angle),
-      var(--rim-max) 0%,
-      var(--rim-min) 50%,
-      var(--rim-max) 100%
+      from calc(180deg - var(--corner-angle, 45deg)),
+      var(--rim-main) 0deg,
+      var(--rim-main) calc(2 * var(--corner-angle, 45deg) - 10deg),
+      var(--rim-min) calc(2 * var(--corner-angle, 45deg)),
+      var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
+      var(--rim-mid) 170deg,
+      var(--rim-max) 180deg,
+      var(--rim-mid) 190deg,
+      var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
+      var(--rim-min) calc(2 * var(--corner-angle, 45deg) + 180deg),
+      var(--rim-main) calc(2 * var(--corner-angle, 45deg) + 190deg),
+      var(--rim-main) 360deg
     );
-
-    /* Przykład INNEJ funkcji (pasiasty wzór jak na screenie) - podmień
-       powyższy background na to, żeby przetestować:
-    background: repeating-conic-gradient(
-      from var(--rim-angle),
-      var(--rim-max) 0deg 20deg,
-      var(--rim-min) 20deg 40deg
-    );
-    */
-
+    
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
@@ -240,6 +225,7 @@
   .format-item-title .icon {
     width: 22px;
     height: 22px;
+    margin-bottom: 20px;
   }
 
   .format-card p {
@@ -248,7 +234,6 @@
     font-weight: 400;
     line-height: 1.5;
     color: #e8dede;
-    margin-bottom: 20px;
   }
 </style>
 </head>
@@ -292,11 +277,29 @@
 
         <div class="format-card">
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
-          <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz do wspólnego omówienia.</p>
+          <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
         </div>
       </div>
     </div>
 
   </div>
+
+  <script>
+    function updateCornerAngles() {
+      document.querySelectorAll('.format-card').forEach(function (card) {
+        var w = card.offsetWidth;
+        var h = card.offsetHeight;
+        if (w === 0 || h === 0) return;
+        var angle = Math.atan2(w, h) * (180 / Math.PI);
+        card.style.setProperty('--corner-angle', angle + 'deg');
+      });
+    }
+
+    window.addEventListener('load', updateCornerAngles);
+    var resizeObserver = new ResizeObserver(updateCornerAngles);
+    document.querySelectorAll('.format-card').forEach(function (card) {
+      resizeObserver.observe(card);
+    });
+  </script> 
 </body>
 </html>
