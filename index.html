@@ -25,6 +25,16 @@
     padding-top: 240px;
     padding-bottom: 240px;
   }
+  .hero-grid-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1440px;
+  height: 650px;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+}
   .corner-note {
     position: absolute;
     top: 4vh;
@@ -168,6 +178,7 @@
 <body>
   <div class="content-wrapper">
     <div class="hero">
+      <img src="siatka_czerwona_wektor.svg" alt="" class="hero-grid-overlay">
       <div class="corner-note">Krzysztof Gil</div>
       <button class="contact-button">Kontakt</button>
       <div class="headline-row">
