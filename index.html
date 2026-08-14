@@ -154,7 +154,7 @@
     z-index: 1;
   }
 
-.format-card {
+ .format-card {
   flex: 1;
   position: relative;
   background: rgba(0,0,0,0);
@@ -171,16 +171,25 @@
   /* --- Parametry funkcji poświaty krawędzi --- */
   --rim-thickness: 2px;
   --rim-blur: 3px;
-  --rim-max: rgba(255,255,255,1);
-  --rim-main: rgba(255,255,255,0.9);
-  --rim-mid: rgba(255,255,255,0.2);
-  --rim-min: rgba(255,255,255,0);
-  
-  --glow-main: rgba(255,255,255,0.9);
-  --glow-mid: rgba(255,255,255,0.3); /* Dopisana brakująca zmienna */
-  --glow-min: rgba(255,255,255,0);   /* Dopisany średnik */
+  --rim-angle: 290deg;                    /* kierunek GŁÓWNEGO źródła (0deg = góra, zgodnie z ruchem wskazówek) */
+  --rim-main: rgba(255,255,255,0.8);     /* jasność w rogu głównym (mocna poświata) */
+  --rim-secondary: rgba(255,255,255,0.5);/* jasność w rogu przeciwległym (mała poświata) */
+  --rim-min: rgba(255,255,255,0.1);            /* jasność w pozostałych dwóch rogach (ciemno) */
 }
 
+/*
+  Zamiast funkcji schodkowej (bevel) z jednym max i jednym min,
+  używamy teraz CIĄGŁEJ funkcji z CZTEREMA punktami kontrolnymi
+  rozmieszczonymi co 25% obwodu (4 rogi):
+    0%   -> --rim-main       (róg główny, najjaśniejszy)
+    25%  -> --rim-min        (róg sąsiedni, ciemny)
+    50%  -> --rim-secondary  (róg przeciwległy, mała poświata)
+    75%  -> --rim-min        (drugi róg sąsiedni, ciemny)
+    100% -> --rim-main       (powrót do rogu głównego)
+  Brak plateau/skoków - płynne przejścia między wszystkimi punktami,
+  co daje efekt "rozlewania się" światła z dwóch przeciwległych rogów
+  o różnej intensywności, a nie jednolitą ramę wokół krawędzi.
+*/
 .format-card::after {
   content: "";
   position: absolute;
@@ -189,23 +198,14 @@
   padding: var(--rim-thickness);
   filter: blur(var(--rim-blur));
 
-  /* Dodano przecinek między gradientami */
-  background: 
-    /* EFEKT 1: Główna ramka (kąt startowy 180deg) */
-    conic-gradient(
-      from calc(180deg - var(--corner-angle)),
-      var(--rim-main) 0deg,
-      var(--rim-main) calc(2 * var(--corner-angle) - 10deg),
-      var(--rim-min) calc(2 * var(--corner-angle)),
-      var(--rim-mid) calc(2 * var(--corner-angle) + 10deg),
-      var(--rim-mid) 170deg,
-      var(--rim-max) 180deg,
-      var(--rim-mid) 190deg,
-      var(--rim-mid) calc(2 * var(--corner-angle) + 170deg),
-      var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
-      var(--rim-main) calc(2 * var(--corner-angle) + 190deg),
-      var(--rim-main) 360deg
-    );
+  background: conic-gradient(
+    from var(--rim-angle),
+    var(--rim-main) 0%,
+    var(--rim-min) 25%,
+    var(--rim-secondary) 50%,
+    var(--rim-min) 75%,
+    var(--rim-main) 100%
+  );
 
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -214,6 +214,21 @@
           mask-composite: exclude;
   pointer-events: none;
 }
+
+  .format-item-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .format-item-title .icon {
+    width: 22px;
+    height: 22px;
+  }
+
   .format-card p {
     margin: 0;
     font-size: 15px;
@@ -269,41 +284,5 @@
     </div>
 
   </div>
-  <script>
-    /*
-      Automatycznie wylicza kąt rogu (--corner-angle) dla każdego
-      "szklanego" elementu z poświatą krawędzi, na podstawie jego
-      RZECZYWISTYCH proporcji (szerokość/wysokość).
- 
-      Dzięki temu ten sam kod działa poprawnie dla kart o dowolnym
-      kształcie - kwadratowych, wąskich, szerokich - bez ręcznego
-      przeliczania kątów za każdym razem.
- 
-      Żeby dodać nową "szklaną" kartę w innej sekcji, wystarczy
-      nadać jej klasę .format-card (albo dopisać dodatkowy selektor
-      niżej w querySelectorAll, jeśli wolisz osobną nazwę klasy).
-    */
-    function updateCornerAngles() {
-      document.querySelectorAll('.format-card').forEach(function (card) {
-        var w = card.offsetWidth;
-        var h = card.offsetHeight;
-        if (w === 0 || h === 0) return; // element jeszcze niewidoczny/nieizmierzony
- 
-        // Kąt między pionem a przekątną karty, w stopniach (0-90)
-        var angle = Math.atan2(w, h) * (180 / Math.PI);
-        card.style.setProperty('--corner-angle', angle + 'deg');
-      });
-    }
- 
-    // Przelicz przy pierwszym załadowaniu strony
-    window.addEventListener('load', updateCornerAngles);
- 
-    // Przelicz ponownie, jeśli rozmiar którejś karty się zmieni
-    // (np. przy zmianie rozmiaru okna / responsywnym layoucie)
-    var resizeObserver = new ResizeObserver(updateCornerAngles);
-    document.querySelectorAll('.format-card').forEach(function (card) {
-      resizeObserver.observe(card);
-    });
-  </script>
 </body>
 </html>
