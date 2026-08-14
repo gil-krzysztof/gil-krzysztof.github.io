@@ -66,48 +66,71 @@
       const imgData = ctx.createImageData(w, h);
       const data = imgData.data;
 
-      // Geometria zgodna z Twoimi kartami CSS (border-radius: 40px)
       const cornerRadius = 40; 
-      const rimWidth = 30;     // Szerokość strefy zagięcia krawędzi
+      const rimWidth = 30;     
 
       for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
           
-          // Precyzyjna funkcja odległości (SDF) dla zaokrąglonego prostokąta
-          let cx = Math.max(0, Math.abs(x - w / 2) - (w / 2 - cornerRadius));
-          let cy = Math.max(0, Math.abs(y - h / 2) - (h / 2 - cornerRadius));
-          let outsideDist = Math.sqrt(cx * cx + cy * cy);
-          
-          let insideX = Math.max(0, w / 2 - cornerRadius - Math.abs(x - w / 2));
-          let insideY = Math.max(0, h / 2 - cornerRadius - Math.abs(y - h / 2));
-          let insideDist = Math.min(0, -Math.max(insideX, insideY));
-          
-          // Całkowity dystans od krawędzi (ujemny wewnątrz, zero na brzegu, dodatny na zewnątrz)
-          let distanceToEdge = outsideDist + insideDist - cornerRadius;
-          
-          // Głębokość w głąb karty od zewnętrznego obrysu
-          let depth = -distanceToEdge;
+          // 1. Określamy strefy dla rogów i krawędzi
+          let leftBound = cornerRadius;
+          let rightBound = w - cornerRadius;
+          let topBound = cornerRadius;
+          let bottomBound = h - cornerRadius;
+
+          let distFromEdge = 0;
+          let nx = 0, ny = 0;
+
+          // Sprawdzamy, czy piksel jest w jednym z 4 rogów
+          let isTopLeft = x < leftBound && y < topBound;
+          let isTopRight = x > rightBound && y < topBound;
+          let isBottomLeft = x < leftBound && y > bottomBound;
+          let isBottomRight = x > rightBound && y > bottomBound;
+
+          if (isTopLeft || isTopRight || isBottomLeft || isBottomRight) {
+            // Logika dla rogów (promień łuku)
+            let cx = isTopLeft || isBottomLeft ? leftBound : rightBound;
+            let cy = isTopLeft || isTopRight ? topBound : bottomBound;
+            
+            let dx = x - cx;
+            let dy = y - cy;
+            let distFromCenter = Math.sqrt(dx * dx + dy * dy);
+            
+            distFromEdge = cornerRadius - distFromCenter;
+            
+            if (distFromCenter > 0) {
+              nx = dx / distFromCenter;
+              ny = dy / distFromCenter;
+            }
+          } else {
+            // Logika dla prostych krawędzi (góra, dół, lewo, prawo)
+            let distLeft = x;
+            let distRight = w - x;
+            let distTop = y;
+            let distBottom = h - y;
+
+            let minDist = Math.min(distLeft, distRight, distTop, distBottom);
+            distFromEdge = minDist;
+
+            if (minDist === distLeft) { nx = 1; ny = 0; }
+            else if (minDist === distRight) { nx = -1; ny = 0; }
+            else if (minDist === distTop) { nx = 0; ny = 1; }
+            else if (minDist === distBottom) { nx = 0; ny = -1; }
+          }
 
           let shiftX = 0;
           let shiftY = 0;
 
-          // Działamy wyłącznie w pasie krawędziowym o szerokości rimWidth
-          if (depth >= 0 && depth <= rimWidth) {
-            let normalized = depth / rimWidth; // Od 0 (brzeg) do 1 (wnętrze)
-            
-            // Profil soczewki (płynna fala)
-            let lens = Math.sin(normalized * Math.PI) * (1 - normalized);
+          // 2. Profil soczewki w pasie krawędziowym
+          if (distFromEdge >= 0 && distFromEdge <= rimWidth) {
+            let normalized = distFromEdge / rimWidth; // Od 0 (zewnętrzny brzeg) do 1 (wnętrze)
+            let lens = Math.sin(normalized * Math.PI); // Płynna fala wypukłości
 
-            // Wektor kierunku ugięcia światła prostopadle do krawędzi
-            let dx = x - w / 2;
-            let dy = y - h / 2;
-            let len = Math.sqrt(dx * dx + dy * dy) || 1;
-
-            shiftX = (dx / len) * lens;
-            shiftY = (dy / len) * lens;
+            shiftX = nx * lens;
+            shiftY = ny * lens;
           }
 
-          // Mapowanie na kanały RGB (128, 128, 128 to punkt neutralny / brak przesunięcia)
+          // 3. Mapowanie na kanały RGB (128 to neutralna szarość)
           let red   = Math.min(255, Math.max(0, 128 + shiftX * 127));
           let green = Math.min(255, Math.max(0, 128 + shiftY * 127));
           let blue  = 128;
