@@ -185,6 +185,18 @@
 }
 
 /* --- 1. POŚWIATA PROSTOPADŁA DO KRAWĘDZI (INWARD GLOW) --- */
+.format-card {
+  /* ... Twoje dotychczasowe style ... */
+
+  /* Głębokość, na jaką światło wnika prostopadle do środka */
+  --glow-depth: 24px; 
+  
+  --glow-main: rgba(255, 255, 255, 0.9);
+  --glow-mid: rgba(255, 255, 255, 0.2);
+  --glow-min: rgba(255, 255, 255, 0);
+}
+
+/* --- POŚWIATA LINIOWO ZANIKAJĄCA W GŁĄB KARTY --- */
 .format-card::before {
   content: "";
   position: absolute;
@@ -192,9 +204,7 @@
   border-radius: inherit;
   pointer-events: none;
 
-  /* Tworzymy pas światła o głębokości --glow-depth */
-  padding: var(--glow-depth);
-
+  /* 1. Rozkład kolorów na obwodzie (zgodnie z kątem) */
   background: conic-gradient(
     from calc(360deg - var(--corner-angle)),
     var(--glow-main) 0deg,
@@ -206,16 +216,17 @@
     var(--glow-main) 360deg
   );
 
-  /* Maska wycina środek, zostawiając tylko pas przy krawędzi */
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-
-  /* Rozmywamy pas: z zewnątrz ucina go overflow: hidden, do środka płynnie cieniuje */
-  filter: blur(var(--glow-blur));
-  opacity: 0.85;
+  /* 2. Liniowy profil opadania światła (100% na krawędzi -> 0% na głębokości --glow-depth) */
+  -webkit-mask: radial-gradient(
+    ellipse at center, 
+    transparent calc(100% - var(--glow-depth)), 
+    #000 100%
+  );
+          mask: radial-gradient(
+    ellipse at center, 
+    transparent calc(100% - var(--glow-depth)), 
+    #000 100%
+  );
 }
 
 /* --- 2. OSTRA, CIENKA RAMKA ZEWNĘTRZNA (RIM STROKE) --- */
