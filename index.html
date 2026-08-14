@@ -157,17 +157,19 @@
     z-index: 1;
   }
 
-  /* --- KARTA (Baza + białe, miękkie światło w tle) --- */
+  /* --- KARTA --- */
   .format-card {
     flex: 1;
     position: relative;
-    background: rgba(0, 0, 0, 0);
+    /* Zmieniamy tło na całkowicie przezroczyste, bo efekt buduje .card-glass-bg */
+    background: transparent;
     border-radius: 40px;
     padding: 40px;
     box-sizing: border-box;
     overflow: hidden;
-    backdrop-filter: blur(1.5px) brightness(1.08) contrast(1.1) saturate(100%);
-    -webkit-backdrop-filter: blur(1.5px) brightness(1.08) contrast(1.1) saturate(100%);
+    
+    /* Izolacja zapewnia, że warstwa z-index: -1 (tło lupy) nie ucieknie poza kartę */
+    isolation: isolate;
 
     --rim-thickness: 2.5px;
     --rim-blur: 0.5px;
@@ -176,13 +178,39 @@
     --rim-mid: rgba(255, 255, 255, 0.25);
     --rim-min: rgba(255, 255, 255, 0);
 
-    /* Podstawowa jasna poświata */
+    /* Oświetlenie bazowe szkła nakładane NA powiększone tło */
     box-shadow:
       inset 6px 6px 16px -2px rgba(255, 255, 255, 0.3),
       5px 5px 5px rgba(0, 0, 0, 0.30);
   }
 
-  /* --- 1. OSTRA BIAŁA KRAWĘDŹ (WARSTWA NIŻEJ) --- */
+  /* --- LUPA I REFRAKCJA (NOWA WARSTWA TŁA WEWNĄTRZ KARTY) --- */
+  .card-glass-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background-color: #663737;
+    overflow: hidden;
+  }
+
+  .card-glass-bg::before {
+    content: "";
+    position: absolute;
+    inset: -20px; /* Margines na swobodne załamywanie tekstury */
+    background-image: url('siatka_wektor.svg');
+    background-size: cover;
+    background-position: center;
+    
+    /* EFEKT LUPY: fizyczne przybliżenie tekstury */
+    transform: scale(1.15); 
+    
+    /* EFEKT REFRAKCJI: wywołanie filtra SVG załamującego szkło */
+    filter: url(#refraction-filter) blur(1.5px) brightness(1.1); 
+    opacity: 0.85;
+  }
+
+  /* --- 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM / DYSPERSJĄ (WARSTWA NIŻEJ) --- */
   .format-card::after {
     content: "";
     position: absolute;
@@ -190,8 +218,9 @@
     border-radius: inherit;
     padding: var(--rim-thickness);
     filter: blur(var(--rim-blur));
-    z-index: 1; /* Rysowana jako pierwsza pod cień! */
+    z-index: 1;
 
+    /* Gradient wzbogacony o kolory RGB symulujące rozszczepienie światła */
     background: conic-gradient(
       from calc(180deg - var(--corner-angle, 45deg)),
       var(--rim-main) 0deg,
@@ -199,7 +228,15 @@
       var(--rim-min) calc(2 * var(--corner-angle, 45deg)),
       var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
       var(--rim-mid) 170deg,
-      var(--rim-max) 180deg,
+      
+      /* --- DYSPERSJA CHROMATYCZNA W MIEJSCU BŁYSKU --- */
+      rgba(255, 100, 200, 0.8) 175deg, /* Magenta */
+      rgba(100, 220, 255, 0.8) 178deg, /* Cyjan */
+      var(--rim-max) 180deg,           /* Czysta biel na środku */
+      rgba(255, 230, 130, 0.8) 182deg, /* Żółć */
+      rgba(180, 120, 255, 0.8) 185deg, /* Fiolet */
+      /* ----------------------------------------------- */
+
       var(--rim-mid) 190deg,
       var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
       var(--rim-min) calc(2 * var(--corner-angle, 45deg) + 180deg),
@@ -212,32 +249,32 @@
       linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
             mask-composite: exclude;
+    
     pointer-events: none;
+    mix-blend-mode: screen; /* Rozświetla tęczowe krawędzie */
   }
 
-  /* --- 2. CZARNY LINEAR/COLOR BURN (WARSTWA WYŻEJ - BLENDUJE RAMKĘ BEZPOŚREDNIO!) --- */
+  /* --- 2. CZARNY COLOR BURN (WARSTWA WYŻEJ - BLENDUJE RAMKĘ BEZPOŚREDNIO!) --- */
   .format-card::before {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    z-index: 2; /* NA KRAWĘDZI! Dzięki temu przyciemnia i blenduje biały błysk */
+    z-index: 2;
 
-    /* Głęboki ciemny cień tuż przy brzegu */
     box-shadow:
       inset -4px -4px 10px 0px rgba(0, 0, 0, 0.4),
       inset 0 0 10px 0px rgba(0, 0, 0, 0.4);
 
-    /* Tryb blendowania przypalający białą krawędź */
-    mix-blend-mode: color-burn;
+    mix-blend-mode: color-burn; 
   }
 
-  /* --- 3. TEKST I IKONY (NAJSZERSZY WIERZCH) --- */
+  /* --- 3. TEKST I IKONY --- */
   .format-item-title,
   .format-card p {
     position: relative;
-    z-index: 3; /* Ponad zblendowanym kompletem ramka+cień */
+    z-index: 3;
   }
 
   .format-item-title {
@@ -291,24 +328,46 @@
       <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
 
       <div class="format-cards">
+        
+        <!-- KARTA 1 -->
         <div class="format-card">
+          <div class="card-glass-bg"></div> <!-- Tło Lupy i Refrakcji -->
           <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
           <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
         </div>
 
+        <!-- KARTA 2 -->
         <div class="format-card">
+          <div class="card-glass-bg"></div>
           <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
           <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
         </div>
 
+        <!-- KARTA 3 -->
         <div class="format-card">
+          <div class="card-glass-bg"></div>
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
           <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
         </div>
+
       </div>
     </div>
 
   </div>
+
+  <!-- FILTR SVG DO REFRAKCJI SZKŁA (Wymagany do załamywania tła w .card-glass-bg) -->
+  <svg style="display: none;">
+    <defs>
+      <filter id="refraction-filter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="1" result="noise" />
+        <feComponentTransfer result="displacement-map">
+          <feFuncR type="linear" slope="0.05" />
+          <feFuncG type="linear" slope="0.05" />
+        </feComponentTransfer>
+        <feDisplacementMap in="SourceGraphic" in2="displacement-map" scale="10" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
 
   <script>
     function updateCornerAngles() {
