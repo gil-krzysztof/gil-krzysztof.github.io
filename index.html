@@ -155,7 +155,7 @@
     z-index: 1;
   }
 
-  /* --- KARTA --- */
+/* --- KARTA (Baza + białe, miękkie światło w tle) --- */
   .format-card {
     flex: 1;
     position: relative;
@@ -167,35 +167,20 @@
     backdrop-filter: blur(1.5px) saturate(100%);
     -webkit-backdrop-filter: blur(1.5px) saturate(100%);
 
-    /* Parametry pojedynczej ostrej ramki */
     --rim-thickness: 2.5px;
     --rim-blur: 0.5px;
     --rim-max: rgba(255, 255, 255, 1);
     --rim-main: rgba(255, 255, 255, 0.6);
     --rim-mid: rgba(255, 255, 255, 0.25);
     --rim-min: rgba(255, 255, 255, 0);
+
+    /* Podstawowa jasna poświata */
     box-shadow:
-    /* Główna miękka poświata wnikająca na ~18px prostopadle od całej krawędzi */
-    inset 6px 6px 16px -2px rgba(255, 255, 255, 0.3),
-    10px 10px 10px rgba(0, 0, 0, 0.20);
+      inset 6px 6px 16px -2px rgba(255, 255, 255, 0.3),
+      10px 10px 10px rgba(0, 0, 0, 0.20);
   }
-  
-  .format-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 0;
 
-  /* Czarny inset box-shadow przesunięty np. na dół i prawą stronę */
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
-
-  /* Odpowiednik linear-burn w CSS */
-  mix-blend-mode: color-burn; /* Możesz też przetestować: color-burn */
-}
-
-  /* --- JEDNA PROSTA RAMKA NA KRAWĘDZI --- */
+  /* --- 1. OSTRA BIAŁA KRAWĘDŹ (WARSTWA NIŻEJ) --- */
   .format-card::after {
     content: "";
     position: absolute;
@@ -203,6 +188,7 @@
     border-radius: inherit;
     padding: var(--rim-thickness);
     filter: blur(var(--rim-blur));
+    z-index: 1; /* Rysowana jako pierwsza pod cień! */
 
     background: conic-gradient(
       from calc(180deg - var(--corner-angle, 45deg)),
@@ -225,6 +211,31 @@
     -webkit-mask-composite: xor;
             mask-composite: exclude;
     pointer-events: none;
+  }
+
+  /* --- 2. CZARNY LINEAR/COLOR BURN (WARSTWA WYŻEJ - BLENDUJE RAMKĘ BEZPOŚREDNIO!) --- */
+  .format-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 2; /* NA KRAWĘDZI! Dzięki temu przyciemnia i blenduje biały błysk */
+
+    /* Głęboki ciemny cień tuż przy brzegu */
+    box-shadow:
+      inset 0 0 14px 2px rgba(0, 0, 0, 0.85),
+      inset -4px -4px 10px 0px rgba(0, 0, 0, 0.7);
+
+    /* Tryb blendowania przypalający białą krawędź */
+    mix-blend-mode: multiply; /* Możesz testować też: color-burn */
+  }
+
+  /* --- 3. TEKST I IKONY (NAJSZERSZY WIERZCH) --- */
+  .format-item-title,
+  .format-card p {
+    position: relative;
+    z-index: 3; /* Ponad zblendowanym kompletem ramka+cień */
   }
 
 .format-item-title {
