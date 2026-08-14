@@ -171,7 +171,7 @@
   /* --- Parametry funkcji poświaty krawędzi --- */
   --rim-thickness: 2px;
   --rim-blur: 3px;
-  --rim-angle: var(--corner-angle);                    /* kierunek GŁÓWNEGO źródła (0deg = góra, zgodnie z ruchem wskazówek) */
+  --rim-angle: 360deg - var(--corner-angle);                    /* kierunek GŁÓWNEGO źródła (0deg = góra, zgodnie z ruchem wskazówek) */
   --rim-main: rgba(255,255,255,0.8);     /* jasność w rogu głównym (mocna poświata) */
   --rim-secondary: rgba(255,255,255,0.8);/* jasność w rogu przeciwległym (mała poświata) */
   --rim-min: rgba(255,255,255,0.1);            /* jasność w pozostałych dwóch rogach (ciemno) */
