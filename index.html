@@ -176,7 +176,7 @@
   --rim-mid: rgba(255,255,255,0.2); 
   --rim-min: rgba(255,255,255,0);            /* jasność w pozostałych dwóch rogach (ciemno) */
   --glow-main: rgba(255,255,255,0.9);
-  --glow-min: rgba(255,255,255,0)
+  --glow-min: rgba(255,255,255,0);
 }
 
 /*
@@ -214,13 +214,12 @@
       var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
       var(--rim-main) calc(2 * var(--corner-angle) + 190deg),
       var(--rim-main) 360deg
-  )
+  ),
       conic-gradient(
       from calc(360deg - var(--corner-angle)),
       var(--glow-main) 0deg,
       var(--glow-main) calc(2 * var(--corner-angle) - 10deg),
       var(--glow-min) calc(2 * var(--corner-angle)),
-      var(--glow-mid) 190deg,
       var(--glow-min) calc(2 * var(--corner-angle) + 180deg),
       var(--glow-main) calc(2 * var(--corner-angle) + 190deg),
       var(--glow-main) 360deg
