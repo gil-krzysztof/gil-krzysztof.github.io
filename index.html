@@ -53,19 +53,94 @@
     z-index: 1;
   }
 
+  /* --- Przycisk Kontakt jako szklana karta --- */
   .contact-button {
     position: absolute;
     top: 4vh;
     right: 4vw;
     padding: 15px 25px;
-    background-color: white;
-    border: 2px solid black;
-    border-radius: 8px;
     font-size: 16px;
     font-weight: 500;
     color: black;
     cursor: pointer;
     z-index: 1;
+
+    /* Styl szklanej karty dopasowany do przycisku */
+    border-radius: 12px;
+    box-sizing: border-box;
+    overflow: hidden;
+    isolation: isolate;
+
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    --rim-thickness: 1.5px;
+    --rim-blur: 0.5px;
+    --rim-max: rgba(255, 255, 255, 1);
+    --rim-main: rgba(255, 255, 255, 0.6);
+    --rim-mid: rgba(255, 255, 255, 0.25);
+    --rim-min: rgba(255, 255, 255, 0);
+
+    box-shadow:
+      inset 3px 3px 8px -1px rgba(255, 255, 255, 0.3),
+      3px 3px 10px rgba(0, 0, 0, 0.1);
+      
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .contact-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  /* --- Efekty krawędzi dla przycisku --- */
+  .contact-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: var(--rim-thickness);
+    filter: blur(var(--rim-blur));
+    z-index: 1;
+
+    background: conic-gradient(
+      from 180deg,
+      var(--rim-main) 0deg,
+      var(--rim-mid) 170deg,
+      rgba(255, 100, 200, 0.8) 175deg,
+      var(--rim-max) 180deg,
+      rgba(100, 220, 255, 0.8) 185deg,
+      var(--rim-mid) 190deg,
+      var(--rim-main) 360deg
+    );
+    
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+
+  .contact-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 2;
+    box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.2);
+    mix-blend-mode: color-burn; 
+  }
+
+  .contact-button span {
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
   }
 
   .headline-row {
@@ -170,7 +245,6 @@
     background: rgba(255, 255, 255, 0);
     border: 1px solid rgba(255, 255, 255, 0.3);
 
-    /* Dynamiczne przypisanie filtru refrakcji zdefiniowanego w locie przez JS */
     backdrop-filter: var(--glass-filter-ref);
     -webkit-backdrop-filter: var(--glass-filter-ref);
 
@@ -221,7 +295,7 @@
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
-                mask-composite: exclude;
+    mask-composite: exclude;
     
     pointer-events: none;
     mix-blend-mode: screen;
@@ -283,7 +357,7 @@
       <img src="siatka_czerwona_wektor.svg" alt="" class="hero-grid-overlay">
 
       <div class="corner-note">Krzysztof Gil</div>
-      <button class="contact-button">Kontakt</button>
+      <button class="contact-button"><span>Kontakt</span></button>
 
       <div class="headline-row">
         <img src="laura_lewy_wektor.svg" alt="" class="laurel">
@@ -328,7 +402,6 @@
 
   </div>
 
-  <!-- Dynamicznie generowane filtry SVG dla poszczególnych kart osadzone będą tutaj -->
   <svg id="svg-filters-container" style="position: absolute; width: 0; height: 0;" aria-hidden="true"></svg>
 
   <script>
@@ -336,7 +409,6 @@
       const cards = document.querySelectorAll('.format-card');
       const svgContainer = document.getElementById('svg-filters-container');
       
-      // Wyczyszczenie starych filtrów SVG
       svgContainer.innerHTML = '';
 
       cards.forEach((card, index) => {
@@ -344,11 +416,9 @@
         const h = card.offsetHeight;
         if (w === 0 || h === 0) return;
 
-        // 1. Kąt narożnika do gradientu obramowania
         const angle = Math.atan2(w, h) * (180 / Math.PI);
         card.style.setProperty('--corner-angle', angle + 'deg');
 
-        // 2. Generowanie mapy refrakcji (fizyka soczewki) dla dokładnych wymiarów karty
         const canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
@@ -405,7 +475,6 @@
         ctx.putImageData(imgData, 0, 0);
         const dataUrl = canvas.toDataURL('image/png');
 
-        // 3. Tworzenie unikalnego filtru SVG dla tej karty
         const filterId = `glass-lens-${index}`;
         const filterEl = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
         filterEl.setAttribute('id', filterId);
@@ -421,7 +490,6 @@
         `;
         svgContainer.appendChild(filterEl);
 
-        // 4. Przypisanie filtra do danej karty w stylach inline
         card.style.setProperty('--glass-filter-ref', `url(#${filterId})`);
       });
     }
