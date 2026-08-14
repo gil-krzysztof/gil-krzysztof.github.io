@@ -125,17 +125,15 @@
     color: #333;
   }
 
-  /* --- Sekcja "Format korepetycji" --- */
+  /* --- Sekcja "Format korepetycji" (karty szklane) --- */
   .format-section {
     background-color: #663737;
     color: white;
     font-weight: 500;
     padding: 80px 60px;
-    display: flex;
-    gap: 60px;
-    align-items: center;
     box-sizing: border-box;
     position: relative;
+    overflow: hidden;
   }
 
   .format-grid-overlay {
@@ -149,43 +147,44 @@
     pointer-events: none;
   }
 
-  .format-content {
-    flex: 1;
+  .format-cards {
+    display: flex;
+    gap: 30px;
     position: relative;
     z-index: 1;
   }
 
-  .format-content h2 {
-    font-size: 36px;
-    font-weight: 500;
-    margin: 0 0 20px 0;
-  }
-
-  .format-item {
-    margin-bottom: 50px;
+  .format-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 25px;
+    box-sizing: border-box;
   }
 
   .format-item-title {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
   }
 
   .format-item-title .icon {
-    width: 30px;
-    height: 30px;
-    margin-right: 5px;
+    width: 22px;
+    height: 22px;
   }
 
-  .format-item p {
-    margin: 0 0 30px 0;
-    font-size: 20px;
+  .format-card p {
+    margin: 0;
+    font-size: 15px;
     font-weight: 400;
     line-height: 1.5;
-    color: #d8cfce;
+    color: #e8dede;
   }
 </style>
 </head>
@@ -216,20 +215,18 @@
     <div class="format-section">
       <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
 
-      <div class="format-content">
-        <h2>Format korepetycji</h2>
-
-        <div class="format-item">
+      <div class="format-cards">
+        <div class="format-card">
           <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
           <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
         </div>
 
-        <div class="format-item">
+        <div class="format-card">
           <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
           <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
         </div>
 
-        <div class="format-item">
+        <div class="format-card">
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
           <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
         </div>
