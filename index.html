@@ -171,6 +171,7 @@
   /* --- Parametry funkcji poświaty krawędzi --- */
   --rim-thickness: 2px;
   --rim-blur: 3px;
+  --rim-max: rgba(255,255,255,1);
   --rim-main: rgba(255,255,255,0.9);     /* jasność w rogu głównym (mocna poświata) */
   --rim-mid: rgba(255,255,255,0.2); 
   --rim-min: rgba(255,255,255,0);            /* jasność w pozostałych dwóch rogach (ciemno) */
@@ -205,7 +206,7 @@
       var(--rim-min) calc(2 * var(--corner-angle)),
       var(--rim-mid) calc(2 * var(--corner-angle) + 10deg),
       var(--rim-mid) 170deg,
-      var(--rim-main) 180deg,
+      var(--rim-max) 180deg,
       var(--rim-mid) 190deg,
       var(--rim-mid) calc(2 * var(--corner-angle) + 170deg),
       var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
