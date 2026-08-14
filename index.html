@@ -161,12 +161,18 @@
   .format-card {
     flex: 1;
     position: relative;
-    background: transparent;
     border-radius: 40px;
     padding: 40px;
     box-sizing: border-box;
     overflow: hidden;
     isolation: isolate;
+
+    /* Szkło bezpośrednio operuje na tle sekcji bez duplikowania pliku siatki */
+    background: rgba(255, 255, 255, 0.05);
+
+    /* Efekt refrakcji załamuje siatkę bezpośrednio pod kartą */
+    -webkit-backdrop-filter: url(#magnifier-filter) brightness(1.1);
+    backdrop-filter: url(#magnifier-filter) brightness(1.1);
 
     --rim-thickness: 2.5px;
     --rim-blur: 0.5px;
@@ -179,34 +185,6 @@
     box-shadow:
       inset 6px 6px 16px -2px rgba(255, 255, 255, 0.35),
       5px 5px 12px rgba(0, 0, 0, 0.25);
-  }
-
-  /* --- WARSTWA LUPY (POWIĘKSZONE TŁO Z ZACHOWANIEM PROPORCJI) --- */
-  .card-glass-bg {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    overflow: hidden;
-    background-color: rgba(102, 55, 55, 0.3);
-  }
-
-  .card-glass-bg::before {
-    content: "";
-    position: absolute;
-    inset: -30px;
-    background-image: url('siatka_wektor.svg');
-    
-    /* Rozmiar dopasowany w proporcji do sekcji głównej */
-    background-size: 100vw auto; 
-    background-position: center;
-
-    /* Powiększenie tła wewnątrz karty o 20% (efekt lupy) */
-    transform: scale(1.2); 
-    
-    /* Filtr refrakcji i lekkie wyostrzenie */
-    filter: url(#refraction-filter) blur(0.5px) brightness(1.15); 
-    opacity: 0.9;
   }
 
   /* --- 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM / DYSPERSJĄ --- */
@@ -330,21 +308,18 @@
         
         <!-- KARTA 1 -->
         <div class="format-card">
-          <div class="card-glass-bg"></div>
           <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
           <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
         </div>
 
         <!-- KARTA 2 -->
         <div class="format-card">
-          <div class="card-glass-bg"></div>
           <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
           <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
         </div>
 
         <!-- KARTA 3 -->
         <div class="format-card">
-          <div class="card-glass-bg"></div>
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
           <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
         </div>
@@ -354,16 +329,17 @@
 
   </div>
 
-  <!-- FILTR SVG DO REFRAKCJI SZKŁA -->
+  <!-- FILTR SVG DLA DELIKATNEJ LUPY I REFRAKCJI BEZ DUPLIKOWANIA TŁA -->
   <svg style="display: none;">
     <defs>
-      <filter id="refraction-filter">
-        <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="1" result="noise" />
-        <feComponentTransfer result="displacement-map">
-          <feFuncR type="linear" slope="0.02" />
-          <feFuncG type="linear" slope="0.02" />
+      <filter id="magnifier-filter" x="-10%" y="-10%" width="120%" height="120%">
+        <!-- Tworzy delikatne powiększenie i zniekształcenie krawędzi bezpośrednio na tle sekcji -->
+        <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="1" result="noise" />
+        <feComponentTransfer result="displacement">
+          <feFuncR type="linear" slope="0.015" />
+          <feFuncG type="linear" slope="0.015" />
         </feComponentTransfer>
-        <feDisplacementMap in="SourceGraphic" in2="displacement-map" scale="4" xChannelSelector="R" yChannelSelector="G" />
+        <feDisplacementMap in="SourceGraphic" in2="displacement" scale="6" xChannelSelector="R" yChannelSelector="G" />
       </filter>
     </defs>
   </svg>
