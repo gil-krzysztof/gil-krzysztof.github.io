@@ -125,7 +125,7 @@
     color: #333;
   }
 
-  /* --- Sekcja "Format korepetycji" (karty szklane) --- */
+  /* --- Sekcja "Format korepetycji" --- */
   .format-section {
     background-color: #663737;
     color: white;
@@ -147,70 +147,66 @@
     pointer-events: none;
   }
 
+  /* --- KONTENER DLA KART (DODANE: układ obok siebie) --- */
+  .format-cards {
+    display: flex;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* --- KARTA --- */
   .format-card {
-  flex: 1;
-  position: relative;
-  background: rgba(0,0,0,0);
-  border-radius: 32px;
-  padding: 25px;
-  box-sizing: border-box;
-  overflow: hidden;
-  box-shadow: 10px 10px 10px rgba(0,0,0,0.20);
-  backdrop-filter: blur(1.5px) saturate(100%);
-  -webkit-backdrop-filter: blur(1.5px) saturate(100%);
+    flex: 1;
+    position: relative;
+    background: rgba(0, 0, 0, 0);
+    border-radius: 32px;
+    padding: 25px;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.20);
+    backdrop-filter: blur(1.5px) saturate(100%);
+    -webkit-backdrop-filter: blur(1.5px) saturate(100%);
 
-  /* --- Parametry funkcji poświaty krawędzi --- */
-  --rim-thickness: 2px;
-  --rim-blur: 3px;
-  --rim-main: rgba(255,255,255,0.9);     /* jasność w rogu głównym (mocna poświata) */
-  --rim-mid: rgba(255,255,255,0.2); 
-  --rim-min: rgba(255,255,255,0);            /* jasność w pozostałych dwóch rogach (ciemno) */
-}
+    /* Parametry pojedynczej ostrej ramki */
+    --rim-thickness: 1.5px;
+    --rim-blur: 0.5px;
+    --rim-main: rgba(255, 255, 255, 0.95);
+    --rim-mid: rgba(255, 255, 255, 0.25);
+    --rim-min: rgba(255, 255, 255, 0);
+  }
 
-/*
-  Zamiast funkcji schodkowej (bevel) z jednym max i jednym min,
-  używamy teraz CIĄGŁEJ funkcji z CZTEREMA punktami kontrolnymi
-  rozmieszczonymi co 25% obwodu (4 rogi):
-    0%   -> --rim-main       (róg główny, najjaśniejszy)
-    25%  -> --rim-min        (róg sąsiedni, ciemny)
-    50%  -> --rim-secondary  (róg przeciwległy, mała poświata)
-    75%  -> --rim-min        (drugi róg sąsiedni, ciemny)
-    100% -> --rim-main       (powrót do rogu głównego)
-  Brak plateau/skoków - płynne przejścia między wszystkimi punktami,
-  co daje efekt "rozlewania się" światła z dwóch przeciwległych rogów
-  o różnej intensywności, a nie jednolitą ramę wokół krawędzi.
-*/
+  /* --- JEDNA PROSTA RAMKA NA KRAWĘDZI --- */
+  .format-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: var(--rim-thickness);
+    filter: blur(var(--rim-blur));
 
-.format-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: var(--rim-thickness);
-  filter: blur(var(--rim-blur));
-
-  background: conic-gradient(
-    from calc(360deg - var(--corner-angle)),
-    var(--rim-main) 0deg,
-    var(--rim-main) calc(2 * var(--corner-angle) - 10deg),
-    var(--rim-min) calc(2 * var(--corner-angle)),
-    var(--rim-mid) calc(2 * var(--corner-angle) + 10deg),
-    var(--rim-mid) 170deg,
-    var(--rim-main) 180deg,
-    var(--rim-mid) 190deg,
-    var(--rim-mid) calc(2 * var(--corner-angle) + 170deg),
-    var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
-    var(--rim-main) calc(2 * var(--corner-angle) + 190deg),
-    var(--rim-main) 360deg
-  );
-  
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  pointer-events: none;
-}
+    background: conic-gradient(
+      from calc(180deg - var(--corner-angle, 45deg)),
+      var(--rim-main) 0deg,
+      var(--rim-main) calc(2 * var(--corner-angle, 45deg) - 10deg),
+      var(--rim-min) calc(2 * var(--corner-angle, 45deg)),
+      var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
+      var(--rim-mid) 170deg,
+      var(--rim-main) 180deg,
+      var(--rim-mid) 190deg,
+      var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
+      var(--rim-min) calc(2 * var(--corner-angle, 45deg) + 180deg),
+      var(--rim-main) calc(2 * var(--corner-angle, 45deg) + 190deg),
+      var(--rim-main) 360deg
+    );
+    
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
 
   .format-item-title {
     display: flex;
@@ -281,26 +277,22 @@
     </div>
 
   </div>
+
   <script>
-  function updateCornerAngles() {
+    function updateCornerAngles() {
       document.querySelectorAll('.format-card').forEach(function (card) {
         var w = card.offsetWidth;
         var h = card.offsetHeight;
-        if (w === 0 || h === 0) return; // element jeszcze niewidoczny/nieizmierzony
-        // Kąt między pionem a przekątną karty, w stopniach (0-90)
+        if (w === 0 || h === 0) return;
         var angle = Math.atan2(w, h) * (180 / Math.PI);
         card.style.setProperty('--corner-angle', angle + 'deg');
       });
     }
-  
-    // Przelicz przy pierwszym załadowaniu strony
+
     window.addEventListener('load', updateCornerAngles);
-    // Przelicz ponownie, jeśli rozmiar którejś karty się zmieni
-    // (np. przy zmianie rozmiaru okna / responsywnym layoucie)
     var resizeObserver = new ResizeObserver(updateCornerAngles);
     document.querySelectorAll('.format-card').forEach(function (card) {
       resizeObserver.observe(card);
-  
     });
   </script> 
 </body>
