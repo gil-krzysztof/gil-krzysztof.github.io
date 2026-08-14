@@ -171,7 +171,7 @@
   /* --- Parametry funkcji poświaty krawędzi --- */
   --rim-thickness: 2px;
   --rim-blur: 3px;
-  --rim-angle: 290deg;                    /* kierunek GŁÓWNEGO źródła (0deg = góra, zgodnie z ruchem wskazówek) */
+  --rim-angle: var(--corner-angle);                    /* kierunek GŁÓWNEGO źródła (0deg = góra, zgodnie z ruchem wskazówek) */
   --rim-main: rgba(255,255,255,0.8);     /* jasność w rogu głównym (mocna poświata) */
   --rim-secondary: rgba(255,255,255,0.8);/* jasność w rogu przeciwległym (mała poświata) */
   --rim-min: rgba(255,255,255,0.1);            /* jasność w pozostałych dwóch rogach (ciemno) */
@@ -284,5 +284,41 @@
     </div>
 
   </div>
+  <script>
+    /*
+      Automatycznie wylicza kąt rogu (--corner-angle) dla każdego
+      "szklanego" elementu z poświatą krawędzi, na podstawie jego
+      RZECZYWISTYCH proporcji (szerokość/wysokość).
+ 
+      Dzięki temu ten sam kod działa poprawnie dla kart o dowolnym
+      kształcie - kwadratowych, wąskich, szerokich - bez ręcznego
+      przeliczania kątów za każdym razem.
+ 
+      Żeby dodać nową "szklaną" kartę w innej sekcji, wystarczy
+      nadać jej klasę .format-card (albo dopisać dodatkowy selektor
+      niżej w querySelectorAll, jeśli wolisz osobną nazwę klasy).
+    */
+    function updateCornerAngles() {
+      document.querySelectorAll('.format-card').forEach(function (card) {
+        var w = card.offsetWidth;
+        var h = card.offsetHeight;
+        if (w === 0 || h === 0) return; // element jeszcze niewidoczny/nieizmierzony
+ 
+        // Kąt między pionem a przekątną karty, w stopniach (0-90)
+        var angle = Math.atan2(w, h) * (180 / Math.PI);
+        card.style.setProperty('--corner-angle', angle + 'deg');
+      });
+    }
+ 
+    // Przelicz przy pierwszym załadowaniu strony
+    window.addEventListener('load', updateCornerAngles);
+ 
+    // Przelicz ponownie, jeśli rozmiar którejś karty się zmieni
+    // (np. przy zmianie rozmiaru okna / responsywnym layoucie)
+    var resizeObserver = new ResizeObserver(updateCornerAngles);
+    document.querySelectorAll('.format-card').forEach(function (card) {
+      resizeObserver.observe(card);
+    });
+  </script>
 </body>
 </html>
