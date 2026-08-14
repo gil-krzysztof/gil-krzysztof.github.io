@@ -199,11 +199,12 @@
   filter: blur(var(--rim-blur));
 
   background: conic-gradient(
-    from var(--rim-angle),
-    var(--rim-main) 0%,
-    var(--rim-main) var(--corner-angle),
-    var(--rim-main) calc(180deg + var(--corner-angle)),
-    var(--rim-min) 50%
+    from calc(360deg - var(--corner-angle)),
+    var(--rim-main) 0deg,
+    var(--rim-main) calc(2 * var(--corner-angle)),
+    var(--rim-min) 180deg,
+    var(--rim-main) calc(180deg + 2 * var(--corner-angle)),
+    var(--rim-main) 360deg
   );
 
   -webkit-mask:
