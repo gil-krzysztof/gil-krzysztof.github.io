@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Podgląd Mapy Refrakcji Szkła</title>
+<title>Poprawiona Mapa Refrakcji Karty</title>
 <style>
   html, body {
     margin: 0;
@@ -27,7 +27,7 @@
   }
 
   h1 {
-    font-size: 22px;
+    font-size: 20px;
     margin-bottom: 10px;
   }
 
@@ -41,7 +41,7 @@
 
   canvas {
     border: 2px solid #444;
-    border-radius: 12px;
+    border-radius: 40px; /* Wizualne dopasowanie podglądu do rogów karty */
     background-color: #808080;
   }
 </style>
@@ -49,15 +49,14 @@
 <body>
 
   <div class="container">
-    <h1>Podgląd Mapy Dyspersji (Displacement Map)</h1>
-    <p>Szare tło (rgb 128, 128) oznacza brak przesunięcia. Kolorowe obrzeża na krawędziach i rogach sterują poziomym (R) i pionowym (G) zagięciem światła.</p>
+    <h1>Poprawiona Mapa Dyspersji</h1>
+    <p>Teraz zaokrąglenia rogów idealnie pokrywają się z promieniem 40px Twoich kart, tworząc gładką ramkę soczewkową.</p>
     
-    <!-- Canvas na którym generujemy mapę -->
     <canvas id="mapCanvas" width="400" height="250"></canvas>
   </div>
 
   <script>
-    function generateRefractionMap() {
+    function generateCorrectedMap() {
       const canvas = document.getElementById('mapCanvas');
       const ctx = canvas.getContext('2d');
       
@@ -67,63 +66,64 @@
       const imgData = ctx.createImageData(w, h);
       const data = imgData.data;
 
-      // Geometria karty
-      const cornerRadius = 35; // Promień zaokrąglenia rogów
-      const rimWidth = 35;     // Szerokość strefy krawędziowej (ramki soczewki)
+      // Geometria zgodna z Twoimi kartami CSS (border-radius: 40px)
+      const cornerRadius = 40; 
+      const rimWidth = 30;     // Szerokość strefy zagięcia krawędzi
 
       for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
           
-          // Obliczanie odległości od zaokrąglonych krawędzi prostokąta
-          let qx = Math.abs(x - w / 2) - (w / 2 - cornerRadius);
-          let qy = Math.abs(y - h / 2) - (h / 2 - cornerRadius);
+          // Precyzyjna funkcja odległości (SDF) dla zaokrąglonego prostokąta
+          let cx = Math.max(0, Math.abs(x - w / 2) - (w / 2 - cornerRadius));
+          let cy = Math.max(0, Math.abs(y - h / 2) - (h / 2 - cornerRadius));
+          let outsideDist = Math.sqrt(cx * cx + cy * cy);
           
-          let distCorner = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2);
-          let distEdge = distCorner + Math.min(Math.max(qx, qy), 0) - cornerRadius;
-          let depthFromBorder = -distEdge; // Głębokość wnikania od zewnętrznej krawędzi
+          let insideX = Math.max(0, w / 2 - cornerRadius - Math.abs(x - w / 2));
+          let insideY = Math.max(0, h / 2 - cornerRadius - Math.abs(y - h / 2));
+          let insideDist = Math.min(0, -Math.max(insideX, insideY));
+          
+          // Całkowity dystans od krawędzi (ujemny wewnątrz, zero na brzegu, dodatny na zewnątrz)
+          let distanceToEdge = outsideDist + insideDist - cornerRadius;
+          
+          // Głębokość w głąb karty od zewnętrznego obrysu
+          let depth = -distanceToEdge;
 
           let shiftX = 0;
           let shiftY = 0;
 
-          // Działamy tylko w pasie krawędziowym
-          if (depthFromBorder >= 0 && depthFromBorder <= rimWidth) {
-            let normalizedDist = depthFromBorder / rimWidth; // 0 (brzeg) do 1 (wnętrze)
+          // Działamy wyłącznie w pasie krawędziowym o szerokości rimWidth
+          if (depth >= 0 && depth <= rimWidth) {
+            let normalized = depth / rimWidth; // Od 0 (brzeg) do 1 (wnętrze)
             
-            // Profil soczewki oparty na funkcji sinus
-            let lensProfile = Math.sin(normalizedDist * Math.PI) * (1 - normalizedDist);
+            // Profil soczewki (płynna fala)
+            let lens = Math.sin(normalized * Math.PI) * (1 - normalized);
 
-            let nx = 0, ny = 0;
-            if (qx > 0 || qy > 0) {
-              let len = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) || 1;
-              nx = (Math.max(qx, 0) / len) * Math.sign(x - w / 2);
-              ny = (Math.max(qy, 0) / len) * Math.sign(y - h / 2);
-            } else {
-              if (qx > qy) nx = Math.sign(x - w / 2);
-              else ny = Math.sign(y - h / 2);
-            }
+            // Wektor kierunku ugięcia światła prostopadle do krawędzi
+            let dx = x - w / 2;
+            let dy = y - h / 2;
+            let len = Math.sqrt(dx * dx + dy * dy) || 1;
 
-            shiftX = nx * lensProfile;
-            shiftY = ny * lensProfile;
+            shiftX = (dx / len) * lens;
+            shiftY = (dy / len) * lens;
           }
 
-          // Mapowanie na kanały RGB (128 to punkt neutralny)
-          let redChannel   = Math.min(255, Math.max(0, 128 + shiftX * 127));
-          let greenChannel = Math.min(255, Math.max(0, 128 + shiftY * 127));
-          let blueChannel  = 128; // Nieużywany
+          // Mapowanie na kanały RGB (128, 128, 128 to punkt neutralny / brak przesunięcia)
+          let red   = Math.min(255, Math.max(0, 128 + shiftX * 127));
+          let green = Math.min(255, Math.max(0, 128 + shiftY * 127));
+          let blue  = 128;
 
           let index = (y * w + x) * 4;
-          data[index]     = redChannel;   // Kanał Red (Oś X)
-          data[index + 1] = greenChannel; // Kanał Green (Oś Y)
-          data[index + 2] = blueChannel;  // Kanał Blue
-          data[index + 3] = 255;          // Alpha
+          data[index]     = red;
+          data[index + 1] = green;
+          data[index + 2] = blue;
+          data[index + 3] = 255;
         }
       }
 
       ctx.putImageData(imgData, 0, 0);
     }
 
-    // Uruchomienie generowania po załadowaniu skryptu
-    generateRefractionMap();
+    generateCorrectedMap();
   </script>
 
 </body>
