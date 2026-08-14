@@ -205,21 +205,7 @@
       var(--rim-min) calc(2 * var(--corner-angle) + 180deg),
       var(--rim-main) calc(2 * var(--corner-angle) + 190deg),
       var(--rim-main) 360deg
-    ),
-    /* EFEKT 2: Dodatkowa warstwa poświaty (kąt startowy 360deg) */
-    conic-gradient(
-      from calc(360deg - var(--corner-angle)),
-      var(--glow-main) 0deg,
-      var(--glow-main) calc(2 * var(--corner-angle) - 10deg),
-      var(--glow-min) calc(2 * var(--corner-angle)),
-      var(--glow-mid) 190deg,
-      var(--glow-min) calc(2 * var(--corner-angle) + 180deg),
-      var(--glow-main) calc(2 * var(--corner-angle) + 190deg),
-      var(--glow-main) 360deg
     );
-
-  /* Sprawia, że nakładające się światła z obu gradientów wzmacniają się nawzajem */
-  background-blend-mode: screen;
 
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
