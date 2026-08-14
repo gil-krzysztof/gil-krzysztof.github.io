@@ -154,16 +154,41 @@
     z-index: 1;
   }
 
-  .format-card {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 12px;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 25px;
-    box-sizing: border-box;
-  }
+.format-card {
+  flex: 1;
+  position: relative;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 25px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  /* Rozmycie i lekkie "gięcie" tła pod kartą */
+  backdrop-filter: blur(6px) saturate(140%) contrast(1.05);
+  -webkit-backdrop-filter: blur(6px) saturate(140%) contrast(1.05);
+
+  /* Cień rzucany przez kartę (X:10 Y:10 Blur:30 Spread:0 kolor #000 25%) */
+  box-shadow: 10px 10px 30px 0px rgba(0, 0, 0, 0.25);
+}
+
+/* Symulacja światła padającego pod kątem -45° (górny-lewy róg) */
+.format-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+  border-radius: 12px 12px 0 0;
+}
 
   .format-item-title {
     display: flex;
