@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-  /* --- Globalne ustawienia --- */
   html, body {
     margin: 0;
     background-color: #f0f0f0;
@@ -149,7 +148,6 @@
     pointer-events: none;
   }
 
-  /* --- KONTENER DLA KART --- */
   .format-cards {
     display: flex;
     gap: 24px;
@@ -169,9 +167,9 @@
 
     background: rgba(255, 255, 255, 0);
 
-    /* Efekt refrakcji krawędziowej */
-    -webkit-backdrop-filter: url(#lens-refraction);
-    backdrop-filter: url(#lens-refraction);
+    /* Równomierne powiększenie środka */
+    -webkit-backdrop-filter: scale(1.08);
+    backdrop-filter: scale(1.08);
 
     --rim-thickness: 2.5px;
     --rim-blur: 0.5px;
@@ -185,6 +183,25 @@
       5px 5px 12px rgba(0, 0, 0, 0.25);
   }
 
+  /* --- REFRAKCJA KRAWĘDZIOWA (PIERŚCIEŃ SOCZEWKI) --- */
+  .refraction-edge {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+
+    /* Nakładka załamująca światło tylko przy brzegach */
+    -webkit-backdrop-filter: blur(1.5px) scale(1.12);
+    backdrop-filter: blur(1.5px) scale(1.12);
+
+    /* Maskowanie: środek jest pusty, refrakcja występuje tylko w pasie przy krawędzi (20px) */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 18px; 
+  }
+
   /* --- 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM --- */
   .format-card::after {
     content: "";
@@ -193,7 +210,7 @@
     border-radius: inherit;
     padding: var(--rim-thickness);
     filter: blur(var(--rim-blur));
-    z-index: 1;
+    z-index: 2;
 
     background: conic-gradient(
       from calc(180deg - var(--corner-angle, 45deg)),
@@ -233,7 +250,7 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    z-index: 2;
+    z-index: 3;
 
     box-shadow:
       inset -3px -3px 8px 0px rgba(0, 0, 0, 0.25),
@@ -246,7 +263,7 @@
   .format-item-title,
   .format-card p {
     position: relative;
-    z-index: 3;
+    z-index: 4;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   }
 
@@ -306,18 +323,21 @@
         
         <!-- KARTA 1 -->
         <div class="format-card">
+          <div class="refraction-edge"></div>
           <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
           <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
         </div>
 
         <!-- KARTA 2 -->
         <div class="format-card">
+          <div class="refraction-edge"></div>
           <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
           <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
         </div>
 
         <!-- KARTA 3 -->
         <div class="format-card">
+          <div class="refraction-edge"></div>
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
           <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
         </div>
@@ -326,34 +346,6 @@
     </div>
 
   </div>
-
-  <!-- MAPA PRZESUNIĘCIA SOCZEWKOWEGO (GŁADKA REFRAKCJA KRAWĘDZI) -->
-  <svg style="width:0; height:0; position:absolute;">
-    <defs>
-      <!-- Gradient radialny udający wypukłą soczewkę (środek płaski = #808080, brzeg zakrzywiony) -->
-      <radialGradient id="lens-map" cx="50%" cy="50%" r="70%">
-        <stop offset="0%" stop-color="#808080" />
-        <stop offset="65%" stop-color="#808080" />
-        <stop offset="88%" stop-color="#b0b0b0" />
-        <stop offset="100%" stop-color="#ffffff" />
-      </radialGradient>
-
-      <filter id="lens-refraction" x="-10%" y="-10%" width="120%" height="120%">
-        <!-- Tło gradientowe jako mapa przesunięcia -->
-        <feImage href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='url(%23lens-map)'/></svg>" result="map" />
-        <feTile in="map" result="tiledMap" />
-        
-        <!-- Płynne gięcie wyłącznie na krawędziach -->
-        <feDisplacementMap 
-          in="SourceGraphic" 
-          in2="tiledMap" 
-          scale="22" 
-          xChannelSelector="R" 
-          yChannelSelector="G" 
-        />
-      </filter>
-    </defs>
-  </svg>
 
   <script>
     function updateCornerAngles() {
