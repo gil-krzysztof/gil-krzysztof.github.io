@@ -154,89 +154,64 @@
     z-index: 1;
   }
 
+  /*
+    Krawędź karty rysowana jest techniką "podwójnego tła":
+    - karta ma przezroczysty border o grubości --rim-thickness
+    - jedna warstwa background (padding-box) wypełnia WNĘTRZE karty
+      jednolitym kolorem --card-fill
+    - druga warstwa background (border-box) to conic-gradient widoczny
+      WYŁĄCZNIE w paśmie border (bo warstwa padding-box go zasłania
+      wewnątrz) - dzięki temu krawędź jest ostra, cienka i idealnie
+      podąża za border-radius, bez masek i bez rozmycia (które psuło
+      poprzednią wersję, robiąc nierówny, "rozlany" cień).
+
+    Jasność wzdłuż krawędzi to funkcja SCHODKOWA (jak bevel w Photoshopie):
+    stałe plateau na prostych bokach, zmiana skupiona tylko w rogu,
+    w oknie kątowym o szerokości --rim-transition.
+
+    Żeby podać INNĄ funkcję później, wystarczy zmienić WYŁĄCZNIE listę
+    stopni w conic-gradient poniżej - reszta zostaje bez zmian.
+  */
   .format-card {
     flex: 1;
     position: relative;
-    background: rgba(0,0,0,0);
     border-radius: 32px;
-    padding: 25px;
+    padding: 23px;
     box-sizing: border-box;
-    overflow: hidden; /* przycina poświatę, żeby nie wychodziła poza kartę */
+    border: var(--rim-thickness) solid transparent;
 
-    /* Zewnętrzny cień - "unoszenie" karty nad tłem (osobny efekt, nie część funkcji krawędzi) */
+    /* Zewnętrzny cień - "unoszenie" karty nad tłem (osobny efekt) */
     box-shadow: 10px 10px 10px rgba(0,0,0,0.20);
-    
-    backdrop-filter: blur(1.5px) saturate(100%);
-    -webkit-backdrop-filter: blur(1.5px) saturate(100%);
 
-    /* --- Parametry funkcji poświaty krawędzi (JEDNO miejsce do edycji) --- */
-    --rim-thickness: 2px;      /* jak gruba jest sama linia/poświata */
-    --rim-blur: 3px;           /* jak bardzo rozmyta / miękka */
+    /* --- Parametry funkcji krawędzi (JEDNO miejsce do edycji) --- */
+    --rim-thickness: 2px;      /* grubość samej krawędzi */
     --rim-angle: 45deg;        /* kierunek maksimum: 45deg = prawy-górny róg */
-    --rim-max: rgba(255,255,255,0.55);  /* kolor/jasność w punkcie maks */
-    --rim-min: rgba(0,0,0,0.4);         /* kolor/jasność w punkcie min */
-    --rim-transition: 6%;      /* szerokość przejścia w rogu - MAŁA wartość (4-10%)
-                                   = płaskie boki, zmiana tylko w rogu (jak bevel
-                                   w Photoshopie). Wartość 50% = z powrotem gładka,
-                                   ciągła funkcja liniowa jak poprzednio. */
-  }
+    --rim-max: rgba(255,255,255,0.8);   /* jasność w punkcie maks */
+    --rim-min: rgba(0,0,0,0.5);         /* jasność w punkcie min */
+    --rim-transition: 6%;      /* szerokość przejścia w rogu - MAŁA (4-10%)
+                                   = płaskie boki, zmiana tylko w rogu.
+                                   50% = z powrotem gładka funkcja liniowa. */
+    --card-fill: rgba(0,0,0,0.15); /* kolor wnętrza karty */
 
-  /*
-    ::after rysuje CIENKI PIERŚCIEŃ dokładnie na krawędzi karty (dzięki
-    padding + mask-composite: exclude, co matematycznie podąża za
-    border-radius, tak jak inset box-shadow, ale bez szwów w rogach).
+    background:
+      linear-gradient(var(--card-fill), var(--card-fill)) padding-box,
+      conic-gradient(
+        from var(--rim-angle),
+        var(--rim-max) 0%,
+        var(--rim-max) calc(50% - var(--rim-transition)),
+        var(--rim-min) calc(50% + var(--rim-transition)),
+        var(--rim-min) calc(100% - var(--rim-transition)),
+        var(--rim-max) 100%
+      ) border-box;
 
-    Jasność wzdłuż pierścienia opisuje JEDNA linia - conic-gradient -
-    czyli funkcja jasność(kąt). Teraz to funkcja SCHODKOWA z płynnym
-    przejściem tylko w --rim-transition wokół każdego punktu zmiany:
-      0%                      -> --rim-max  (płaskie plateau)
-      (50% - --rim-transition) -> --rim-max  (koniec plateau, tu zaczyna się róg)
-      (50% + --rim-transition) -> --rim-min  (koniec przejścia w rogu)
-      100% - to samo dla powrotu do --rim-max
-
-    To dokładnie odwzorowuje zachowanie bevela z Photoshopa: proste boki
-    mają STAŁĄ jasność (bo normalna powierzchni się tam nie zmienia),
-    a cała zmiana jest upakowana w wąskim wycinku kątowym zaokrąglonego
-    rogu, gdzie normalna faktycznie się obraca.
-
-    Żeby podać INNĄ funkcję później, wystarczy zmienić WYŁĄCZNIE listę
-    stopni w tym jednym background - reszta (grubość, rozmycie, kształt
-    podążający za rogami) zostaje bez zmian. Np. pasiasty wzór (flagi)
-    z Twojego zdjęcia to conic-gradient z wieloma naprzemiennymi stopami
-    zamiast czterech - patrz przykład w komentarzu niżej.
-  */
-  .format-card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: var(--rim-thickness);
-    filter: blur(var(--rim-blur));
-
-    background: conic-gradient(
-      from var(--rim-angle),
-      var(--rim-max) 0%,
-      var(--rim-max) calc(50% - var(--rim-transition)),
-      var(--rim-min) calc(50% + var(--rim-transition)),
-      var(--rim-min) calc(100% - var(--rim-transition)),
-      var(--rim-max) 100%
-    );
-
-    /* Przykład INNEJ funkcji (pasiasty wzór jak na screenie) - podmień
-       powyższy background na to, żeby przetestować:
-    background: repeating-conic-gradient(
+    /* Przykład INNEJ funkcji (pasiasty wzór) - podmień warstwę conic-gradient
+       powyżej na to, żeby przetestować:
+    repeating-conic-gradient(
       from var(--rim-angle),
       var(--rim-max) 0deg 20deg,
       var(--rim-min) 20deg 40deg
-    );
+    ) border-box;
     */
-
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-            mask-composite: exclude;
-    pointer-events: none;
   }
 
   .format-item-title {
