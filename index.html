@@ -175,38 +175,38 @@
     --rim-mid: rgba(255, 255, 255, 0.25);
     --rim-min: rgba(255, 255, 255, 0);
 
-    /* Oświetlenie krawędzi i delikatny cień zewnętrzny */
+    /* Oświetlenie i zewnętrzny cień */
     box-shadow:
       inset 6px 6px 16px -2px rgba(255, 255, 255, 0.35),
       5px 5px 12px rgba(0, 0, 0, 0.25);
   }
 
-  /* --- LUPA I REFRAKCJA (ZWIĘKSZONA PRZEZROCZYSTOŚĆ I OSTROŚĆ TŁA) --- */
+  /* --- WARSTWA LUPY (POWIĘKSZONE TŁO Z ZACHOWANIEM PROPORCJI) --- */
   .card-glass-bg {
     position: absolute;
     inset: 0;
     z-index: -1;
     border-radius: inherit;
-    /* Przezroczyste tło, pozwalające prześwitywać sekcji pod spodem */
-    background-color: rgba(102, 55, 55, 0.2);
     overflow: hidden;
+    background-color: rgba(102, 55, 55, 0.3);
   }
 
   .card-glass-bg::before {
     content: "";
     position: absolute;
-    inset: -20px;
+    inset: -30px;
     background-image: url('siatka_wektor.svg');
-    background-size: cover;
+    
+    /* Rozmiar dopasowany w proporcji do sekcji głównej */
+    background-size: 100vw auto; 
     background-position: center;
+
+    /* Powiększenie tła wewnątrz karty o 20% (efekt lupy) */
+    transform: scale(1.2); 
     
-    /* EFEKT LUPY: fizyczne przybliżenie tekstury */
-    transform: scale(1.15); 
-    
-    /* Zmniejszony blur (0.5px) oraz wyższa przezroczystość (opacity 0.95),
-       dzięki czemu wzór siatki za kartami jest o wiele bardziej wyraźny i czytelny */
+    /* Filtr refrakcji i lekkie wyostrzenie */
     filter: url(#refraction-filter) blur(0.5px) brightness(1.15); 
-    opacity: 0.95;
+    opacity: 0.9;
   }
 
   /* --- 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM / DYSPERSJĄ --- */
@@ -259,7 +259,6 @@
     pointer-events: none;
     z-index: 2;
 
-    /* Subtelniejszy cień wewnętrzny, by nie zaciemniać tła w środku karty */
     box-shadow:
       inset -3px -3px 8px 0px rgba(0, 0, 0, 0.25),
       inset 0 0 6px 0px rgba(0, 0, 0, 0.25);
@@ -272,7 +271,6 @@
   .format-card p {
     position: relative;
     z-index: 3;
-    /* Cień pod tekstem zapewniający czytelność */
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   }
 
@@ -360,12 +358,12 @@
   <svg style="display: none;">
     <defs>
       <filter id="refraction-filter">
-        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="1" result="noise" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="1" result="noise" />
         <feComponentTransfer result="displacement-map">
-          <feFuncR type="linear" slope="0.04" />
-          <feFuncG type="linear" slope="0.04" />
+          <feFuncR type="linear" slope="0.02" />
+          <feFuncG type="linear" slope="0.02" />
         </feComponentTransfer>
-        <feDisplacementMap in="SourceGraphic" in2="displacement-map" scale="8" xChannelSelector="R" yChannelSelector="G" />
+        <feDisplacementMap in="SourceGraphic" in2="displacement-map" scale="4" xChannelSelector="R" yChannelSelector="G" />
       </filter>
     </defs>
   </svg>
