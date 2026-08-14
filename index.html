@@ -173,7 +173,7 @@
   --rim-blur: 3px;
   --opposite-angle: calc(360deg - var(--corner-angle));
   --rim-angle: var(--opposite-angle);                    /* kierunek GŁÓWNEGO źródła (0deg = góra, zgodnie z ruchem wskazówek) */
-  --rim-main: rgba(255,255,255,0.8);     /* jasność w rogu głównym (mocna poświata) */
+  --rim-main: rgba(255,255,255,0.9);     /* jasność w rogu głównym (mocna poświata) */
   --rim-secondary: rgba(255,255,255,0.8);/* jasność w rogu przeciwległym (mała poświata) */
   --rim-min: rgba(255,255,255,0.1);            /* jasność w pozostałych dwóch rogach (ciemno) */
 }
@@ -202,6 +202,7 @@
   background: conic-gradient(
     from var(--rim-angle),
     var(--rim-main) 0%,
+    var(--rim-main) 20%,
     var(--rim-min) 25%,
     var(--rim-secondary) 50%,
     var(--rim-min) 75%,
