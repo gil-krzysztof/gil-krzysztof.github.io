@@ -14,7 +14,7 @@
   }
 
   .content-wrapper {
-    max-width: 1400px;
+    -width: 1400px;
     margin: 0 auto;
     background-color: white;
     position: relative;
@@ -91,7 +91,7 @@
   }
 
   .subtitle {
-    max-width: 950px;
+    -width: 950px;
     margin-top: 30px;
     font-size: 20px;
     font-weight: 400;
@@ -118,7 +118,7 @@
 
   .profile-section p {
     padding: 15px;
-    max-width: 750px;
+    -width: 750px;
     margin: 0 auto;
     font-size: 20px;
     line-height: 1.5;
@@ -171,7 +171,8 @@
     /* Parametry pojedynczej ostrej ramki */
     --rim-thickness: 1.5px;
     --rim-blur: 0.5px;
-    --rim-main: rgba(255, 255, 255, 0.95);
+    --rim-max: rgba(255, 255, 255, 1);
+    --rim-main: rgba(255, 255, 255, 0.8);
     --rim-mid: rgba(255, 255, 255, 0.25);
     --rim-min: rgba(255, 255, 255, 0);
   }
@@ -192,7 +193,7 @@
       var(--rim-min) calc(2 * var(--corner-angle, 45deg)),
       var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
       var(--rim-mid) 170deg,
-      var(--rim-main) 180deg,
+      var(--rim-max) 180deg,
       var(--rim-mid) 190deg,
       var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
       var(--rim-min) calc(2 * var(--corner-angle, 45deg) + 180deg),
