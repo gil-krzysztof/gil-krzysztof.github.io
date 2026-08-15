@@ -327,6 +327,13 @@
     .equation-section::-webkit-scrollbar {
       height: 4px;
     }
+    /* Mniejszy mnożnik vw i niższy pułap niż na desktopie, żeby cały wzór
+       (razem z prawą, animowaną stroną) mieścił się w szerokości ekranu
+       bez potrzeby przewijania w poziomie - na wąskich telefonach sama
+       zmiana z 4.5vw na 4vw i obniżenie minimum o to zapewnia. */
+    .equation-section .katex {
+      font-size: clamp(0.78rem, 4vw, 1.5rem);
+    }
   }
 
   /* --- Sekcja "Profil ucznia" --- */
@@ -521,8 +528,13 @@
       gap: 16px;
     }
 
+    /* Wawrzyny są pomyślane jako ozdoba flankująca dwuwierszowy nagłówek
+       (tak jak na desktopie). Na wąskim ekranie ten sam tekst zawija się
+       do 4 linii, więc wawrzyn wypada w połowie wysokości i wygląda jak
+       przypadkowy znak, a nie ozdoba - dlatego chowamy go poniżej 720px,
+       zamiast pokazywać w mylącej, "urwanej" formie. */
     .laurel {
-      width: 20px;
+      display: none;
     }
 
     h1 {
