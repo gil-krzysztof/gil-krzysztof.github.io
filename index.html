@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
@@ -8,8 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="katex/katex.min.css">
-<script src="katex/katex.min.js"></script>
+<link rel="stylesheet" href="katex.mjs.css">
 <style>
   /* --- Globalne ustawienia --- */
   html, body {
@@ -18,437 +16,431 @@
     font-family: 'Inter', Arial, sans-serif;
   }
 
-.content-wrapper {
-max-width: 1400px;
-margin: 0 auto;
-background-color: white;
-position: relative;
-}
+  .content-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: white;
+    position: relative;
+  }
 
-/* — Sekcja hero — */
-.hero {
-position: relative;
-display: flex;
-flex-direction: column;
-align-items: center;
-padding-top: 240px;
-padding-bottom: 100px;
-overflow: hidden;
-}
+  /* --- Sekcja hero --- */
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 240px;
+    padding-bottom: 240px;
+    overflow: hidden;
+  }
 
-.hero-grid-overlay {
-position: absolute;
-top: 50%;
-left: 50%;
-width: 1440px;
-height: 650px;
-transform: translate(-50%, -50%);
-z-index: 0;
-pointer-events: none;
-}
+  .hero-grid-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1440px;
+    height: 650px;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+  }
 
-.corner-note {
-position: absolute;
-top: 4vh;
-left: 4vw;
-font-size: 20px;
-color: black;
-z-index: 1;
-}
+  .corner-note {
+    position: absolute;
+    top: 4vh;
+    left: 4vw;
+    font-size: 20px;
+    color: black;
+    z-index: 1;
+  }
 
-.contact-button {
-position: absolute;
-top: 4vh;
-right: 4vw;
-padding: 15px 25px;
-background-color: white;
-border: 2px solid black;
-border-radius: 8px;
-font-size: 16px;
-font-weight: 500;
-color: black;
-cursor: pointer;
-z-index: 1;
-}
+  .contact-button {
+    position: absolute;
+    top: 4vh;
+    right: 4vw;
+    padding: 15px 25px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: black;
+    cursor: pointer;
+    z-index: 1;
+  }
 
-.headline-row {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 40px;
-height: fit-content;
-position: relative;
-z-index: 1;
-}
+  .headline-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    height: fit-content;
+    position: relative;
+    z-index: 1;
+  }
 
-.laurel {
-width: 40px;
-flex-shrink: 0;
-}
+  .laurel {
+    width: 40px;
+    flex-shrink: 0;
+  }
 
-h1 {
-font-size: 40px;
-font-weight: 600;
-line-height: 1.22;
-letter-spacing: -0.02em;
-text-align: center;
-margin: 0;
-}
+  h1 {
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin: 0;
+  }
 
-.subtitle {
-max-width: 950px;
-margin-top: 30px;
-font-size: 20px;
-font-weight: 400;
-line-height: 1.5;
-text-align: center;
-color: #333;
-position: relative;
-z-index: 1;
-}
+  .subtitle {
+    max-width: 950px;
+    margin-top: 30px;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    color: #333;
+    position: relative;
+    z-index: 1;
+  }
 
-/* — Karta z równaniem (wewnątrz hero) — */
-.equation-card {
-margin-top: 60px;
-position: relative;
-z-index: 1;
-}
+  /* --- Sekcja równania (sumy sinusów) --- */
+  .equation-section {
+    padding: 50px 20px 70px;
+    text-align: center;
+    background-color: white;
+  }
 
-.equation-card .katex-display {
-margin: 0;
-font-size: 1.5em;
-color: #000;
-}
+  /* KaTeX renderuje domyślnie krojem opartym na Computer Modern —
+     to ten sam rodzaj kroju matematycznego (LaTeX / Computer Modern),
+     jakiego używa się w manim, czyli w filmach 3blue1brown. */
+  .equation-section .katex {
+    font-size: 2rem;
+    color: #663737;
+  }
 
-@media (max-width: 720px) {
-.equation-card {
-margin-top: 32px;
-}
-.equation-card .katex-display {
-font-size: 1em;
-}
-}
+  @media (max-width: 720px) {
+    .equation-section {
+      padding: 36px 16px 48px;
+    }
+    .equation-section .katex {
+      font-size: 1.35rem;
+    }
+  }
 
-/* — Sekcja “Profil ucznia” — */
-.profile-section {
-padding: 80px 20px;
-text-align: center;
-box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.15);
-position: relative;
-}
+  /* --- Sekcja "Profil ucznia" --- */
+  .profile-section {
+    padding: 80px 20px;
+    text-align: center;
+    box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.15);
+    position: relative;
+  }
 
-.profile-section h2 {
-font-size: 36px;
-font-weight: 600;
-margin: 0;
-}
+  .profile-section h2 {
+    font-size: 36px;
+    font-weight: 600;
+    margin: 0;
+  }
 
-.profile-section p {
-padding: 15px;
-max-width: 750px;
-margin: 0 auto;
-font-size: 20px;
-line-height: 1.5;
-color: #333;
-}
+  .profile-section p {
+    padding: 15px;
+    max-width: 750px;
+    margin: 0 auto;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #333;
+  }
 
-/* — Sekcja “Format korepetycji” — */
-.format-section {
-background-color: #663737;
-color: white;
-font-weight: 500;
-padding: 80px 60px;
-box-sizing: border-box;
-position: relative;
-overflow: hidden;
-}
+  /* --- Sekcja "Format korepetycji" --- */
+  .format-section {
+    background-color: #663737;
+    color: white;
+    font-weight: 500;
+    padding: 80px 60px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+  }
 
-.format-grid-overlay {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-object-fit: cover;
-z-index: 0;
-pointer-events: none;
-}
+  .format-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+  }
 
-/* — KONTENER DLA KART — */
-.format-cards {
-display: flex;
-gap: 24px;
-position: relative;
-z-index: 1;
-}
+  /* --- KONTENER DLA KART --- */
+  .format-cards {
+    display: flex;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+  }
 
-/* — KARTA — */
-.format-card {
-flex: 1;
-position: relative;
-border-radius: 40px;
-padding: 40px;
-box-sizing: border-box;
-overflow: hidden;
-isolation: isolate;
+  /* --- KARTA --- */
+  .format-card {
+    flex: 1;
+    position: relative;
+    border-radius: 40px;
+    padding: 40px;
+    box-sizing: border-box;
+    overflow: hidden;
+    isolation: isolate;
 
-```
-background: rgba(255, 255, 255, 0);
-border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 
-/* Dynamiczne przypisanie filtru refrakcji zdefiniowanego w locie przez JS */
-backdrop-filter: var(--glass-filter-ref);
--webkit-backdrop-filter: var(--glass-filter-ref);
+    /* Dynamiczne przypisanie filtru refrakcji zdefiniowanego w locie przez JS */
+    backdrop-filter: var(--glass-filter-ref);
+    -webkit-backdrop-filter: var(--glass-filter-ref);
 
---rim-thickness: 2.5px;
---rim-blur: 0.5px;
---rim-max: rgba(255, 255, 255, 1);
---rim-main: rgba(255, 255, 255, 0.6);
---rim-mid: rgba(255, 255, 255, 0.25);
---rim-min: rgba(255, 255, 255, 0);
+    --rim-thickness: 2.5px;
+    --rim-blur: 0.5px;
+    --rim-max: rgba(255, 255, 255, 1);
+    --rim-main: rgba(255, 255, 255, 0.6);
+    --rim-mid: rgba(255, 255, 255, 0.25);
+    --rim-min: rgba(255, 255, 255, 0);
 
-box-shadow:
-  inset 6px 6px 16px -2px rgba(255, 255, 255, 0.20),
-  5px 5px 12px rgba(0, 0, 0, 0.4);
-```
+    box-shadow:
+      inset 6px 6px 16px -2px rgba(255, 255, 255, 0.20),
+      5px 5px 12px rgba(0, 0, 0, 0.4);
+  }
 
-}
+  /* --- 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM / DYSPERSJĄ --- */
+  .format-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: var(--rim-thickness);
+    filter: blur(var(--rim-blur));
+    z-index: 1;
 
-/* — 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM / DYSPERSJĄ — */
-.format-card::after {
-content: “”;
-position: absolute;
-inset: 0;
-border-radius: inherit;
-padding: var(–rim-thickness);
-filter: blur(var(–rim-blur));
-z-index: 1;
+    background: conic-gradient(
+      from calc(180deg - var(--corner-angle, 45deg)),
+      var(--rim-main) 0deg,
+      var(--rim-main) calc(2 * var(--corner-angle, 45deg) - 10deg),
+      var(--rim-min) calc(2 * var(--corner-angle, 45deg)),
+      var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
+      var(--rim-mid) 170deg,
+      
+      rgba(255, 100, 200, 0.8) 175deg,
+      rgba(100, 220, 255, 0.8) 178deg,
+      var(--rim-max) 180deg,
+      rgba(255, 230, 130, 0.8) 182deg,
+      rgba(180, 120, 255, 0.8) 185deg,
 
-```
-background: conic-gradient(
-  from calc(180deg - var(--corner-angle, 45deg)),
-  var(--rim-main) 0deg,
-  var(--rim-main) calc(2 * var(--corner-angle, 45deg) - 10deg),
-  var(--rim-min) calc(2 * var(--corner-angle, 45deg)),
-  var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
-  var(--rim-mid) 170deg,
+      var(--rim-mid) 190deg,
+      var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
+      var(--rim-min) calc(2 * var(--corner-angle, 45deg) + 180deg),
+      var(--rim-main) calc(2 * var(--corner-angle, 45deg) + 190deg),
+      var(--rim-main) 360deg
+    );
+    
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+                mask-composite: exclude;
+    
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
 
-  rgba(255, 100, 200, 0.8) 175deg,
-  rgba(100, 220, 255, 0.8) 178deg,
-  var(--rim-max) 180deg,
-  rgba(255, 230, 130, 0.8) 182deg,
-  rgba(180, 120, 255, 0.8) 185deg,
+  /* --- 2. CZARNY COLOR BURN --- */
+  .format-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 2;
 
-  var(--rim-mid) 190deg,
-  var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
-  var(--rim-min) calc(2 * var(--corner-angle, 45deg) + 180deg),
-  var(--rim-main) calc(2 * var(--corner-angle, 45deg) + 190deg),
-  var(--rim-main) 360deg
-);
+    box-shadow:
+      inset -3px -3px 8px 0px rgba(0, 0, 0, 0.6),
+      inset 0 0 6px 0px rgba(0, 0, 0, 0.6);
 
--webkit-mask:
-  linear-gradient(#fff 0 0) content-box,
-  linear-gradient(#fff 0 0);
--webkit-mask-composite: xor;
-            mask-composite: exclude;
+    mix-blend-mode: color-burn; 
+  }
 
-pointer-events: none;
-mix-blend-mode: screen;
-```
+  /* --- 3. TEKST I IKONY --- */
+  .format-item-title,
+  .format-card p {
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
 
-}
+  .format-item-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #ffffff;
+  }
 
-/* — 2. CZARNY COLOR BURN — */
-.format-card::before {
-content: “”;
-position: absolute;
-inset: 0;
-border-radius: inherit;
-pointer-events: none;
-z-index: 2;
+  .format-item-title .icon {
+    width: 22px;
+    height: 22px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+  }
 
-```
-box-shadow:
-  inset -3px -3px 8px 0px rgba(0, 0, 0, 0.6),
-  inset 0 0 6px 0px rgba(0, 0, 0, 0.6);
+  .format-card p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #f3ecec;
+  }
+  /* --- Wersja mobilna --- */
+  @media (max-width: 720px) {
+    .hero {
+      padding-top: 150px;
+      padding-bottom: 200px;
+      margin: 0 20px;
+    }
 
-mix-blend-mode: color-burn;
-```
+    .corner-note,
+    .contact-button {
+      top: 2.5vh;
+    }
 
-}
+    .contact-button {
+      padding: 10px 18px;
+      font-size: 14px;
+    }
 
-/* — 3. TEKST I IKONY — */
-.format-item-title,
-.format-card p {
-position: relative;
-z-index: 3;
-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
+    .headline-row {
+      gap: 16px;
+    }
 
-.format-item-title {
-display: flex;
-align-items: center;
-gap: 10px;
-font-size: 18px;
-font-weight: 600;
-margin-bottom: 12px;
-color: #ffffff;
-}
+    .laurel {
+      width: 20px;
+    }
 
-.format-item-title .icon {
-width: 22px;
-height: 22px;
-filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
-}
+    h1 {
+      font-size: 30px;
+    }
 
-.format-card p {
-margin: 0;
-font-size: 15px;
-font-weight: 400;
-line-height: 1.5;
-color: #f3ecec;
-}
-/* — Wersja mobilna — */
-@media (max-width: 720px) {
-.hero {
-padding-top: 150px;
-padding-bottom: 200px;
-margin: 0 20px;
-}
+    .subtitle {
+      font-size: 16px;
+      padding: 0 12px;
+    }
 
-```
-.corner-note,
-.contact-button {
-  top: 2.5vh;
-}
+    .profile-section {
+      padding: 48px 20px;
+    }
 
-.contact-button {
-  padding: 10px 18px;
-  font-size: 14px;
-}
+    .profile-section h2 {
+      font-size: 26px;
+    }
 
-.headline-row {
-  gap: 16px;
-}
+    .profile-section p {
+      font-size: 16px;
+    }
 
-.laurel {
-  width: 20px;
-}
+    .format-section {
+      padding: 48px 30px;
+    }
 
-h1 {
-  font-size: 30px;
-}
+    /* Kluczowa zmiana: karty jedna pod drugą zamiast obok siebie */
+    .format-cards {
+      flex-direction: column;
+      gap: 20px;
+    }
 
-.subtitle {
-  font-size: 16px;
-  padding: 0 12px;
-}
-
-.profile-section {
-  padding: 48px 20px;
-}
-
-.profile-section h2 {
-  font-size: 26px;
-}
-
-.profile-section p {
-  font-size: 16px;
-}
-
-.format-section {
-  padding: 48px 30px;
-}
-
-/* Kluczowa zmiana: karty jedna pod drugą zamiast obok siebie */
-.format-cards {
-  flex-direction: column;
-  gap: 20px;
-}
-
-.format-card {
-  width: 100%;
-}
-```
-
-}
+    .format-card {
+      width: 100%;
+    }
+  }
 
 </style>
 </head>
 <body>
   <div class="content-wrapper">
 
-```
-<div class="hero">
-  <img src="siatka_czerwona_wektor.svg" alt="" class="hero-grid-overlay">
+    <div class="hero">
+      <img src="siatka_czerwona_wektor.svg" alt="" class="hero-grid-overlay">
 
-  <div class="corner-note">Krzysztof Gil</div>
-  <button class="contact-button">Kontakt</button>
+      <div class="corner-note">Krzysztof Gil</div>
+      <button class="contact-button">Kontakt</button>
 
-  <div class="headline-row">
-    <img src="laura_lewy_wektor.svg" alt="" class="laurel">
-    <h1>Matematyka rozszerzona online<br>Z wynikiem 100% z matury</h1>
-    <img src="laura_prawy_wektor.svg" alt="" class="laurel">
-  </div>
+      <div class="headline-row">
+        <img src="laura_lewy_wektor.svg" alt="" class="laurel">
+        <h1>Matematyka rozszerzona online<br>Z wynikiem 100% z matury</h1>
+        <img src="laura_prawy_wektor.svg" alt="" class="laurel">
+      </div>
 
-  <p class="subtitle">Cześć! Jestem studentem pierwszego roku Lotnictwa i Kosmonautyki na Politechnice Warszawskiej i pomogę Ci dostać się na wymarzony kierunek.</p>
-
-  <div class="equation-card">
-    <div id="trig-equation"></div>
-  </div>
-</div>
-
-<div class="profile-section">
-  <h2>Planujesz maturę z matematyki rozszerzonej?</h2>
-  <p>Zajmiemy się bieżącą nauką, traktując maturę jako główny cel, bądź stworzymy plan przygotowania przed egzaminem.</p>
-  <p>Przewiduję pracę z maksymalnie kilkoma osobami w charakterze długoterminowym.</p>
-</div>
-
-<div class="format-section">
-  <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
-
-  <div class="format-cards">
-
-    <!-- KARTA 1 -->
-    <div class="format-card">
-      <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
-      <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
+      <p class="subtitle">Cześć! Jestem studentem pierwszego roku Lotnictwa i Kosmonautyki na Politechnice Warszawskiej i pomogę Ci dostać się na wymarzony kierunek.</p>
     </div>
 
-    <!-- KARTA 2 -->
-    <div class="format-card">
-      <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
-      <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
+    <div class="equation-section">
+      <span id="sum-equation"></span>
     </div>
 
-    <!-- KARTA 3 -->
-    <div class="format-card">
-      <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
-      <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
+    <div class="profile-section">
+      <h2>Planujesz maturę z matematyki rozszerzonej?</h2>
+      <p>Zajmiemy się bieżącą nauką, traktując maturę jako główny cel, bądź stworzymy plan przygotowania przed egzaminem.</p>
+      <p>Przewiduję pracę z maksymalnie kilkoma osobami w charakterze długoterminowym.</p>
     </div>
 
-  </div>
-</div>
-```
+    <div class="format-section">
+      <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
+
+      <div class="format-cards">
+        
+        <!-- KARTA 1 -->
+        <div class="format-card">
+          <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
+          <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
+        </div>
+
+        <!-- KARTA 2 -->
+        <div class="format-card">
+          <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
+          <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
+        </div>
+
+        <!-- KARTA 3 -->
+        <div class="format-card">
+          <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
+          <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz zdjęcia do wspólnego omówienia.</p>
+        </div>
+
+      </div>
+    </div>
 
   </div>
 
   <!-- Dynamicznie generowane filtry SVG dla poszczególnych kart osadzone będą tutaj -->
+  <svg id="svg-filters-container" style="position: absolute; width: 0; height: 0;" aria-hidden="true"></svg>
 
-<svg id="svg-filters-container" style="position: absolute; width: 0; height: 0;" aria-hidden="true"></svg>
+  <script src="katex.min.js"></script>
+  <script>
+    // Renderowanie wzoru na sumę sinusów (wzór na sumę-w-iloczyn)
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.katex) {
+        katex.render(
+          "\\sin A + \\sin B = 2\\sin\\!\\left(\\frac{A+B}{2}\\right)\\cos\\!\\left(\\frac{A-B}{2}\\right)",
+          document.getElementById('sum-equation'),
+          { throwOnError: false, displayMode: true }
+        );
+      }
+    });
+  </script>
 
   <script>
-    // Renderowanie równania (KaTeX, bez animacji na razie)
-    katex.render(
-      "\\sin\\alpha + \\sin\\beta = 2\\sin\\frac{\\alpha+\\beta}{2}\\cos\\frac{\\alpha-\\beta}{2}",
-      document.getElementById("trig-equation"),
-      { displayMode: true, throwOnError: false }
-    );
-
     function updateCornerAnglesAndRefraction() {
       const cards = document.querySelectorAll('.format-card');
       const svgContainer = document.getElementById('svg-filters-container');
-
+      
       // Wyczyszczenie starych filtrów SVG
       svgContainer.innerHTML = '';
 
@@ -466,18 +458,18 @@ h1 {
         canvas.width = w;
         canvas.height = h;
         const ctx = canvas.getContext('2d');
-
+        
         const imgData = ctx.createImageData(w, h);
         const data = imgData.data;
 
-        const cornerRadius = 40;
-        const rimWidth = 60;
+        const cornerRadius = 40; 
+        const rimWidth = 60;     
 
         for (let y = 0; y < h; y++) {
           for (let x = 0; x < w; x++) {
             let qx = Math.abs(x - w / 2) - (w / 2 - cornerRadius);
             let qy = Math.abs(y - h / 2) - (h / 2 - cornerRadius);
-
+            
             let distCorner = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2);
             let distEdge = distCorner + Math.min(Math.max(qx, qy), 0) - cornerRadius;
             let depthFromBorder = -distEdge;
@@ -541,7 +533,6 @@ h1 {
 
     window.addEventListener('load', updateCornerAnglesAndRefraction);
     window.addEventListener('resize', updateCornerAnglesAndRefraction);
-  </script>
-
+  </script>  
 </body>
 </html>
