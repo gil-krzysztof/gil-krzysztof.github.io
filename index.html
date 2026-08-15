@@ -255,21 +255,26 @@
      więc margin: auto 0 wycentruje go w wolnej przestrzeni pionowej
      pomiędzy subtitle a dołem hero (czyli linią z cieniem oddzielającą sekcje). */
   .equation-section {
-    padding: 40px 20px;
+    padding: 0 20px;
     margin: auto 0;
     text-align: center;
     position: relative;
     z-index: 1;
     width: 100%;
     box-sizing: border-box;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* KaTeX renderuje domyślnie krojem opartym na Computer Modern —
      to ten sam rodzaj kroju matematycznego (LaTeX / Computer Modern),
-     jakiego używa się w manim, czyli w filmach 3blue1brown. */
+     jakiego używa się w manim, czyli w filmach 3blue1brown.
+     Rozmiar skaluje się płynnie wraz z szerokością ekranu (clamp),
+     więc na telefonie wzór jest mniejszy i mieści się bez przewijania. */
   .equation-section .katex {
-    font-size: 1.5rem;
+    font-size: clamp(0.95rem, 4.5vw, 1.5rem);
     color: #000000;
+    white-space: nowrap;
   }
 
   /* Awaryjne ukrycie warstwy MathML (niewidocznej dla oka, potrzebnej
@@ -292,8 +297,8 @@
     .equation-section {
       padding: 0 16px;
     }
-    .equation-section .katex {
-      font-size: 1.35rem;
+    .equation-section::-webkit-scrollbar {
+      height: 4px;
     }
   }
 
