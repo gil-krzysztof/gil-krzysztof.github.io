@@ -277,26 +277,32 @@
     white-space: nowrap;
   }
 
-  /* Prawa strona równania: startuje niewidoczna i przesunięta w górę,
-     po chwili (animation-delay) wjeżdża na miejsce z płynnym fade-in. */
+  /* Prawa strona równania: startuje jako niewidoczny element o szerokości 0
+     (dzięki czemu lewa strona jest wyśrodkowana sama). Gdy JS ustawi jej
+     szerokość na docelową (zmierzoną przez scrollWidth) i doda klasę .revealed,
+     element płynnie "robi sobie miejsce" (width), a lewa strona samoczynnie
+     przesuwa się w lewo, bo cały wiersz pozostaje wyśrodkowany (text-align:center
+     na .equation-section). Jednocześnie prawa strona wjeżdża z góry z fade-in. */
   #eq-right {
     display: inline-block;
-    margin-left: 0.3em;
+    overflow: hidden;
+    vertical-align: baseline;
+    white-space: nowrap;
+    width: 0;
+    margin-left: 0;
     opacity: 0;
     transform: translateY(-28px);
-    animation: eqRightSlideIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    animation-delay: 1s;
+    transition:
+      width 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+      margin-left 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 0.5s ease 0.3s,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
   }
 
-  @keyframes eqRightSlideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-28px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  #eq-right.revealed {
+    margin-left: 0.3em;
+    opacity: 1;
+    transform: translateY(0);
   }
 
   /* Awaryjne ukrycie warstwy MathML (niewidocznej dla oka, potrzebnej
@@ -576,7 +582,7 @@
       <p class="subtitle">Cześć! Jestem studentem pierwszego roku Lotnictwa i Kosmonautyki na Politechnice Warszawskiej i pomogę Ci dostać się na wymarzony kierunek.</p>
 
       <div class="equation-section">
-        <span id="eq-left"></span><span id="eq-right" class="eq-right-anim"></span>
+        <span id="eq-left"></span><span id="eq-right"></span>
       </div>
     </div>
 
@@ -620,10 +626,12 @@
   <script src="katex.min.js"></script>
   <script>
     // Renderowanie wzoru na sumę sinusów (wzór na sumę-w-iloczyn), w dwóch częściach:
-    // lewa strona (statyczna) i prawa strona (animowana - wjeżdża z góry po chwili).
-    // \displaystyle wymuszony ręcznie, bo oba fragmenty są renderowane w trybie
-    // inline (żeby siedziały obok siebie w jednej linii), a bez tego ułamki
-    // renderowałyby się mniejsze niż w trybie displayMode.
+    // lewa strona (statyczna, wyśrodkowana na starcie) i prawa strona (animowana:
+    // najpierw "robi sobie miejsce" płynnie rozszerzając szerokość, przez co
+    // lewa strona przesuwa się w lewo i cały wzór się centruje, a potem wjeżdża
+    // z góry z fade-in). \displaystyle wymuszony ręcznie, bo oba fragmenty są
+    // renderowane w trybie inline (żeby siedziały obok siebie w jednej linii),
+    // a bez tego ułamki renderowałyby się mniejsze niż w trybie displayMode.
     document.addEventListener('DOMContentLoaded', function () {
       if (window.katex) {
         katex.render(
@@ -632,10 +640,21 @@
           { throwOnError: false, displayMode: false }
         );
         katex.render(
-          "\\displaystyle 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\cos{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
+          "\\displaystyle 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\textcolor{#4A6FA5}{\\cos}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
           document.getElementById('eq-right'),
           { throwOnError: false, displayMode: false }
         );
+
+        // Wzór na sumę sinusów: lewa strona startuje wyśrodkowana sama,
+        // po chwili prawa strona płynnie "robi sobie miejsce" (width 0 -> naturalna
+        // szerokość), a lewa strona przesuwa się w lewo bo cały wiersz jest
+        // wyśrodkowany. Na koniec prawa strona wjeżdża z góry z fade-in.
+        var eqRight = document.getElementById('eq-right');
+        var naturalWidth = eqRight.scrollWidth;
+        setTimeout(function () {
+          eqRight.style.width = naturalWidth + 'px';
+          eqRight.classList.add('revealed');
+        }, 900);
       }
     });
   </script>
