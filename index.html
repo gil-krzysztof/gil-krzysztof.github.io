@@ -255,7 +255,7 @@
      więc margin: auto 0 wycentruje go w wolnej przestrzeni pionowej
      pomiędzy subtitle a dołem hero (czyli linią z cieniem oddzielającą sekcje). */
   .equation-section {
-    padding: 20px;
+    padding: 0 20px;
     margin: auto 0;
     text-align: center;
     position: relative;
@@ -596,7 +596,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       if (window.katex) {
         katex.render(
-          "\\sin \\alpha + \\sin \\beta = 2\\sin\\!\\left(\\frac{\\alpha+\\beta}{2}\\right)\\cos\\!\\left(\\frac{\\alpha-\\beta}{2}\\right)",
+          "\\textcolor{#6C8EBF}{\\sin} \\alpha + \\textcolor{#6C8EBF}{\\sin} \\beta \\textcolor{#3FA76B}{=} 2\\textcolor{#6C8EBF}{\\sin}\\!\\textcolor{#F2994A}{\\left(}\\frac{\\alpha+\\beta}{2}\\textcolor{#F2994A}{\\right)}\\cos\\!\\textcolor{#F2994A}{\\left(}\\frac{\\alpha-\\beta}{2}\\textcolor{#F2994A}{\\right)}",
           document.getElementById('sum-equation'),
           { throwOnError: false, displayMode: true }
         );
