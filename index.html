@@ -277,6 +277,28 @@
     white-space: nowrap;
   }
 
+  /* Prawa strona równania: startuje niewidoczna i przesunięta w górę,
+     po chwili (animation-delay) wjeżdża na miejsce z płynnym fade-in. */
+  #eq-right {
+    display: inline-block;
+    margin-left: 0.3em;
+    opacity: 0;
+    transform: translateY(-28px);
+    animation: eqRightSlideIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: 1s;
+  }
+
+  @keyframes eqRightSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-28px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* Awaryjne ukrycie warstwy MathML (niewidocznej dla oka, potrzebnej
      tylko czytnikom ekranu). Normalnie robi to katex.min.css / katex.mjs.css,
      ale ta reguła zabezpiecza przed duplikatem, gdyby ten plik się nie wczytał. */
@@ -554,7 +576,7 @@
       <p class="subtitle">Cześć! Jestem studentem pierwszego roku Lotnictwa i Kosmonautyki na Politechnice Warszawskiej i pomogę Ci dostać się na wymarzony kierunek.</p>
 
       <div class="equation-section">
-        <span id="sum-equation"></span>
+        <span id="eq-left"></span><span id="eq-right" class="eq-right-anim"></span>
       </div>
     </div>
 
@@ -597,13 +619,22 @@
 
   <script src="katex.min.js"></script>
   <script>
-    // Renderowanie wzoru na sumę sinusów (wzór na sumę-w-iloczyn)
+    // Renderowanie wzoru na sumę sinusów (wzór na sumę-w-iloczyn), w dwóch częściach:
+    // lewa strona (statyczna) i prawa strona (animowana - wjeżdża z góry po chwili).
+    // \displaystyle wymuszony ręcznie, bo oba fragmenty są renderowane w trybie
+    // inline (żeby siedziały obok siebie w jednej linii), a bez tego ułamki
+    // renderowałyby się mniejsze niż w trybie displayMode.
     document.addEventListener('DOMContentLoaded', function () {
       if (window.katex) {
         katex.render(
-          "\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta \\textcolor{#2E7D4F}{=} 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\cos{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
-          document.getElementById('sum-equation'),
-          { throwOnError: false, displayMode: true }
+          "\\displaystyle\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta \\textcolor{#2E7D4F}{=}",
+          document.getElementById('eq-left'),
+          { throwOnError: false, displayMode: false }
+        );
+        katex.render(
+          "\\displaystyle 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\cos{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
+          document.getElementById('eq-right'),
+          { throwOnError: false, displayMode: false }
         );
       }
     });
