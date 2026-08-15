@@ -596,7 +596,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       if (window.katex) {
         katex.render(
-          "\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta \\textcolor{#2E7D4F}{=} 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha+\\beta}{2}}\\color{#D9782B}\\right)}\\cos{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha-\\beta}{2}}\\color{#D9782B}\\right)}",
+          "\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta \\textcolor{#2E7D4F}{=} 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\cos{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
           document.getElementById('sum-equation'),
           { throwOnError: false, displayMode: true }
         );
