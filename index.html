@@ -529,9 +529,8 @@
        Zamiast refrakcji/przybliżenia dajemy zwykłe rozmycie + lekki tint,
        żeby karta nadal wyglądała jak matowe szkło zamiast płasko. --- */
   html.ios-glass-fallback .format-card {
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(1.5px) saturate(100%);
+    -webkit-backdrop-filter: blur(1.5px) saturate(100%);
   }
   /* --- Wersja mobilna --- */
   @media (max-width: 720px) {
