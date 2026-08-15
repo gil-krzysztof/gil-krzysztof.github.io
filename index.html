@@ -269,7 +269,7 @@
      jakiego używa się w manim, czyli w filmach 3blue1brown. */
   .equation-section .katex {
     font-size: 1.5rem;
-    color: #663737;
+    color: #000000;
   }
 
   /* Awaryjne ukrycie warstwy MathML (niewidocznej dla oka, potrzebnej
@@ -375,7 +375,7 @@
     --rim-min: rgba(255, 255, 255, 0);
 
     box-shadow:
-      inset 6px 6px 16px -2px rgba(255, 255, 255, 0.40),
+      inset 6px 6px 16px -2px rgba(255, 255, 255, 0.20),
       5px 5px 12px rgba(0, 0, 0, 0.4);
   }
 
@@ -596,7 +596,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       if (window.katex) {
         katex.render(
-          "\\sin \\boldsymbol{\\alpha} + \\sin \\boldsymbol{\\beta} = 2\\sin\\!\\left(\\frac{\\boldsymbol{\\alpha}+\\boldsymbol{\\beta}}{2}\\right)\\cos\\!\\left(\\frac{\\boldsymbol{\\alpha}-\\boldsymbol{\\beta}}{2}\\right)",
+          "\\sin \\alpha + \\sin \\beta = 2\\sin\\!\\left(\\frac{\\alpha+\\beta}{2}\\right)\\cos\\!\\left(\\frac{\\alpha-\\beta}{2}\\right)",
           document.getElementById('sum-equation'),
           { throwOnError: false, displayMode: true }
         );
