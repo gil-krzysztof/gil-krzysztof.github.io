@@ -4,6 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Krzysztof Gil - Korepetycje z matematyki rozszerzonej</title>
+<script>
+  // Wykrywanie platformy iOS (niezależnie od przeglądarki - Safari, Chrome,
+  // Firefox, Edge na iOS wszystkie używają silnika WebKit i nie wspierają
+  // backdrop-filter z odwołaniem do własnego filtra SVG). Uruchamiane jak
+  // najwcześniej (przed CSS), żeby uniknąć "mignięcia" złego stylu.
+  (function () {
+    var ua = navigator.userAgent || "";
+    var isIOS =
+      /iP(hone|od|ad)/.test(navigator.platform) ||
+      (/Mac/.test(navigator.platform) && "ontouchend" in document) ||
+      /iP(hone|od|ad)/.test(ua);
+    if (isIOS) {
+      document.documentElement.classList.add("ios-glass-fallback");
+    }
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -159,6 +175,7 @@
     margin: 0;
     background-color: #f0f0f0;
     font-family: 'Inter', Arial, sans-serif;
+    overflow-x: hidden;
   }
 
   .content-wrapper {
@@ -174,8 +191,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 200px;
-    padding-bottom: 200px;
+    padding-top: 240px;
+    padding-bottom: 240px;
     overflow: hidden;
   }
 
@@ -195,7 +212,7 @@
     top: 4vh;
     left: 4vw;
     font-size: 20px;
-    color: #333;
+    color: black;
     z-index: 1;
   }
 
@@ -322,18 +339,10 @@
 
   @media (max-width: 720px) {
     .equation-section {
-      
-      padding: 20px 16px 0;
+      padding: 0 16px;
     }
     .equation-section::-webkit-scrollbar {
       height: 4px;
-    }
-    /* Mniejszy mnożnik vw i niższy pułap niż na desktopie, żeby cały wzór
-       (razem z prawą, animowaną stroną) mieścił się w szerokości ekranu
-       bez potrzeby przewijania w poziomie - na wąskich telefonach sama
-       zmiana z 4.5vw na 4vw i obniżenie minimum o to zapewnia. */
-    .equation-section .katex {
-      font-size: clamp(0.78rem, 4vw, 1.5rem);
     }
   }
 
@@ -403,7 +412,12 @@
     background: rgba(255, 255, 255, 0);
     border: 1px solid rgba(255, 255, 255, 0.3);
 
-    /* Dynamiczne przypisanie filtru refrakcji zdefiniowanego w locie przez JS */
+    /* Dynamiczne przypisanie filtru refrakcji zdefiniowanego w locie przez JS.
+       Uwaga: na iOS (Safari, Chrome, Firefox, wszystkie - bo wszystkie tam
+       używają silnika WebKit) backdrop-filter nie obsługuje odwołania do
+       własnego filtra SVG (url(#...)) - poniższa reguła jest ignorowana
+       przez WebKit i karta wygląda płasko. Fallback dla iOS jest zdefiniowany
+       niżej w bloku "html.ios-glass-fallback .format-card". */
     backdrop-filter: var(--glass-filter-ref);
     -webkit-backdrop-filter: var(--glass-filter-ref);
 
@@ -415,8 +429,8 @@
     --rim-min: rgba(255, 255, 255, 0);
 
     box-shadow:
-      inset 6px 6px 16px -2px rgba(255, 255, 255, 0.50),
-      5px 5px 12px rgba(0, 0, 0, 0.75);
+      inset 6px 6px 16px -2px rgba(255, 255, 255, 0.20),
+      5px 5px 12px rgba(0, 0, 0, 0.4);
   }
 
   /* --- 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM / DYSPERSJĄ --- */
@@ -437,11 +451,11 @@
       var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
       var(--rim-mid) 170deg,
       
-      rgba(255, 100, 200, 1.3) 170deg,
-      rgba(100, 220, 255, 1.3) 175deg,
+      rgba(255, 100, 200, 0.8) 175deg,
+      rgba(100, 220, 255, 0.8) 178deg,
       var(--rim-max) 180deg,
-      rgba(255, 230, 130, 1.3) 185deg,
-      rgba(180, 120, 255, 1.3) 190deg,
+      rgba(255, 230, 130, 0.8) 182deg,
+      rgba(180, 120, 255, 0.8) 185deg,
 
       var(--rim-mid) 190deg,
       var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
@@ -471,9 +485,9 @@
 
     box-shadow:
       inset -3px -3px 8px 0px rgba(0, 0, 0, 0.6),
-      inset 0 0 6px 0px rgba(0, 0, 0, 0.9);
+      inset 0 0 6px 0px rgba(0, 0, 0, 0.6);
 
-    mix-blend-mode: multiply; 
+    mix-blend-mode: color-burn; 
   }
 
   /* --- 3. TEKST I IKONY --- */
@@ -507,18 +521,33 @@
     line-height: 1.5;
     color: #f3ecec;
   }
+
+  /* --- Fallback dla iOS (Safari, Chrome, Firefox itd. - wszystkie tam
+       działają na silniku WebKit i nie obsługują backdrop-filter: url(#svg)).
+       Klasa "ios-glass-fallback" jest dodawana do <html> przez mały skrypt
+       w <head>, wykrywający platformę iOS niezależnie od przeglądarki.
+       Zamiast refrakcji/przybliżenia dajemy zwykłe rozmycie + lekki tint,
+       żeby karta nadal wyglądała jak matowe szkło zamiast płasko. --- */
+  html.ios-glass-fallback .format-card {
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    background: rgba(255, 255, 255, 0.08);
+  }
   /* --- Wersja mobilna --- */
   @media (max-width: 720px) {
     .hero {
-      padding-top: 150px;
-      padding-bottom: 120px;
+      padding-top: clamp(90px, 22vw, 150px);
+      padding-bottom: clamp(120px, 30vw, 200px);
       margin: 0 20px;
     }
 
     .corner-note,
     .contact-button {
-      font-size: 16px;
       top: 2.5vh;
+    }
+
+    .corner-note {
+      font-size: clamp(14px, 3.6vw, 18px);
     }
 
     .contact-button {
@@ -530,21 +559,16 @@
       gap: 16px;
     }
 
-    /* Laury są pomyślane jako ozdoba flankująca dwuwierszowy nagłówek
-       (tak jak na desktopie). Na wąskim ekranie ten sam tekst zawija się
-       do 4 linii, więc laura wypada w połowie wysokości i wygląda jak
-       przypadkowy znak, a nie ozdoba - dlatego chowamy go poniżej 720px,
-       zamiast pokazywać w mylącej, "urwanej" formie. */
     .laurel {
-      display: none;
+      width: 20px;
     }
 
     h1 {
-      font-size: 30px;
+      font-size: clamp(22px, 7vw, 30px);
     }
 
     .subtitle {
-      font-size: 16px;
+      font-size: clamp(14px, 4vw, 16px);
       padding: 0 12px;
     }
 
@@ -553,25 +577,47 @@
     }
 
     .profile-section h2 {
-      font-size: 26px;
+      font-size: clamp(20px, 6vw, 26px);
     }
 
     .profile-section p {
-      font-size: 16px;
+      font-size: clamp(14px, 4vw, 16px);
+      padding: 12px;
     }
 
     .format-section {
-      padding: 48px 30px;
+      padding: clamp(32px, 9vw, 48px) 20px;
     }
 
     /* Kluczowa zmiana: karty jedna pod drugą zamiast obok siebie */
     .format-cards {
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
 
     .format-card {
       width: 100%;
+      padding: clamp(22px, 6vw, 32px);
+      border-radius: 28px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .headline-row {
+      gap: 8px;
+    }
+
+    .laurel {
+      width: 14px;
+    }
+
+    .corner-note {
+      font-size: 13px;
+    }
+
+    .contact-button {
+      padding: 8px 14px;
+      font-size: 13px;
     }
   }
 
@@ -688,6 +734,12 @@
         // 1. Kąt narożnika do gradientu obramowania
         const angle = Math.atan2(w, h) * (180 / Math.PI);
         card.style.setProperty('--corner-angle', angle + 'deg');
+
+        // Na iOS backdrop-filter z SVG i tak nie działa (patrz fallback w CSS),
+        // więc pomijamy kosztowne generowanie mapy refrakcji piksel-po-pikselu.
+        if (document.documentElement.classList.contains('ios-glass-fallback')) {
+          return;
+        }
 
         // 2. Generowanie mapy refrakcji (fizyka soczewki) dla dokładnych wymiarów karty
         const canvas = document.createElement('canvas');
