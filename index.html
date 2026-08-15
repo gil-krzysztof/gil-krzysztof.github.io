@@ -120,6 +120,22 @@
     color: #663737;
   }
 
+  /* Awaryjne ukrycie warstwy MathML (niewidocznej dla oka, potrzebnej
+     tylko czytnikom ekranu). Normalnie robi to katex.min.css / katex.mjs.css,
+     ale ta reguła zabezpiecza przed duplikatem, gdyby ten plik się nie wczytał. */
+  .katex-mathml {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px) !important;
+    clip-path: inset(50%) !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    padding: 0 !important;
+    margin: -1px !important;
+  }
+
   @media (max-width: 720px) {
     .equation-section {
       padding: 36px 16px 48px;
