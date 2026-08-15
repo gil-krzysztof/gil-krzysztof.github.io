@@ -294,8 +294,8 @@
     transition:
       width 0.6s cubic-bezier(0.65, 0, 0.35, 1),
       margin-left 0.6s cubic-bezier(0.65, 0, 0.35, 1),
-      opacity 0.5s ease 0.3s,
-      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+      opacity 0.5s ease 0.95s,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.95s;
   }
 
   #eq-right.revealed {
@@ -634,12 +634,12 @@
     document.addEventListener('DOMContentLoaded', function () {
       if (window.katex) {
         katex.render(
-          "\\displaystyle\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta \\textcolor{#2E7D4F}{=}",
+          "\\displaystyle\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta",
           document.getElementById('eq-left'),
           { throwOnError: false, displayMode: false }
         );
         katex.render(
-          "\\displaystyle 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\textcolor{#4A6FA5}{\\cos}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
+          "\\displaystyle \\textcolor{#2E7D4F}{=} 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\textcolor{#4A6FA5}{\\cos}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
           document.getElementById('eq-right'),
           { throwOnError: false, displayMode: false }
         );
