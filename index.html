@@ -107,9 +107,12 @@
 
   /* --- Sekcja równania (sumy sinusów) --- */
   .equation-section {
-    padding: 50px 20px 70px;
+    padding: 0px 20px 70px;
+    margin-top: -120px;
     text-align: center;
     background-color: white;
+    position: relative;
+    z-index: 2;
   }
 
   /* KaTeX renderuje domyślnie krojem opartym na Computer Modern —
@@ -138,7 +141,8 @@
 
   @media (max-width: 720px) {
     .equation-section {
-      padding: 36px 16px 48px;
+      padding: 0px 16px 48px;
+      margin-top: -70px;
     }
     .equation-section .katex {
       font-size: 1.35rem;
@@ -444,7 +448,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       if (window.katex) {
         katex.render(
-          "\\sin A + \\sin B = 2\\sin\\!\\left(\\frac{A+B}{2}\\right)\\cos\\!\\left(\\frac{A-B}{2}\\right)",
+          "\\sin \\alpha + \\sin \\beta = 2\\sin\\!\\left(\\frac{\\alpha+\\beta}{2}\\right)\\cos\\!\\left(\\frac{\\alpha-\\beta}{2}\\right)",
           document.getElementById('sum-equation'),
           { throwOnError: false, displayMode: true }
         );
