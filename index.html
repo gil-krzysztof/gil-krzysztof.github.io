@@ -4,28 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Krzysztof Gil - Korepetycje z matematyki rozszerzonej</title>
-<script>
-  // Wykrywanie platformy iOS (niezależnie od przeglądarki - Safari, Chrome,
-  // Firefox, Edge na iOS wszystkie używają silnika WebKit i nie wspierają
-  // backdrop-filter z odwołaniem do własnego filtra SVG). Uruchamiane jak
-  // najwcześniej (przed CSS), żeby uniknąć "mignięcia" złego stylu.
-  (function () {
-    var ua = navigator.userAgent || "";
-    var isIOS =
-      /iP(hone|od|ad)/.test(navigator.platform) ||
-      (/Mac/.test(navigator.platform) && "ontouchend" in document) ||
-      /iP(hone|od|ad)/.test(ua);
-    if (isIOS) {
-      document.documentElement.classList.add("ios-glass-fallback");
-    }
-  })();
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="katex.min.css">
 <style>
-  /* --- Nadpisanie domyślnych ścieżek do fontów z katex.min.css --- */
+  /* Nadpisanie domyślnych ścieżek do fontów z katex.min.css (które szukają
+     podfolderu "fonts/"). Tutaj wszystkie pliki KaTeX_... leżą bezpośrednio
+     obok index.html, więc wskazujemy na nie wprost, bez prefiksu folderu. */
   @font-face {
     font-family: "KaTeX_AMS";
     src: url(KaTeX_AMS-Regular.woff2) format("woff2"),
@@ -166,13 +152,13 @@
          url(KaTeX_Typewriter-Regular.ttf) format("truetype");
     font-weight: normal; font-style: normal;
   }
-
+</style>
+<style>
   /* --- Globalne ustawienia --- */
   html, body {
     margin: 0;
     background-color: #f0f0f0;
     font-family: 'Inter', Arial, sans-serif;
-    overflow-x: hidden;
   }
 
   .content-wrapper {
@@ -188,8 +174,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 160px;
-    padding-bottom: 140px;
+    padding-top: 200px;
+    padding-bottom: 200px;
     overflow: hidden;
   }
 
@@ -206,18 +192,18 @@
 
   .corner-note {
     position: absolute;
-    top: 30px;
+    top: 4vh;
     left: 4vw;
     font-size: 20px;
-    color: black;
+    color: #333;
     z-index: 1;
   }
 
   .contact-button {
     position: absolute;
-    top: 20px;
+    top: 4vh;
     right: 4vw;
-    padding: 12px 22px;
+    padding: 15px 25px;
     background-color: white;
     border: 2px solid black;
     border-radius: 8px;
@@ -236,9 +222,6 @@
     height: fit-content;
     position: relative;
     z-index: 1;
-    padding: 0 20px;
-    box-sizing: border-box;
-    width: 100%;
   }
 
   .laurel {
@@ -257,7 +240,7 @@
 
   .subtitle {
     max-width: 950px;
-    margin: 30px 20px 0 20px;
+    margin-top: 30px;
     font-size: 20px;
     font-weight: 400;
     line-height: 1.5;
@@ -265,13 +248,15 @@
     color: #333;
     position: relative;
     z-index: 1;
-    box-sizing: border-box;
   }
 
-  /* --- Sekcja równania --- */
+  /* --- Sekcja równania (sumy sinusów) ---
+     Element jest teraz częścią flexowego .hero (flex-direction: column),
+     więc margin: auto 0 wycentruje go w wolnej przestrzeni pionowej
+     pomiędzy subtitle a dołem hero (czyli linią z cieniem oddzielającą sekcje). */
   .equation-section {
     padding: 30px 20px;
-    margin: 40px 0 0 0;
+    margin: auto 0;
     text-align: center;
     position: relative;
     z-index: 1;
@@ -281,12 +266,23 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  /* KaTeX renderuje domyślnie krojem opartym na Computer Modern —
+     to ten sam rodzaj kroju matematycznego (LaTeX / Computer Modern),
+     jakiego używa się w manim, czyli w filmach 3blue1brown.
+     Rozmiar skaluje się płynnie wraz z szerokością ekranu (clamp),
+     więc na telefonie wzór jest mniejszy i mieści się bez przewijania. */
   .equation-section .katex {
-    font-size: clamp(0.9rem, 3.8vw, 1.5rem);
+    font-size: clamp(0.95rem, 4.5vw, 1.5rem);
     color: #000000;
     white-space: nowrap;
   }
 
+  /* Prawa strona równania: startuje jako niewidoczny element o szerokości 0
+     (dzięki czemu lewa strona jest wyśrodkowana sama). Gdy JS ustawi jej
+     szerokość na docelową (zmierzoną przez scrollWidth) i doda klasę .revealed,
+     element płynnie "robi sobie miejsce" (width), a lewa strona samoczynnie
+     przesuwa się w lewo, bo cały wiersz pozostaje wyśrodkowany (text-align:center
+     na .equation-section). Jednocześnie prawa strona wjeżdża z góry z fade-in. */
   #eq-right {
     display: inline-block;
     vertical-align: baseline;
@@ -308,6 +304,9 @@
     transform: translateY(0);
   }
 
+  /* Awaryjne ukrycie warstwy MathML (niewidocznej dla oka, potrzebnej
+     tylko czytnikom ekranu). Normalnie robi to katex.min.css / katex.mjs.css,
+     ale ta reguła zabezpiecza przed duplikatem, gdyby ten plik się nie wczytał. */
   .katex-mathml {
     position: absolute !important;
     clip: rect(1px, 1px, 1px, 1px) !important;
@@ -321,14 +320,29 @@
     margin: -1px !important;
   }
 
+  @media (max-width: 720px) {
+    .equation-section {
+      
+      padding: 20px 16px 0;
+    }
+    .equation-section::-webkit-scrollbar {
+      height: 4px;
+    }
+    /* Mniejszy mnożnik vw i niższy pułap niż na desktopie, żeby cały wzór
+       (razem z prawą, animowaną stroną) mieścił się w szerokości ekranu
+       bez potrzeby przewijania w poziomie - na wąskich telefonach sama
+       zmiana z 4.5vw na 4vw i obniżenie minimum o to zapewnia. */
+    .equation-section .katex {
+      font-size: clamp(0.78rem, 4vw, 1.5rem);
+    }
+  }
+
   /* --- Sekcja "Profil ucznia" --- */
   .profile-section {
     padding: 80px 20px;
     text-align: center;
     box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.15);
     position: relative;
-    background-color: #ffffff;
-    z-index: 2;
   }
 
   .profile-section h2 {
@@ -368,6 +382,7 @@
     pointer-events: none;
   }
 
+  /* --- KONTENER DLA KART --- */
   .format-cards {
     display: flex;
     gap: 24px;
@@ -375,6 +390,7 @@
     z-index: 1;
   }
 
+  /* --- KARTA --- */
   .format-card {
     flex: 1;
     position: relative;
@@ -387,6 +403,7 @@
     background: rgba(255, 255, 255, 0);
     border: 1px solid rgba(255, 255, 255, 0.3);
 
+    /* Dynamiczne przypisanie filtru refrakcji zdefiniowanego w locie przez JS */
     backdrop-filter: var(--glass-filter-ref);
     -webkit-backdrop-filter: var(--glass-filter-ref);
 
@@ -398,10 +415,11 @@
     --rim-min: rgba(255, 255, 255, 0);
 
     box-shadow:
-      inset 6px 6px 16px -2px rgba(255, 255, 255, 0.20),
-      5px 5px 12px rgba(0, 0, 0, 0.4);
+      inset 6px 6px 16px -2px rgba(255, 255, 255, 0.50),
+      5px 5px 12px rgba(0, 0, 0, 0.75);
   }
 
+  /* --- 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM / DYSPERSJĄ --- */
   .format-card::after {
     content: "";
     position: absolute;
@@ -419,11 +437,11 @@
       var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
       var(--rim-mid) 170deg,
       
-      rgba(255, 100, 200, 0.8) 175deg,
-      rgba(100, 220, 255, 0.8) 178deg,
+      rgba(255, 100, 200, 1.3) 170deg,
+      rgba(100, 220, 255, 1.3) 175deg,
       var(--rim-max) 180deg,
-      rgba(255, 230, 130, 0.8) 182deg,
-      rgba(180, 120, 255, 0.8) 185deg,
+      rgba(255, 230, 130, 1.3) 185deg,
+      rgba(180, 120, 255, 1.3) 190deg,
 
       var(--rim-mid) 190deg,
       var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
@@ -442,6 +460,7 @@
     mix-blend-mode: screen;
   }
 
+  /* --- 2. CZARNY COLOR BURN --- */
   .format-card::before {
     content: "";
     position: absolute;
@@ -452,11 +471,12 @@
 
     box-shadow:
       inset -3px -3px 8px 0px rgba(0, 0, 0, 0.6),
-      inset 0 0 6px 0px rgba(0, 0, 0, 0.6);
+      inset 0 0 6px 0px rgba(0, 0, 0, 0.9);
 
-    mix-blend-mode: color-burn; 
+    mix-blend-mode: multiply; 
   }
 
+  /* --- 3. TEKST I IKONY --- */
   .format-item-title,
   .format-card p {
     position: relative;
@@ -471,16 +491,12 @@
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 12px;
-    color: rgba(255, 255, 255, 0.82);
-    text-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.5),
-      0 0 12px rgba(255, 255, 255, 0.25);
+    color: #ffffff;
   }
 
   .format-item-title .icon {
     width: 22px;
     height: 22px;
-    opacity: 0.82;
     filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
   }
 
@@ -489,99 +505,76 @@
     font-size: 15px;
     font-weight: 400;
     line-height: 1.5;
-    color: rgba(243, 236, 236, 0.72);
+    color: #f3ecec;
   }
-
-  html.ios-glass-fallback .format-card {
-    backdrop-filter: blur(1.5px) saturate(100%) contrast(1.1);
-    -webkit-backdrop-filter: blur(1.5px) saturate(100%) contrast(1.1);
-  }
-
-  /* --- Wersja mobilna (poprawione query) --- */
-  @media (max-width: 768px) {
+  /* --- Wersja mobilna --- */
+  @media (max-width: 720px) {
     .hero {
-      padding-top: 110px;
-      padding-bottom: 80px;
+      padding-top: 150px;
+      padding-bottom: 120px;
+      margin: 0 20px;
     }
 
-    .corner-note {
-      position: static;
+    .corner-note,
+    .contact-button {
       font-size: 16px;
-      margin-bottom: 10px;
-      font-weight: 600;
+      top: 2.5vh;
     }
 
     .contact-button {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      padding: 8px 14px;
-      font-size: 13px;
+      padding: 10px 18px;
+      font-size: 14px;
     }
 
     .headline-row {
-      gap: 10px;
-      padding: 0 15px;
+      gap: 16px;
     }
 
+    /* Laury są pomyślane jako ozdoba flankująca dwuwierszowy nagłówek
+       (tak jak na desktopie). Na wąskim ekranie ten sam tekst zawija się
+       do 4 linii, więc laura wypada w połowie wysokości i wygląda jak
+       przypadkowy znak, a nie ozdoba - dlatego chowamy go poniżej 720px,
+       zamiast pokazywać w mylącej, "urwanej" formie. */
     .laurel {
       display: none;
     }
 
     h1 {
-      font-size: 24px;
-      line-height: 1.3;
+      font-size: 30px;
     }
 
     .subtitle {
-      font-size: 15px;
-      margin-top: 20px;
-      padding: 0 15px;
-    }
-
-    .equation-section {
-      padding: 20px 10px;
-      margin-top: 20px;
+      font-size: 16px;
+      padding: 0 12px;
     }
 
     .profile-section {
-      padding: 50px 20px;
+      padding: 48px 20px;
     }
 
     .profile-section h2 {
-      font-size: 24px;
+      font-size: 26px;
     }
 
     .profile-section p {
-      font-size: 15px;
-      padding: 10px 0;
+      font-size: 16px;
     }
 
     .format-section {
-      padding: 50px 20px;
+      padding: 48px 30px;
     }
 
+    /* Kluczowa zmiana: karty jedna pod drugą zamiast obok siebie */
     .format-cards {
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
     }
 
     .format-card {
       width: 100%;
-      padding: 24px;
-      border-radius: 24px;
     }
   }
 
-  @media (max-width: 480px) {
-    h1 {
-      font-size: 21px;
-    }
-    .contact-button {
-      padding: 6px 12px;
-      font-size: 12px;
-    }
-  }
 </style>
 </head>
 <body>
@@ -640,10 +633,18 @@
 
   </div>
 
+  <!-- Dynamicznie generowane filtry SVG dla poszczególnych kart osadzone będą tutaj -->
   <svg id="svg-filters-container" style="position: absolute; width: 0; height: 0;" aria-hidden="true"></svg>
 
   <script src="katex.min.js"></script>
   <script>
+    // Renderowanie wzoru na sumę sinusów (wzór na sumę-w-iloczyn), w dwóch częściach:
+    // lewa strona (statyczna, wyśrodkowana na starcie) i prawa strona (animowana:
+    // najpierw "robi sobie miejsce" płynnie rozszerzając szerokość, przez co
+    // lewa strona przesuwa się w lewo i cały wzór się centruje, a potem wjeżdża
+    // z góry z fade-in). \displaystyle wymuszony ręcznie, bo oba fragmenty są
+    // renderowane w trybie inline (żeby siedziały obok siebie w jednej linii),
+    // a bez tego ułamki renderowałyby się mniejsze niż w trybie displayMode.
     document.addEventListener('DOMContentLoaded', function () {
       if (window.katex) {
         katex.render(
@@ -657,6 +658,10 @@
           { throwOnError: false, displayMode: false }
         );
 
+        // Wzór na sumę sinusów: lewa strona startuje wyśrodkowana sama,
+        // po chwili prawa strona płynnie "robi sobie miejsce" (width 0 -> naturalna
+        // szerokość), a lewa strona przesuwa się w lewo bo cały wiersz jest
+        // wyśrodkowany. Na koniec prawa strona wjeżdża z góry z fade-in.
         var eqRight = document.getElementById('eq-right');
         var naturalWidth = eqRight.scrollWidth;
         setTimeout(function () {
@@ -672,6 +677,7 @@
       const cards = document.querySelectorAll('.format-card');
       const svgContainer = document.getElementById('svg-filters-container');
       
+      // Wyczyszczenie starych filtrów SVG
       svgContainer.innerHTML = '';
 
       cards.forEach((card, index) => {
@@ -679,13 +685,11 @@
         const h = card.offsetHeight;
         if (w === 0 || h === 0) return;
 
+        // 1. Kąt narożnika do gradientu obramowania
         const angle = Math.atan2(w, h) * (180 / Math.PI);
         card.style.setProperty('--corner-angle', angle + 'deg');
 
-        if (document.documentElement.classList.contains('ios-glass-fallback')) {
-          return;
-        }
-
+        // 2. Generowanie mapy refrakcji (fizyka soczewki) dla dokładnych wymiarów karty
         const canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
@@ -742,6 +746,7 @@
         ctx.putImageData(imgData, 0, 0);
         const dataUrl = canvas.toDataURL('image/png');
 
+        // 3. Tworzenie unikalnego filtru SVG dla tej karty
         const filterId = `glass-lens-${index}`;
         const filterEl = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
         filterEl.setAttribute('id', filterId);
@@ -757,6 +762,7 @@
         `;
         svgContainer.appendChild(filterEl);
 
+        // 4. Przypisanie filtra do danej karty w stylach inline
         card.style.setProperty('--glass-filter-ref', `url(#${filterId})`);
       });
     }
