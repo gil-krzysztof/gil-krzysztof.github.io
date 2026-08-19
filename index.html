@@ -107,10 +107,6 @@
     z-index: 1;
   }
 
-  /* --- Sekcja równania (sumy sinusów) ---
-     Element jest teraz częścią flexowego .hero (flex-direction: column),
-     więc margin: auto 0 wycentruje go w wolnej przestrzeni pionowej
-     pomiędzy subtitle a dołem hero (czyli linią z cieniem oddzielającą sekcje). */
   .equation-section {
     max-width: 950px;
     margin: 15px ;
@@ -122,11 +118,6 @@
     overflow-x: auto;
   }
 
-  /* KaTeX renderuje domyślnie krojem opartym na Computer Modern —
-     to ten sam rodzaj kroju matematycznego (LaTeX / Computer Modern),
-     jakiego używa się w manim, czyli w filmach 3blue1brown.
-     Rozmiar skaluje się płynnie wraz z szerokością ekranu (clamp),
-     więc na telefonie wzór jest mniejszy i mieści się bez przewijania. */
   .equation-section .katex {
     font-size: clamp(0.95rem, 4.5vw, 1.5rem);
     color: #000000;
@@ -191,15 +182,14 @@
   }
 
   .profile-section p {
-    padding: 15px;
+    margin: 15px;
     max-width: 750px;
-    margin: 0 auto;
     font-size: 20px;
     line-height: 1.5;
     color: #333;
   }
 
-  /* --- Sekcja "Format korepetycji" --- */
+  /* --- Sekcja "Objection busters" --- */
   .format-section {
     background-color: #663737;
     color: white;
