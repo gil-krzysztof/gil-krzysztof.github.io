@@ -340,7 +340,36 @@
     color: #f3ecec;
   }
 
+     .results-section {
+    background-color: #663737;
+    padding: 40px 0;
+    text-align: center;
+    box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
 
+    .results-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+    .results-section p {
+    margin: 15px;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #f3ecec;
+    position: relative;
+    z-index: 1;
+  }
   
   /* --- Wersja mobilna --- */
   @media (max-width: 720px) {
@@ -490,9 +519,14 @@
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
           <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz do wspólnego omówienia.</p>
         </div>
+        
       </div>
     </div>
-
+    <div class="results-section">
+      <img src="siatka_wektor.svg" alt="" class="results-grid-overlay">
+      <p>Napisałem tegoroczną maturę z rezultatami:</p>
+      <p>więc dobrze wiem, jak aktualnie wygląda egzamin.</p>
+    </div>
   </div>
 
   <!-- Dynamicznie generowane filtry SVG dla poszczególnych kart osadzone będą tutaj -->
