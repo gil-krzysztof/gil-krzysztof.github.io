@@ -135,19 +135,14 @@
     display: inline-block;
     vertical-align: baseline;
     white-space: nowrap;
-    width: 0;
-    margin-left: 0;
     opacity: 0;
     transform: translateY(-28px);
     transition:
-      width 0.6s cubic-bezier(0.65, 0, 0.35, 1),
-      margin-left 0.6s cubic-bezier(0.65, 0, 0.35, 1),
-      opacity 0.5s ease 0.95s,
-      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.95s;
+      opacity 0.5s ease 0.3s,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
   }
 
   #eq-right.revealed {
-    margin-left: 0.3em;
     opacity: 1;
     transform: translateY(0);
   }
@@ -559,11 +554,9 @@
         // szerokość), a lewa strona przesuwa się w lewo bo cały wiersz jest
         // wyśrodkowany. Na koniec prawa strona wjeżdża z góry z fade-in.
         var eqRight = document.getElementById('eq-right');
-        var naturalWidth = eqRight.scrollWidth;
         setTimeout(function () {
-          eqRight.style.width = naturalWidth + 'px';
           eqRight.classList.add('revealed');
-        }, 900);
+        }, 300);
       }
     });
   </script>
