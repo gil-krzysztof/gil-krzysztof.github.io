@@ -356,6 +356,17 @@
     position: relative;
   }
 
+    .results-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+  }
+
     .results-section p {
     margin: 15px;
     font-size: 20px;
@@ -510,6 +521,7 @@
       </div>
     </div>
     <div class="results-section">
+      <img src="siatka_wektor.svg" alt="" class="results-grid-overlay">
       <p>Napisałem tegoroczną maturę z rezultatami:</p>
       <p>więc dobrze wiem, jak aktualnie wygląda egzamin.</p>
     </div>
