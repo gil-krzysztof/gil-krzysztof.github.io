@@ -462,27 +462,29 @@
     }
 
     .format-section {
-      padding: 48px 30px;
+      padding: 48px 0; 
     }
 
-      .format-cards {
-    display: flex; /* Zostawiamy flex */
-    flex-direction: row; /* Wymuszamy układ poziomy */
-    overflow-x: auto; /* Włączamy przewijanie poziome */
-    overflow-y: hidden;
-    gap: 16px; /* Odstęp między kartami */
-    padding-bottom: 20px; /* Miejsce na pasek przewijania */
-    
-    /* Dodajemy scroll-snap dla płynnego "łapania" kart */
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
+    /* Dodajemy padding wewnątrz kontenera kart, żeby pierwsza i ostatnia karta 
+       nie przyklejały się bez marginesu do samej szyby telefonu przy przewijaniu */
+    .format-cards {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 12px;
+      padding-bottom: 20px;
+      padding-left: 16px; 
+      padding-right: 16px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
 
-  .format-card {
-    flex: 0 0 85%; /* Każda karta zajmuje 85% szerokości ekranu */
-    scroll-snap-align: center; /* Karta centruje się przy przewijaniu */
-    /* Usuń width: 100%, żeby karty nie były rozciągnięte na cały ekran */
-  }
+    /* Zwiększamy szerokość karty, np. do 90%, żeby mniej było widać sąsiednie */
+    .format-card {
+      flex: 0 0 90%; 
+      scroll-snap-align: center;
+    }
 
   }
 
