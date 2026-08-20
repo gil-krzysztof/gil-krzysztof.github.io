@@ -465,20 +465,24 @@
       padding: 48px 30px;
     }
 
-    /* Kluczowa zmiana: karty jedna pod drugą zamiast obok siebie */
-    .format-cards {
-      overflow: scroll;
-      gap: 20px;
-      max-height: 300px;
-    }
+      .format-cards {
+    display: flex; /* Zostawiamy flex */
+    flex-direction: row; /* Wymuszamy układ poziomy */
+    overflow-x: auto; /* Włączamy przewijanie poziome */
+    overflow-y: hidden;
+    gap: 16px; /* Odstęp między kartami */
+    padding-bottom: 20px; /* Miejsce na pasek przewijania */
+    
+    /* Dodajemy scroll-snap dla płynnego "łapania" kart */
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
 
-    .format-card {
-      width: 100%;
-    }
-
-        .results-section {
-      padding: 48px 30px;
-    }
+  .format-card {
+    flex: 0 0 85%; /* Każda karta zajmuje 85% szerokości ekranu */
+    scroll-snap-align: center; /* Karta centruje się przy przewijaniu */
+    /* Usuń width: 100%, żeby karty nie były rozciągnięte na cały ekran */
+  }
 
   }
 
