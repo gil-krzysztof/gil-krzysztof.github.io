@@ -370,10 +370,25 @@
     flex: 0 0 90%;
   }
 
-   .results-card-wrapper {
-    max-width: 450px; /* Tutaj ustaw pożądaną maksymalną szerokość karty */
-    margin: 0 auto;   /* Wyśrodkowanie karty w sekcji */
-  }
+.results-card-wrapper {
+  max-width: 480px; /* Dopasowana szerokość karty pod układ z 3 wynikami */
+  margin: 0 auto;   /* Wyśrodkowanie karty */
+}
+
+.results-table {
+  display: grid;
+  grid-template-columns: 1fr auto; /* Przedmiot zajmuje dostępną przestrzeń, wynik ma stałą szerokość */
+  row-gap: 12px;                  /* Odstęp między wierszami */
+  column-gap: 20px;               /* Minimalny odstęp między tekstem a % */
+  text-align: left;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.results-table .score {
+  text-align: right;
+}
     
     .results-section p {
     margin: 30px;
