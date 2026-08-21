@@ -359,9 +359,15 @@
   z-index: 0;
   pointer-events: none;
 }
+ 
+  .results-card {
+  max-width: 800px;
+  margin: 0 auto;
+  flex: initial; /* Uniemożliwia rozciąganie flexboxa */
+}
 
-.results-lead,
-.results-footer {
+  .results-lead,
+  .results-footer {
   font-size: 20px;
   font-weight: 400;
   color: #f3ecec;
@@ -589,20 +595,22 @@
 <div class="results-section">
   <img src="siatka_wektor.svg" alt="" class="results-grid-overlay">
   <p class="results-lead">Napisałem tegoroczną maturę z rezultatami:</p>
-  <div class="format-card">
-  <div class="stats-container">
-    <div class="stat-item">
-      <span class="stat-number">100%</span>
-      <span class="stat-label">Matematyka<br>podstawowa</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number">100%</span>
-      <span class="stat-label">Matematyka<br>rozszerzona</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number">97%</span>
-      <span class="stat-label">Fizyka<br>rozszerzona</span>
-    </div>
+  
+  <!-- Dodana klasa .results-card -->
+  <div class="format-card results-card">
+    <div class="stats-container">
+      <div class="stat-item">
+        <span class="stat-number">100%</span>
+        <span class="stat-label">Matematyka<br>podstawowa</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">100%</span>
+        <span class="stat-label">Matematyka<br>rozszerzona</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">97%</span>
+        <span class="stat-label">Fizyka<br>rozszerzona</span>
+      </div>
     </div>
   </div>
 
