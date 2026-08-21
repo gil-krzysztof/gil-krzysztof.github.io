@@ -339,68 +339,95 @@
     color: #f3ecec;
   }
 
-     .results-section {
-    background-color: #663737;
-    padding: 0;
-    text-align: center;
-    box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.3);
-    position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
-    text-align: center;
-  }
+ .results-section {
+  background-color: #663737;
+  padding: 60px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
 
-    .results-grid-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
-    pointer-events: none;
-   }
+.results-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.results-lead,
+.results-footer {
+  font-size: 20px;
+  font-weight: 400;
+  color: #f3ecec;
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+}
+
+.results-lead {
+  margin-bottom: 40px;
+}
+
+.results-footer {
+  margin-top: 40px;
+}
+
+/* Kontener dla 3 kolumn z wynikami */
+.stats-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 48px;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 140px;
+}
+
+.stat-number {
+  font-size: 52px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #f3ecec;
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* RWD – dopasowanie do mniejszych ekranów */
+@media (max-width: 600px) {
+  .stats-container {
+    gap: 20px;
+  }
   
-    .results-card {
-    margin: 0;
-    max-width: 700px;
-    font-size: 18px;
-    font-weight: 600;
-    color: #ffffff;
-   }
-
-    .results-card-wrapper {
-    max-width: 750px; /* Dopasowana szerokość karty pod układ z 3 wynikami */
-    margin: 0 auto;   /* Wyśrodkowanie karty */
+  .stat-number {
+    font-size: 38px;
   }
 
-    .results-table {
-    display: grid;
-    grid-template-columns: 1fr auto; /* Przedmiot zajmuje dostępną przestrzeń, wynik ma stałą szerokość */
-    row-gap: 25px;                  /* Odstęp między wierszami */
-    column-gap: 20px;               /* Minimalny odstęp między tekstem a % */
-    text-align: left;
-    margin-left: 30px;
-    font-size: 18px;
-    font-weight: 400;
-    color: #ffffff;
+  .stat-label {
+    font-size: 14px;
   }
-
-    .results-table .score {
-    text-align: right;
-    font-weight: 400;
-    margin-right: 30px;
-  }
-    
-    .results-section p {
-    margin: 60px;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #f3ecec;
-    position: relative;
-    z-index: 1;
-  }
+}
   
   /* --- Wersja mobilna --- */
   @media (max-width: 720px) {
@@ -566,24 +593,26 @@
         
       </div>
     </div>
-    <div class="results-section">
+<div class="results-section">
   <img src="siatka_wektor.svg" alt="" class="results-grid-overlay">
-  <p>Napisałem tegoroczną maturę z rezultatami:</p>
+  <p class="results-lead">Napisałem tegoroczną maturę z rezultatami:</p>
   
-  <div class="format-card results-card-wrapper">
-    <div class="results-table">
-      <span class="subject">Matematyka podstawowa:</span>
-      <span class="score">100%</span>
-      
-      <span class="subject">Matematyka rozszerzona:</span>
-      <span class="score">100%</span>
-      
-      <span class="subject">Fizyka rozszerzona:</span>
-      <span class="score">97%</span>
+  <div class="stats-container">
+    <div class="stat-item">
+      <span class="stat-number">100%</span>
+      <span class="stat-label">Matematyka<br>podstawowa</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">100%</span>
+      <span class="stat-label">Matematyka<br>rozszerzona</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">97%</span>
+      <span class="stat-label">Fizyka<br>rozszerzona</span>
     </div>
   </div>
-  
-  <p>więc dobrze wiem, jak aktualnie wygląda egzamin.</p>
+
+  <p class="results-footer">więc wiem, jak aktualnie wygląda egzamin.</p>
 </div>
   </div>
 
