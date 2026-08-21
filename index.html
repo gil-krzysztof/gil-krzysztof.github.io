@@ -359,7 +359,7 @@
     object-fit: cover;
     z-index: 0;
     pointer-events: none;
-  }
+   }
   
     .results-card {
     margin: 0;
@@ -368,28 +368,30 @@
     font-weight: 600;
     color: #ffffff;
     flex: 0 0 90%;
+   }
+
+    .results-card-wrapper {
+    max-width: 750px; /* Dopasowana szerokość karty pod układ z 3 wynikami */
+    margin: 0 auto;   /* Wyśrodkowanie karty */
   }
 
-.results-card-wrapper {
-  max-width: 750px; /* Dopasowana szerokość karty pod układ z 3 wynikami */
-  margin: 0 auto;   /* Wyśrodkowanie karty */
-}
+    .results-table {
+    display: grid;
+    grid-template-columns: 1fr auto; /* Przedmiot zajmuje dostępną przestrzeń, wynik ma stałą szerokość */
+    row-gap: 25px;                  /* Odstęp między wierszami */
+    column-gap: 20px;               /* Minimalny odstęp między tekstem a % */
+    text-align: left;
+    margin-left: 30px;
+    font-size: 18px;
+    font-weight: 400;
+    color: #ffffff;
+  }
 
-.results-table {
-  display: grid;
-  grid-template-columns: 1fr auto; /* Przedmiot zajmuje dostępną przestrzeń, wynik ma stałą szerokość */
-  row-gap: 25px;                  /* Odstęp między wierszami */
-  column-gap: 20px;               /* Minimalny odstęp między tekstem a % */
-  text-align: left;
-  font-size: 18px;
-  font-weight: 400;
-  color: #ffffff;
-}
-
-.results-table .score {
-  text-align: right;
-  font-weight: 600;
-}
+    .results-table .score {
+    text-align: right;
+    font-weight: 400;
+    margin-right: 30px;
+  }
     
     .results-section p {
     margin: 30px;
