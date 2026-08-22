@@ -15,6 +15,7 @@
     margin: 0;
     background-color: #f0f0f0;
     font-family: 'Inter', Arial, sans-serif;
+    scroll-behavior: smooth; /* Płynne przewijanie dla całej strony */
   }
 
   .content-wrapper {
@@ -125,12 +126,6 @@
     white-space: nowrap;
   }
 
-  /* Prawa strona równania: startuje jako niewidoczny element o szerokości 0
-     (dzięki czemu lewa strona jest wyśrodkowana sama). Gdy JS ustawi jej
-     szerokość na docelową (zmierzoną przez scrollWidth) i doda klasę .revealed,
-     element płynnie "robi sobie miejsce" (width), a lewa strona samoczynnie
-     przesuwa się w lewo, bo cały wiersz pozostaje wyśrodkowany (text-align:center
-     na .equation-section). Jednocześnie prawa strona wjeżdża z góry z fade-in. */
   #eq-right {
     display: inline-block;
     vertical-align: baseline;
@@ -152,9 +147,6 @@
     transform: translateY(0);
   }
 
-  /* Awaryjne ukrycie warstwy MathML (niewidocznej dla oka, potrzebnej
-     tylko czytnikom ekranu). Normalnie robi to katex.min.css / katex.mjs.css,
-     ale ta reguła zabezpiecza przed duplikatem, gdyby ten plik się nie wczytał. */
   .katex-mathml {
     position: absolute !important;
     clip: rect(1px, 1px, 1px, 1px) !important;
@@ -200,7 +192,7 @@
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
-}
+  }
 
   .results-grid-overlay {
     position: absolute;
@@ -216,8 +208,8 @@
   .results-card {
     max-width: 800px;
     margin: 0 auto;
-    flex: initial; /* Uniemożliwia rozciąganie flexboxa */
-}
+    flex: initial;
+  }
 
   .results-lead,
   .results-footer {
@@ -229,7 +221,6 @@
     margin: 60px auto;
   }
 
-  /* Kontener dla 3 kolumn z wynikami */
   .stats-container {
     display: flex;
     justify-content: center;
@@ -303,7 +294,6 @@
     letter-spacing: -0.02em;
   }
 
-  /* --- KONTENER DLA KART --- */
   .format-cards {
     display: flex;
     gap: 24px;
@@ -311,7 +301,6 @@
     z-index: 1;
   }
 
-  /* --- KARTA --- */
   .format-card {
     flex: 1;
     position: relative;
@@ -323,8 +312,6 @@
 
     background: rgba(255, 255, 255, 0);
     border: 1px solid rgba(255, 255, 255, 0.3);
-
-    /* Dynamiczne przypisanie filtru refrakcji zdefiniowanego w locie przez JS */
     backdrop-filter: var(--glass-filter-ref);
     -webkit-backdrop-filter: var(--glass-filter-ref);
 
@@ -340,7 +327,6 @@
       5px 5px 12px rgba(0, 0, 0, 0.75);
   }
 
-  /* --- 1. OSTRA BIAŁA KRAWĘDŹ Z PRYZMATEM / DYSPERSJĄ --- */
   .format-card::after {
     content: "";
     position: absolute;
@@ -381,7 +367,6 @@
     mix-blend-mode: screen;
   }
 
-  /* --- 2. CZARNY COLOR BURN --- */
   .format-card::before {
     content: "";
     position: absolute;
@@ -397,7 +382,6 @@
     mix-blend-mode: multiply; 
   }
 
-  /* --- 3. TEKST I IKONY --- */
   .format-item-title,
   .format-card p {
     position: relative;
@@ -429,109 +413,107 @@
     color: #f3ecec;
   }
 
-/* --- Sekcja Ceny --- */
-.price-section {
-  padding: 100px 20px;
-  background-color: #ffffff;
-  position: relative;
-}
+  /* --- Sekcja Ceny --- */
+  .price-section {
+    padding: 100px 20px;
+    background-color: #ffffff;
+    position: relative;
+  }
 
-.price-container {
-  max-width: 800px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  .price-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.price-row {
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 30px;
-}
+  .price-row {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 30px;
+  }
 
-.price-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
+  .price-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
-.price-title,
-.price-amount {
-  font-family: 'Inter', Arial, sans-serif;
-  font-size: 40px;
-  font-weight: 600;
-  color: #000000;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-}
+  .price-title,
+  .price-amount {
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 40px;
+    font-weight: 600;
+    color: #000000;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
 
-.vertical-tick {
-  width: 1px;
-  height: 12px;
-  background-color: #888888;
-  margin: 12px 0 8px 0;
-}
+  .vertical-tick {
+    width: 1px;
+    height: 12px;
+    background-color: #888888;
+    margin: 12px 0 8px 0;
+  }
 
-.price-subtext {
-  margin: 0;
-  font-family: 'Inter', Arial, sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  color: #333333;
-  line-height: 1.4;
-}
+  .price-subtext {
+    margin: 0;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: #333333;
+    line-height: 1.4;
+  }
 
-.price-line {
-  flex: 1;
-  height: 1px;
-  background-color: #000000;
-  margin-top: 22px; /* Wyrównanie linii do środka wysokości dużego tekstu (40px) */
-  min-width: 50px;
-}
+  .price-line {
+    flex: 1;
+    height: 1px;
+    background-color: #000000;
+    margin-top: 22px;
+    min-width: 50px;
+  }
 
-.contact-email-wrapper {
-  margin-top: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
+  .contact-email-wrapper {
+    margin-top: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
 
-.email-icon {
-  width: 28px;
-  height: 28px;
-  stroke: #000000;
-}
+  .email-icon {
+    width: 28px;
+    height: 28px;
+    stroke: #000000;
+  }
 
-.contact-email-text {
-  font-family: 'Inter', Arial, sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  color: black;
-  line-height: 1.4;
-}
+  .contact-email-text {
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: black;
+    line-height: 1.4;
+  }
 
-/* RWD – dopasowanie do mniejszych ekranów */
-@media (max-width: 600px) {
-  .stats-container {
-    gap: 20px;
+  @media (max-width: 600px) {
+    .stats-container {
+      gap: 20px;
+    }
+    
+    .stat-number {
+      font-size: 38px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+    }
   }
   
-  .stat-number {
-    font-size: 38px;
-  }
-
-  .stat-label {
-    font-size: 14px;
-  }
-}
-  
-  /* --- Wersja mobilna --- */
   @media (max-width: 720px) {
     .hero {
       padding: 100px 20px;
@@ -577,17 +559,13 @@
     }
     
     .equation-section {
-      
       margin: 20px 16px 0;
     }
     
     .equation-section::-webkit-scrollbar {
       height: 4px;
     }
-    /* Mniejszy mnożnik vw i niższy pułap niż na desktopie, żeby cały wzór
-       (razem z prawą, animowaną stroną) mieścił się w szerokości ekranu
-       bez potrzeby przewijania w poziomie - na wąskich telefonach sama
-       zmiana z 4.5vw na 4vw i obniżenie minimum o to zapewnia. */
+    
     .equation-section .katex {
       font-size: clamp(0.78rem, 4vw, 1.5rem);
     }
@@ -617,8 +595,6 @@
       padding: 48px 0; 
     }
 
-    /* Dodajemy padding wewnątrz kontenera kart, żeby pierwsza i ostatnia karta 
-       nie przyklejały się bez marginesu do samej szyby telefonu przy przewijaniu */
     .format-cards {
       display: flex;
       flex-direction: row;
@@ -632,14 +608,11 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Zwiększamy szerokość karty, np. do 90%, żeby mniej było widać sąsiednie */
     .format-card {
       flex: 0 0 90%; 
       scroll-snap-align: center;
     }
-
   }
-
 </style>
 </head>
 <body>
@@ -649,7 +622,8 @@
       <img src="siatka_czerwona_wektor.svg" alt="" class="hero-grid-overlay">
 
       <div class="corner-note">Krzysztof Gil</div>
-      <button class="contact-button">Kontakt</button>
+      <!-- Przycisk z obsługą zdarzenia kliknięcia w skrypcie -->
+      <button class="contact-button" id="scrollContactBtn">Kontakt</button>
 
       <div class="headline-row">
         <img src="laura_lewy_wektor.svg" alt="" class="laurel">
@@ -671,48 +645,44 @@
     </div>
 
     <div class="results-section">
-  <img src="siatka_wektor.svg" alt="" class="results-grid-overlay">
-  <p class="results-lead">Napisałem tegoroczną maturę z rezultatami:</p>
-  
-  <!-- Dodana klasa .results-card -->
-  <div class="format-card results-card">
-    <div class="stats-container">
-      <div class="stat-item">
-        <span class="stat-number">100%</span>
-        <span class="stat-label">Matematyka<br>podstawowa</span>
+      <img src="siatka_wektor.svg" alt="" class="results-grid-overlay">
+      <p class="results-lead">Napisałem tegoroczną maturę z rezultatami:</p>
+      
+      <div class="format-card results-card">
+        <div class="stats-container">
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Matematyka<br>podstawowa</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Matematyka<br>rozszerzona</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">97%</span>
+            <span class="stat-label">Fizyka<br>rozszerzona</span>
+          </div>
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="stat-number">100%</span>
-        <span class="stat-label">Matematyka<br>rozszerzona</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">97%</span>
-        <span class="stat-label">Fizyka<br>rozszerzona</span>
-      </div>
-    </div>
-  </div>
 
-  <p class="results-footer">więc wiem, jak Ci pomóc w przygotowaniu.</p>
-</div>
+      <p class="results-footer">więc wiem, jak Ci pomóc w przygotowaniu.</p>
+    </div>
 
     <div class="format-section">
       <h3>Jak wyglądają korepetycje?</h3>
       <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
       <div class="format-cards">
         
-        <!-- KARTA 1 -->
         <div class="format-card">
           <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
           <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
         </div>
 
-        <!-- KARTA 2 -->
         <div class="format-card">
           <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
           <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
         </div>
 
-        <!-- KARTA 3 -->
         <div class="format-card">
           <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
           <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz do wspólnego omówienia.</p>
@@ -720,48 +690,48 @@
       </div>
     </div>
 
-<div class="price-section">
-  <div class="price-container">
-    <div class="price-row">
-      <div class="price-col left">
-        <span class="price-title">Sesja 90 min</span>
-        <div class="vertical-tick"></div>
-        <p class="price-subtext">Zacznij od pierwszej lekcji za 50 zł.<br>Zero zobowiązań.</p>
+    <!-- Dopisany ID "contact-section" do sekcji cenowej na dole -->
+    <div class="price-section" id="contact-section">
+      <div class="price-container">
+        <div class="price-row">
+          <div class="price-col left">
+            <span class="price-title">Sesja 90 min</span>
+            <div class="vertical-tick"></div>
+            <p class="price-subtext">Zacznij od pierwszej lekcji za 50 zł.<br>Zero zobowiązań.</p>
+          </div>
+
+          <div class="price-line"></div>
+
+          <div class="price-col right">
+            <span class="price-amount">regularna cena: 109 zł</span>
+            <div class="vertical-tick"></div>
+            <p class="price-subtext">czyli ok. 73 zł / 60 min</p>
+          </div>
+        </div>
+
+        <div class="contact-email-wrapper">
+          <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </svg>
+          <span class="contact-email-text">Skontaktuj się ze mną na krzysztofgil07@gmail.com</span>
+        </div>
       </div>
-
-      <div class="price-line"></div>
-
-      <div class="price-col right">
-        <span class="price-amount">regularna cena: 109 zł</span>
-        <div class="vertical-tick"></div>
-        <p class="price-subtext">czyli ok. 73 zł / 60 min</p>
-      </div>
-    </div>
-
-    <div class="contact-email-wrapper">
-      <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-      </svg>
-      <span class="contact-email-text">Skontaktuj się ze mną na krzysztofgil07@gmail.com</span>
     </div>
   </div>
-</div>
-</div>
 
-  <!-- Dynamicznie generowane filtry SVG dla poszczególnych kart osadzone będą tutaj -->
   <svg id="svg-filters-container" style="position: absolute; width: 0; height: 0;" aria-hidden="true"></svg>
 
   <script src="katex.min.js"></script>
   <script>
-    // Renderowanie wzoru na sumę sinusów (wzór na sumę-w-iloczyn), w dwóch częściach:
-    // lewa strona (statyczna, wyśrodkowana na starcie) i prawa strona (animowana:
-    // najpierw "robi sobie miejsce" płynnie rozszerzając szerokość, przez co
-    // lewa strona przesuwa się w lewo i cały wzór się centruje, a potem wjeżdża
-    // z góry z fade-in). \displaystyle wymuszony ręcznie, bo oba fragmenty są
-    // renderowane w trybie inline (żeby siedziały obok siebie w jednej linii),
-    // a bez tego ułamki renderowałyby się mniejsze niż w trybie displayMode.
- document.addEventListener('DOMContentLoaded', function () {
+    // Obsługa przewijania do sekcji kontaktowej
+    document.getElementById('scrollContactBtn').addEventListener('click', function() {
+      document.getElementById('contact-section').scrollIntoView({ 
+        behavior: 'smooth' 
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
       if (window.katex) {
         katex.render(
           "\\displaystyle\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta",
@@ -774,10 +744,6 @@
           { throwOnError: false, displayMode: false }
         );
 
-        // Wzór na sumę sinusów: lewa strona startuje wyśrodkowana sama,
-        // po chwili prawa strona płynnie "robi sobie miejsce" (width 0 -> naturalna
-        // szerokość), a lewa strona przesuwa się w lewo bo cały wiersz jest
-        // wyśrodkowany. Na koniec prawa strona wjeżdża z góry z fade-in.
         var eqRight = document.getElementById('eq-right');
         var naturalWidth = eqRight.scrollWidth;
         setTimeout(function () {
@@ -793,7 +759,6 @@
       const cards = document.querySelectorAll('.format-card');
       const svgContainer = document.getElementById('svg-filters-container');
       
-      // Wyczyszczenie starych filtrów SVG
       svgContainer.innerHTML = '';
 
       cards.forEach((card, index) => {
@@ -801,11 +766,9 @@
         const h = card.offsetHeight;
         if (w === 0 || h === 0) return;
 
-        // 1. Kąt narożnika do gradientu obramowania
         const angle = Math.atan2(w, h) * (180 / Math.PI);
         card.style.setProperty('--corner-angle', angle + 'deg');
 
-        // 2. Generowanie mapy refrakcji (fizyka soczewki) dla dokładnych wymiarów karty
         const canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
@@ -862,7 +825,6 @@
         ctx.putImageData(imgData, 0, 0);
         const dataUrl = canvas.toDataURL('image/png');
 
-        // 3. Tworzenie unikalnego filtru SVG dla tej karty
         const filterId = `glass-lens-${index}`;
         const filterEl = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
         filterEl.setAttribute('id', filterId);
@@ -878,7 +840,6 @@
         `;
         svgContainer.appendChild(filterEl);
 
-        // 4. Przypisanie filtra do danej karty w stylach inline
         card.style.setProperty('--glass-filter-ref', `url(#${filterId})`);
       });
     }
