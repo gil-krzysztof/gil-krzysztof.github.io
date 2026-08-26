@@ -19,8 +19,7 @@
   }
 
   .content-wrapper {
-    max-width: 1500px;
-    margin: 0 auto;
+    margin: 0;
     background-color: white;
     position: relative;
   }
@@ -38,21 +37,22 @@
 
   .hero-grid-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 1500px;
-    height: 650px;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     z-index: 0;
     pointer-events: none;
   }
 
+  /* Przyciski w rogach: stała odległość od krawędzi, niezależna od szerokości ekranu */
   .corner-note {
     position: absolute;
-    top: 2.5vh;
-    left: 6vw;
+    top: 40px;
+    left: 60px;
     padding: 15px 0;
-    font-size: 16px;
+    font-size: clamp(15px, 1.2vw, 16px);
     font-weight: 400;
     color: #333;
     z-index: 1;
@@ -60,13 +60,13 @@
 
   .contact-button {
     position: absolute;
-    top: 2.5vh;
-    right: 6vw;
+    top: 40px;
+    right: 60px;
     padding: 15px 20px;
     background-color: white;
     border: 2px solid black;
     border-radius: 15px;
-    font-size: 16px;
+    font-size: clamp(15px, 1.2vw, 16px);
     font-weight: 400;
     color: #333;
     cursor: pointer;
@@ -90,7 +90,7 @@
 
   h1 {
     margin: 15px;
-    font-size: 50px;
+    font-size: clamp(30px, 4vw, 50px);
     font-weight: 600;
     line-height: 1.22;
     letter-spacing: -0.02em;
@@ -100,7 +100,7 @@
   .subtitle {
     max-width: 950px;
     margin: 15px;
-    font-size: 20px;
+    font-size: clamp(16px, 1.8vw, 20px);
     font-weight: 400;
     line-height: 1.5;
     text-align: center;
@@ -170,7 +170,7 @@
 
   .profile-section h2 {
     margin: 15px;
-    font-size: 40px;
+    font-size: clamp(30px, 3.2vw, 40px);
     font-weight: 600;
     line-height: 1.22;
     letter-spacing: -0.02em;
@@ -179,7 +179,7 @@
   .profile-section p {
     margin: 15px auto;
     max-width: 750px;
-    font-size: 20px;
+    font-size: clamp(16px, 1.8vw, 20px);
     line-height: 1.5;
     color: #333;
     text-align: center;
@@ -213,7 +213,7 @@
 
   .results-lead,
   .results-footer {
-    font-size: 25px;
+    font-size: clamp(18px, 2.2vw, 25px);
     font-weight: 400;
     color: #f3ecec;
     position: relative;
@@ -243,7 +243,7 @@
 
   .stat-number {
     font-family: 'Computer Modern Serif', serif;
-    font-size: 52px;
+    font-size: clamp(38px, 4.2vw, 52px);
     font-weight: 400;
     color: #ffffff;
     line-height: 1;
@@ -251,7 +251,7 @@
   }
 
   .stat-label {
-    font-size: 16px;
+    font-size: clamp(14px, 1.3vw, 16px);
     font-weight: 400;
     color: #f3ecec;
     line-height: 1.3;
@@ -284,7 +284,7 @@
   .format-section h3 {
     margin-bottom: 60px;
     margin-top: 0;
-    font-size: 40px;
+    font-size: clamp(26px, 3.2vw, 40px);
     font-weight: 600;
     color: white;
     position: relative;
@@ -393,7 +393,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 18px;
+    font-size: clamp(14px, 1.6vw, 18px);
     font-weight: 600;
     margin-bottom: 12px;
     color: #ffffff;
@@ -407,7 +407,7 @@
 
   .format-card p {
     margin: 0;
-    font-size: 15px;
+    font-size: clamp(13px, 1.3vw, 15px);
     font-weight: 400;
     line-height: 1.5;
     color: #f3ecec;
@@ -446,12 +446,11 @@
   .price-title,
   .price-amount {
     font-family: 'Inter', Arial, sans-serif;
-    font-size: 40px;
+    font-size: clamp(22px, 3.2vw, 40px);
     font-weight: 600;
     color: #000000;
     line-height: 1.1;
     letter-spacing: -0.02em;
-    white-space: nowrap;
   }
 
   .vertical-tick {
@@ -464,7 +463,7 @@
   .price-subtext {
     margin: 0;
     font-family: 'Inter', Arial, sans-serif;
-    font-size: 20px;
+    font-size: clamp(15px, 1.6vw, 20px);
     font-weight: 400;
     color: #333333;
     line-height: 1.4;
@@ -494,7 +493,7 @@
 
   .contact-email-text {
     font-family: 'Inter', Arial, sans-serif;
-    font-size: 20px;
+    font-size: clamp(14px, 1.6vw, 20px);
     font-weight: 400;
     color: black;
     line-height: 1.4;
@@ -503,14 +502,6 @@
   @media (max-width: 600px) {
     .stats-container {
       gap: 20px;
-    }
-    
-    .stat-number {
-      font-size: 38px;
-    }
-
-    .stat-label {
-      font-size: 14px;
     }
   }
   
@@ -523,7 +514,6 @@
       padding: 0;
       top: 20px;
       left: 20px;
-      font-size: 15px;
       color: #333;
       z-index: 1;
     }
@@ -532,7 +522,6 @@
       top: 15px;
       right: 20px;
       padding: 5px 10px;
-      font-size: 15px;
       color: #333;
       border: 1px solid #333;
       border-radius: 10px;
@@ -543,7 +532,6 @@
     }
 
     h1 {
-      font-size: 30px;
       padding: 0;
       margin: 0;
       text-align: left;
@@ -553,7 +541,6 @@
 
     .subtitle {
       padding: 0;
-      font-size: 16px;
       text-align: left;
       margin: 20px 0 0;
     }
@@ -575,7 +562,6 @@
     }
 
     .profile-section h2 {
-      font-size: 30px;
       text-align: left;
       line-height: 1.22;
       letter-spacing: -0.02em;
@@ -584,7 +570,6 @@
     }
 
     .profile-section p {
-      font-size: 16px;
       text-align: left;
       margin: 10px 0;
       padding: 0;
