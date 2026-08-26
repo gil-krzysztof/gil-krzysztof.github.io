@@ -32,7 +32,7 @@
     align-items: center;
     padding-top: 200px;
     padding-bottom: 200px;
-    font-size: clamp(30px, 4vw, 60px);
+    font-size: clamp(40px, 4vw, 60px);
     overflow: hidden;
   }
 
@@ -103,7 +103,12 @@
     letter-spacing: -0.02em;
     text-align: center;
   }
-
+  @media(max-width: 650px){
+    .h1 {
+      text-align: left;
+    }
+  }
+  
   .subtitle {
     max-width: 950px;
     margin: 15px;
@@ -114,6 +119,11 @@
     color: #333;
     position: relative;
     z-index: 1;
+  }
+  @media(max-width: 650px){
+    .subtitle {
+      text-align: left;
+    }
   }
 
   .equation-section {
