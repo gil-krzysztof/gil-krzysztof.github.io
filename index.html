@@ -605,7 +605,7 @@
 .price-title,
 .price-amount {
   font-family: 'Inter', Arial, sans-serif;
-  font-size: clamp(22px, 3.2vw, 40px);
+  font-size: clamp(1.6rem, calc(1.6vw + 1rem), 3.2rem);
   font-weight: 600;
   color: #000000;
   line-height: 1.1;
@@ -622,7 +622,7 @@
 .price-subtext {
   margin: 0;
   font-family: 'Inter', Arial, sans-serif;
-  font-size: clamp(15px, 1.6vw, 20px);
+  font-size: clamp(0.95rem, calc(0.5vw + 0.8rem), 1.4rem);
   font-weight: 400;
   color: #333333;
   line-height: 1.4;
@@ -631,7 +631,7 @@
 .price-line {
   flex: 1;
   height: 1px;
-  background-color: #000000;
+  background-color: #333;
   margin-top: 22px;
   min-width: 50px;
 }
@@ -652,7 +652,7 @@
 
 .contact-email-text {
   font-family: 'Inter', Arial, sans-serif;
-  font-size: clamp(14px, 1.6vw, 20px);
+  font-size: clamp(0.95rem, calc(0.5vw + 0.8rem), 1.4rem);
   font-weight: 400;
   color: black;
   line-height: 1.4;
@@ -672,32 +672,12 @@
   .price-line {
     display: none;
   }
-
-  .price-title,
-  .price-amount {
-    font-size: clamp(26px, 3.2vw, 40px);
-  }
-
-  .price-subtext {
-    font-size: clamp(15px, 1.8vw, 20px);
-  }
-
+  
   .contact-email-wrapper {
     margin-top: 40px;
     flex-direction: column;
     text-align: center;
     gap: 8px;
-  }
-
-  .contact-email-text {
-    font-size: clamp(14px, 1.6vw, 20px);
-  }
-}
-
-@media (max-width: 400px) {
-  .price-title,
-  .price-amount {
-    font-size: clamp(22px, 6vw, 40px);
   }
 }
   
@@ -791,7 +771,7 @@
           <div class="price-line"></div>
 
           <div class="price-col right">
-            <span class="price-amount">regularna cena: 109 zł</span>
+            <span class="price-amount">Regularna cena: 109 zł</span>
             <div class="vertical-tick"></div>
             <p class="price-subtext">czyli ok. 73 zł / 60 min</p>
           </div>
