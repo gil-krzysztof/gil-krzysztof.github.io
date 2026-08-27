@@ -244,11 +244,16 @@
   }
 
   .profile-section h2 {
-    margin: 15px auto;
+    margin: 25px auto;
     font-size: clamp(1.6rem, calc(1.6vw + 1rem), 3.2rem);
     font-weight: 600;
     line-height: 1.22;
     letter-spacing: -0.02em;
+  }
+  @media(max-width: 650px) {
+    .profile-section h2 {
+      margin: 15px auto;
+    }
   }
 
   .profile-section p {
