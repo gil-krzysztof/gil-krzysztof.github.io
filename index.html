@@ -26,7 +26,7 @@
 
   /* --- Sekcja hero --- */
   .hero {
-    padding: min(50px, 8%);
+    padding: min(50px, 5vw);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -67,6 +67,11 @@
     font-weight: 400;
     color: #333;
     z-index: 1;
+  }
+  @media(max-width: 650px) {
+    .corner-note {
+      top: 5vw;
+    }
   }
 
   .contact-button {
