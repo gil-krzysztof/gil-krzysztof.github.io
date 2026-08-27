@@ -541,13 +541,22 @@
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
-    scroll-padding-left: min(3rem, 5vw)
+    scroll-padding-left: 20px;
+    gap: 16px;
+    padding: 0 0 16px 0;
     -webkit-overflow-scrolling: touch;
-    margin: 0 calc(-1 * min(3rem, 5vw));
-    padding: 0 min(3rem, 5vw) 8px;
+    margin: 0; /* Usuwamy ujemny margines, który rozciągał kontener pod krawędzie */
   }
+
+  /* Niewidzialny bufor po lewej i prawej stronie dla idealnego snapowania */
+  .format-cards::before,
+  .format-cards::after {
+    content: "";
+    flex: 0 0 4px; /* Daje stały, bezpieczny odstęp przed pierwszą i po ostatniej karcie */
+  }
+
   .format-card {
-    flex: 0 0 min(340px, 85%);
+    flex: 0 0 min(300px, 78vw); /* Stały maks 300px na szerokich ekranach, 78% szerokości na wąskich */
     scroll-snap-align: start;
   }
 }
