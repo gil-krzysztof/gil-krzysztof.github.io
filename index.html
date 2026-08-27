@@ -573,91 +573,134 @@
 }
 
   /* --- Sekcja Ceny -------------------------------- */
-  .price-section {
-    padding: 100px 20px;
-    background-color: #ffffff;
-    position: relative;
-  }
+.price-section {
+  padding: 100px 20px;
+  background-color: #ffffff;
+  position: relative;
+}
 
-  .price-container {
-    max-width: 800px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.price-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.price-row {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 30px;
+}
+
+.price-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.price-title,
+.price-amount {
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: clamp(22px, 3.2vw, 40px);
+  font-weight: 600;
+  color: #000000;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.vertical-tick {
+  width: 1px;
+  height: 12px;
+  background-color: #888888;
+  margin: 12px 0 8px 0;
+}
+
+.price-subtext {
+  margin: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: clamp(15px, 1.6vw, 20px);
+  font-weight: 400;
+  color: #333333;
+  line-height: 1.4;
+}
+
+.price-line {
+  flex: 1;
+  height: 1px;
+  background-color: #000000;
+  margin-top: 22px;
+  min-width: 50px;
+}
+
+.contact-email-wrapper {
+  margin-top: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.email-icon {
+  width: 28px;
+  height: 28px;
+  stroke: #000000;
+}
+
+.contact-email-text {
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: clamp(14px, 1.6vw, 20px);
+  font-weight: 400;
+  color: black;
+  line-height: 1.4;
+}
+
+@media (max-width: 700px) {
+  .price-section {
+    padding: 60px min(3rem, 5vw);
   }
 
   .price-row {
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 30px;
-  }
-
-  .price-col {
-    display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
+    gap: 32px;
+  }
+
+  .price-line {
+    display: none;
   }
 
   .price-title,
   .price-amount {
-    font-family: 'Inter', Arial, sans-serif;
-    font-size: clamp(22px, 3.2vw, 40px);
-    font-weight: 600;
-    color: #000000;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-
-  .vertical-tick {
-    width: 1px;
-    height: 12px;
-    background-color: #888888;
-    margin: 12px 0 8px 0;
+    font-size: clamp(26px, 3.2vw, 40px);
   }
 
   .price-subtext {
-    margin: 0;
-    font-family: 'Inter', Arial, sans-serif;
-    font-size: clamp(15px, 1.6vw, 20px);
-    font-weight: 400;
-    color: #333333;
-    line-height: 1.4;
-  }
-
-  .price-line {
-    flex: 1;
-    height: 1px;
-    background-color: #000000;
-    margin-top: 22px;
-    min-width: 50px;
+    font-size: clamp(15px, 1.8vw, 20px);
   }
 
   .contact-email-wrapper {
-    margin-top: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-  }
-
-  .email-icon {
-    width: 28px;
-    height: 28px;
-    stroke: #000000;
+    margin-top: 40px;
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
   }
 
   .contact-email-text {
-    font-family: 'Inter', Arial, sans-serif;
     font-size: clamp(14px, 1.6vw, 20px);
-    font-weight: 400;
-    color: black;
-    line-height: 1.4;
   }
+}
 
+@media (max-width: 400px) {
+  .price-title,
+  .price-amount {
+    font-size: clamp(22px, 6vw, 40px);
+  }
+}
+  
 </style>
 </head>
 <body>
