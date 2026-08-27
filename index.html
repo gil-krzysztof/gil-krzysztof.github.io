@@ -83,38 +83,25 @@
     }
   }
 
-  .contact-button {
-    position: absolute;
-    top: 40px;
-    right: 60px;
-    padding: 15px 20px;
-    background-color: white;
-    border: 1.5px solid black;
-    border-radius: 15px;
-    font-size: 1rem;
-    font-weight: 400;
-    color: #333;
-    cursor: pointer;
-    z-index: 1;
-  }
-  @media(max-width: 650px) {
-    .contact-button {
-      top: 5vw;
-      right: 5vw;
-      font-size: 1rem;
-      padding: 8px 10px;
-      border-radius: 8px;
-    }
-  }
-  @media(max-width: 350px) {
-    .contact-button {
-      top: 5vw;
-      right: 5vw;
-      font-size: 0.8rem;
-      padding: 8px 10px;
-      border-radius: 8px;
-    }
-  }
+.contact-button {
+  position: absolute;
+  top: clamp(16px, 3vw, 40px);
+  right: clamp(16px, 4vw, 60px);
+
+  padding: clamp(8px, 1.2vw, 15px) clamp(12px, 2vw, 20px);
+  border-radius: clamp(10px, 1.5vw, 15px);
+
+  background-color: white;
+  border: 1.5px solid black;
+
+  font-size: clamp(13px, 1.2vw, 16px);
+  font-weight: 400;
+  color: #333;
+
+  cursor: pointer;
+  z-index: 1;
+  white-space: nowrap; /* żeby "Kontakt" nigdy się nie złamał w dwie linijki */
+}
 
   .headline-row {
     display: flex;
