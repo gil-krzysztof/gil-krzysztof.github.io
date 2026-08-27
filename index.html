@@ -152,6 +152,7 @@
   @media(max-width: 650px){
     h1 {
       text-align: left;
+      margin: 10px 0;
     }
   }
   
@@ -169,6 +170,7 @@
   @media(max-width: 650px){
     .subtitle {
       text-align: left;
+      margin: 10px 0;
     }
   }
 
@@ -182,9 +184,14 @@
     box-sizing: border-box;
     overflow-y: hidden;
   }
+  @media(max-width: 350px) {
+    .equation-section {
+      margin: 30px 0 10px;
+    }
+  }
 
   .equation-section .katex {
-    font-size: clamp(0.95rem, 4.5vw, 1.5rem);
+    font-size: clamp(0.9rem, 4.5vw, 1.5rem);
     color: black;
     white-space: nowrap;
   }
