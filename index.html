@@ -572,7 +572,7 @@
   }
 }
 
-  /* --- Sekcja Ceny -------------------------------- */
+/* --- Sekcja Ceny --- */
 .price-section {
   padding: 100px 20px;
   background-color: #ffffff;
@@ -592,7 +592,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: 30px;
+  gap: 16px;
 }
 
 .price-col {
@@ -605,7 +605,7 @@
 .price-title,
 .price-amount {
   font-family: 'Inter', Arial, sans-serif;
-  font-size: clamp(1.6rem, calc(1.6vw + 1rem), 3.2rem);
+  font-size: clamp(22px, 3.2vw, 40px);
   font-weight: 600;
   color: #000000;
   line-height: 1.1;
@@ -622,7 +622,7 @@
 .price-subtext {
   margin: 0;
   font-family: 'Inter', Arial, sans-serif;
-  font-size: clamp(0.95rem, calc(0.5vw + 0.8rem), 1.4rem);
+  font-size: clamp(15px, 1.6vw, 20px);
   font-weight: 400;
   color: #333333;
   line-height: 1.4;
@@ -630,9 +630,9 @@
 
 .price-line {
   flex: 0 0 auto;
-  width: 50px;
+  width: 40px;
   height: 1px;
-  background-color: #333;
+  background-color: #000000;
   margin-top: 22px;
 }
 
@@ -652,7 +652,7 @@
 
 .contact-email-text {
   font-family: 'Inter', Arial, sans-serif;
-  font-size: clamp(0.95rem, calc(0.5vw + 0.8rem), 1.4rem);
+  font-size: clamp(14px, 1.6vw, 20px);
   font-weight: 400;
   color: black;
   line-height: 1.4;
@@ -672,11 +672,91 @@
   .price-line {
     display: none;
   }
-  
+
+  .price-title,
+  .price-amount {
+    font-size: clamp(26px, 3.2vw, 40px);
+  }
+
+  .price-subtext {
+    font-size: clamp(15px, 1.8vw, 20px);
+  }
+
   .contact-email-wrapper {
     margin-top: 40px;
+    flex-direction: column;
     text-align: center;
     gap: 8px;
+  }
+
+  .contact-email-text {
+    font-size: clamp(14px, 1.6vw, 20px);
+  }
+}
+
+@media (max-width: 650px) {
+  .price-container {
+    align-items: flex-start;
+  }
+
+  .price-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 8px;
+    width: auto;
+  }
+
+  /* "Rozpłaszcza" kolumny, żeby ich dzieci stały się bezpośrednimi
+     elementami .price-row i mogły być przestawiane przez `order` */
+  .price-col {
+    display: contents;
+  }
+
+  .price-col .vertical-tick {
+    display: none;
+  }
+
+  .price-title {
+    order: 1;
+  }
+
+  .price-amount {
+    order: 2;
+  }
+
+  .price-col.left .price-subtext {
+    order: 0;
+  }
+
+  .price-col.right .price-subtext {
+    order: 3;
+  }
+
+  .price-title,
+  .price-amount {
+    text-align: left;
+    font-size: clamp(24px, 6vw, 32px);
+    line-height: 1.2;
+  }
+
+  .price-subtext {
+    text-align: left;
+  }
+
+  .contact-email-wrapper {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .email-icon {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .price-title,
+  .price-amount {
+    font-size: clamp(22px, 6vw, 40px);
   }
 }
   
@@ -758,33 +838,33 @@
     </div>
 
     <!-- Dopisany ID "contact-section" do sekcji cenowej na dole -->
-    <div class="price-section" id="contact-section">
-      <div class="price-container">
-        <div class="price-row">
-          <div class="price-col left">
-            <span class="price-title">Sesja 90 min</span>
-            <div class="vertical-tick"></div>
-            <p class="price-subtext">Zacznij od pierwszej lekcji za 50 zł.<br>Zero zobowiązań.</p>
-          </div>
+<div class="price-section" id="contact-section">
+  <div class="price-container">
+    <div class="price-row">
+      <div class="price-col left">
+        <span class="price-title">Sesja 90 min</span>
+        <div class="vertical-tick"></div>
+        <p class="price-subtext">Zacznij od pierwszej lekcji za 50 zł.<br>Zero zobowiązań.</p>
+      </div>
 
-          <div class="price-line"></div>
+      <div class="price-line"></div>
 
-          <div class="price-col right">
-            <span class="price-amount">Regularna cena: 109 zł</span>
-            <div class="vertical-tick"></div>
-            <p class="price-subtext">czyli ok. 73 zł / 60 min</p>
-          </div>
-        </div>
-
-        <div class="contact-email-wrapper">
-          <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-          </svg>
-          <span class="contact-email-text">Skontaktuj się ze mną na krzysztofgil07@gmail.com</span>
-        </div>
+      <div class="price-col right">
+        <span class="price-amount">regularna cena: 109 zł</span>
+        <div class="vertical-tick"></div>
+        <p class="price-subtext">czyli ok. 73 zł / 60 min</p>
       </div>
     </div>
+
+    <div class="contact-email-wrapper">
+      <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+      </svg>
+      <span class="contact-email-text">Skontaktuj się ze mną na krzysztofgil07@gmail.com</span>
+    </div>
+  </div>
+</div>
   </div>
 
   <svg id="svg-filters-container" style="position: absolute; width: 0; height: 0;" aria-hidden="true"></svg>
