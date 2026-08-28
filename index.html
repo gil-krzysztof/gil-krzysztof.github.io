@@ -578,6 +578,16 @@
   background-color: #ffffff;
   position: relative;
 }
+@media (max-width: 600px) {
+  .price-section {
+    padding: 60px 16px;
+  }
+}
+@media (max-width: 400px) {
+  .price-section {
+    padding: 40px 16px;
+  }
+}
 
 .price-container {
   max-width: 800px;
@@ -644,74 +654,48 @@
   gap: 12px;
 }
 
-.email-icon {
-  width: 28px;
-  height: 28px;
-  stroke: black;
-}
-
-.contact-email-text {
-  font-family: 'Inter', Arial, sans-serif;
-  font-size: clamp(14px, 1.6vw, 20px);
-  font-weight: 400;
-  color: black;
-  line-height: 1.4;
-}
-
 @media (max-width: 400px) {
   .price-container {
     align-items: flex-start;
   }
-
   .price-row {
     display: grid;
     grid-template-columns: 1fr;
     row-gap: 8px;
     width: auto;
   }
-
-  /* "Rozpłaszcza" kolumny, żeby ich dzieci stały się bezpośrednimi
-     elementami .price-row i mogły być przestawiane przez `order` */
   .price-col {
     display: contents;
   }
-
   .price-col .vertical-tick {
     display: none;
   }
-
   .price-title {
     order: 1;
   }
-
   .price-amount {
     order: 2;
   }
-
   .price-col.left .price-subtext {
     order: 0;
   }
-
   .price-col.right .price-subtext {
     order: 3;
   }
-
   .price-title,
   .price-amount {
     text-align: left;
     line-height: 1.2;
   }
-
   .price-subtext {
     text-align: left;
   }
-
   .price-line {
     display: none;
   }
-
   .contact-email-wrapper {
-    align-items: flex-start;
+    align-items: center;
+    justify-content: flex-start;
   }
 }
   
