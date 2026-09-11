@@ -161,16 +161,23 @@
     }
   }
 
-  .equation-section {
-    max-width: 950px;
-    margin: 45px 0 15px ;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    box-sizing: border-box;
-    overflow-y: hidden;
-  }
+.equation-section {
+  max-width: 950px;
+  margin: 45px 0 15px ;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: hidden;
+  
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.equation-section.ready {
+  opacity: 1;
+}
   @media(max-width: 350px) {
     .equation-section {
       margin: 30px 0 10px;
@@ -821,27 +828,30 @@
       });
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-      if (window.katex) {
-        katex.render(
-          "\\displaystyle\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta",
-          document.getElementById('eq-left'),
-          { throwOnError: false, displayMode: false }
-        );
-        katex.render(
-          "\\displaystyle \\textcolor{#2E7D4F}{=} 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\textcolor{#4A6FA5}{\\cos}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
-          document.getElementById('eq-right'),
-          { throwOnError: false, displayMode: false }
-        );
+document.addEventListener('DOMContentLoaded', function () {
+  if (window.katex) {
+    katex.render(
+      "\\displaystyle\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta",
+      document.getElementById('eq-left'),
+      { throwOnError: false, displayMode: false }
+    );
+    katex.render(
+      "\\displaystyle \\textcolor{#2E7D4F}{=} 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\textcolor{#4A6FA5}{\\cos}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
+      document.getElementById('eq-right'),
+      { throwOnError: false, displayMode: false }
+    );
 
-        var eqRight = document.getElementById('eq-right');
-        var naturalWidth = eqRight.scrollWidth;
-        setTimeout(function () {
-          eqRight.style.width = naturalWidth + 'px';
-          eqRight.classList.add('revealed');
-        }, 900);
-      }
-    });
+    var eqRight = document.getElementById('eq-right');
+    var naturalWidth = eqRight.scrollWidth;
+    setTimeout(function () {
+      eqRight.style.width = naturalWidth + 'px';
+      eqRight.classList.add('revealed');
+      
+      document.querySelector('.equation-section').classList.add('ready');
+    }, 900);
+  }
+});
+
   </script>
 
   <script>
