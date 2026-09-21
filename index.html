@@ -1,944 +1,843 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Korepetycje z matematyki rozszerzonej</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="katex.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strona</title>
+  
+  <!-- KaTeX CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 
-<style>
-  /* --- Globalne ustawienia --- */
-  html, body {
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-    margin: 0;
-    background-color: #f0f0f0;
-    font-family: 'Inter', Arial, sans-serif;
-    scroll-behavior: smooth; /* Płynne przewijanie dla całej strony */
-  }
+  <style>
+    /* --- Globalne ustawienia --- */
+    html, body {
+      margin: 0;
+      background-color: #f0f0f0;
+      font-family: 'Inter', Arial, sans-serif;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
 
-  .content-wrapper {
-    margin: 0;
-    background-color: white;
-    position: relative;
-  }
+    .content-wrapper {
+      margin: 0;
+      background-color: white;
+      position: relative;
+    }
 
-  /* --- Sekcja hero -------------------------------- */
-  .hero {
-    padding: min(12.5rem, 25vw) min(3rem, 5vw);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: clamp(1.8rem, calc(2vw + 1.25rem), 4rem);
-    overflow: hidden;
-    max-width: 1800px;
-    margin: 0 auto;
-  }
-  @media (max-width: 650px) {
+    /* --- Sekcja hero --- */
     .hero {
-      align-items: flex-start;
+      padding: min(12.5rem, 25vw) min(3rem, 5vw);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: clamp(1.8rem, calc(2vw + 1.25rem), 4rem);
+      overflow: hidden;
+      max-width: 1800px;
+      margin: 0 auto;
     }
-  }
+    @media (max-width: 650px) {
+      .hero {
+        align-items: flex-start;
+      }
+    }
 
-  .hero-grid-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 1500px;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
-    pointer-events: none;
-  }
+    .hero-grid-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 1500px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-  /* Przyciski w rogach: stała odległość od krawędzi, niezależna od szerokości ekranu */
-  .corner-note {
-    position: absolute;
-    top: 40px;
-    left: 60px;
-    padding: 15px 0;
-    font-size: 1rem;
-    font-weight: 400;
-    color: #333;
-    z-index: 1;
-  }
-  @media(max-width: 650px) {
     .corner-note {
-      top: 5vw;
-      left: 5vw;
+      position: absolute;
+      top: 40px;
+      left: 60px;
+      padding: 15px 0;
       font-size: 1rem;
-      padding: 8px 0;
+      font-weight: 400;
+      color: #333;
+      z-index: 1;
     }
-  }
-  @media(max-width: 350px) {
-    .corner-note {
-      top: 5vw;
-      left: 5vw;
-      font-size: 0.8rem;
-      padding: 8px 0;
+    @media(max-width: 650px) {
+      .corner-note {
+        top: 5vw;
+        left: 5vw;
+        font-size: 1rem;
+        padding: 8px 0;
+      }
     }
-  }
+    @media(max-width: 350px) {
+      .corner-note {
+        top: 5vw;
+        left: 5vw;
+        font-size: 0.8rem;
+        padding: 8px 0;
+      }
+    }
 
-  .contact-button {
-    position: absolute;
-    top: clamp(16px, 3vw, 40px);
-    right: clamp(16px, 4vw, 60px);
+    .contact-button {
+      position: absolute;
+      top: clamp(16px, 3vw, 40px);
+      right: clamp(16px, 4vw, 60px);
 
-    padding: clamp(8px, 1.2vw, 15px) clamp(12px, 2vw, 20px);
-    border-radius: clamp(10px, 1.5vw, 15px);
+      padding: clamp(8px, 1.2vw, 15px) clamp(12px, 2vw, 20px);
+      border-radius: clamp(10px, 1.5vw, 15px);
 
-    background-color: white;
-    border: 1.5px solid black;
+      background-color: white;
+      border: 1.5px solid black;
 
-    font-size: clamp(13px, 1.2vw, 16px);
-    font-weight: 400;
-    color: #333;
+      font-size: clamp(13px, 1.2vw, 16px);
+      font-weight: 400;
+      color: #333;
 
-    cursor: pointer;
-    z-index: 1;
-    white-space: nowrap; /* żeby "Kontakt" nigdy się nie złamał w dwie linijki */
-  }
+      cursor: pointer;
+      z-index: 1;
+      white-space: nowrap;
+    }
 
-  .headline-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.8em;
-    height: fit-content;
-    position: relative;
-    z-index: 1;
-  }
-  @media (max-width: 650px) {
     .headline-row {
-      justify-content: flex-start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8em;
+      height: fit-content;
+      position: relative;
+      z-index: 1;
     }
-  }
+    @media (max-width: 650px) {
+      .headline-row {
+        justify-content: flex-start;
+      }
+    }
 
-  .laurel {
-    width: 1em;
-    flex-shrink: 0;
-  }
-  @media(max-width: 767px) {
     .laurel {
+      width: 1em;
+      flex-shrink: 0;
+    }
+    @media(max-width: 767px) {
+      .laurel {
+        display: none;
+      }
+    }
+
+    h1 {
+      font-size: 1em;
+      margin: 15px 0;
+      font-weight: 600;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+    @media(max-width: 650px){
+      h1 {
+        text-align: left;
+        margin: 10px 0;
+      }
+    }
+    
+    .subtitle {
+      max-width: 950px;
+      margin: 15px 0;
+      font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
+      font-weight: 400;
+      line-height: 1.5;
+      text-align: center;
+      color: #333;
+      position: relative;
+      z-index: 1;
+    }
+    @media(max-width: 650px){
+      .subtitle {
+        text-align: left;
+        margin: 10px 0;
+      }
+    }
+
+    .equation-section {
+      max-width: 950px;
+      margin: 45px 0 15px ;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      box-sizing: border-box;
+      overflow-y: hidden;
+    }
+    @media(max-width: 350px) {
+      .equation-section {
+        margin: 30px 0 10px;
+      }
+    }
+
+    .eq-mobile {
       display: none;
     }
-  }
-
-  h1 {
-    font-size: 1em;
-    margin: 15px 0;
-    font-weight: 600;
-    line-height: 1.22;
-    letter-spacing: -0.02em;
-    text-align: center;
-  }
-  @media(max-width: 650px){
-    h1 {
-      text-align: left;
-      margin: 10px 0;
+    @media (max-width: 500px) {
+      .eq-desktop {
+        display: none;
+      }
+      .eq-mobile {
+        display: block;
+      }
     }
-  }
-  
-  .subtitle {
-    max-width: 950px;
-    margin: 15px 0;
-    font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
-    font-weight: 400;
-    line-height: 1.5;
-    text-align: center;
-    color: #333;
-    position: relative;
-    z-index: 1;
-  }
-  @media(max-width: 650px){
-    .subtitle {
-      text-align: left;
-      margin: 10px 0;
+
+    .equation-section .katex {
+      font-size: clamp(0.9rem, 4vw, 1.5rem);
+      color: black;
+      white-space: nowrap;
     }
-  }
 
-  .equation-section {
-    max-width: 950px;
-    margin: 45px 0 15px ;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    box-sizing: border-box;
-    overflow-y: hidden;
-  }
-  @media(max-width: 350px) {
-    .equation-section {
-      margin: 30px 0 10px;
+    #eq-right-desktop,
+    #eq-right-mobile {
+      display: inline-block;
+      vertical-align: baseline;
+      white-space: nowrap;
+      width: 0;
+      margin-left: 0;
+      opacity: 0;
+      transform: translateY(-28px);
+      transition:
+      width 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+      margin-left 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 0.5s ease 0.95s,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.95s;
     }
-  }
 
-  .equation-section .katex {
-    font-size: clamp(0.9rem, 4vw, 1.5rem);
-    color: black;
-    white-space: nowrap;
-  }
+    #eq-right-desktop.revealed,
+    #eq-right-mobile.revealed {
+      margin-left: 0.3em;
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-  #eq-right {
-    display: inline-block;
-    vertical-align: baseline;
-    white-space: nowrap;
-    width: 0;
-    margin-left: 0;
-    opacity: 0;
-    transform: translateY(-28px);
-    transition:
-    width 0.6s cubic-bezier(0.65, 0, 0.35, 1),
-    margin-left 0.6s cubic-bezier(0.65, 0, 0.35, 1),
-    opacity 0.5s ease 0.95s,
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.95s;
-  }
+    .katex-mathml {
+      position: absolute !important;
+      clip: rect(1px, 1px, 1px, 1px) !important;
+      clip-path: inset(50%) !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+      padding: 0 !important;
+      margin: -1px !important;
+    }
 
-  #eq-right.revealed {
-    margin-left: 0.3em;
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .katex-mathml {
-    position: absolute !important;
-    clip: rect(1px, 1px, 1px, 1px) !important;
-    clip-path: inset(50%) !important;
-    width: 1px !important;
-    height: 1px !important;
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    border: 0 !important;
-    padding: 0 !important;
-    margin: -1px !important;
-  }
-
-  /* --- Sekcja "Profil ucznia" -------------------------------- */
-  .profile-section {
-    padding: min(5rem, 10vw) min(3rem, 5vw);
-    text-align: center;
-    box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.3);
-    position: relative;
-  }
-  @media(max-width: 650px) {
+    /* --- Sekcja Profil Ucznia --- */
     .profile-section {
-      text-align: left;
+      padding: min(5rem, 10vw) min(3rem, 5vw);
+      text-align: center;
+      box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.3);
+      position: relative;
     }
-  }
+    @media(max-width: 650px) {
+      .profile-section {
+        text-align: left;
+      }
+    }
 
-  .profile-section h2 {
-    margin: 25px auto;
-    font-size: clamp(1.6rem, calc(1.6vw + 1rem), 3.2rem);
-    font-weight: 600;
-    line-height: 1.22;
-    letter-spacing: -0.02em;
-  }
-  @media(max-width: 650px) {
     .profile-section h2 {
+      margin: 25px auto;
+      font-size: clamp(1.6rem, calc(1.6vw + 1rem), 3.2rem);
+      font-weight: 600;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+    }
+    @media(max-width: 650px) {
+      .profile-section h2 {
+        margin: 15px auto;
+      }
+    }
+
+    .profile-section p {
       margin: 15px auto;
+      max-width: 750px;
+      font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
+      line-height: 1.5;
+      color: #333;
     }
-  }
-
-  .profile-section p {
-    margin: 15px auto;
-    max-width: 750px;
-    font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
-    line-height: 1.5;
-    color: #333;
-  }
-  
-  /* --- Sekcja Wyników -------------------------------- */
-  .results-section {
-    background-color: #663737;
-    padding: 0 min(3rem, 5vw);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
-  }
-
-  .results-grid-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
-    pointer-events: none;
-  }
- 
-  .results-card {
-    max-width: 800px;
-    margin: 0 auto;
-    flex: initial;
-  }
-  @media (max-width: 600px) {
-    .results-card {
-      padding: 24px 16px;
-      border-radius: 24px;
-    }
-  }
-  @media (max-width: 500px) {
-    .results-card {
-      width: 80%;
-    }
-  }
-
-  .results-lead,
-  .results-footer {
-    font-size: clamp(1rem, calc(0.5vw + 1rem), 1.5rem);
-    font-weight: 400;
-    color: #f3ecec;
-    position: relative;
-    z-index: 1;
-    margin: 60px auto;
-  }
     
-  @media (max-width: 500px) {
+    /* --- Sekcja Wyników --- */
+    .results-section {
+      background-color: #663737;
+      padding: 0 min(3rem, 5vw);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .results-grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
+   
+    .results-card {
+      max-width: 800px;
+      margin: 0 auto;
+      flex: initial;
+    }
+    @media (max-width: 600px) {
+      .results-card {
+        padding: 24px 16px;
+        border-radius: 24px;
+      }
+    }
+    @media (max-width: 500px) {
+      .results-card {
+        width: 80%;
+      }
+    }
+
     .results-lead,
     .results-footer {
-      margin: 32px auto;
+      font-size: clamp(1rem, calc(0.5vw + 1rem), 1.5rem);
+      font-weight: 400;
+      color: #f3ecec;
+      position: relative;
+      z-index: 1;
+      margin: 60px auto;
     }
-  }
+      
+    @media (max-width: 500px) {
+      .results-lead,
+      .results-footer {
+        margin: 32px auto;
+      }
+    }
 
-  .stats-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: min(30px, 3vw);
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-  }
-  @media (max-width: 600px) {
     .stats-container {
-      gap: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: min(30px, 3vw);
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
-  }
-  @media (max-width: 500px) {
-    .stats-container {
+    @media (max-width: 600px) {
+      .stats-container {
+        gap: 12px;
+      }
+    }
+    @media (max-width: 500px) {
+      .stats-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .stat-item {
+      padding: 30px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-width: 140px;
+    }
+    @media (max-width: 600px) {
+      .stat-item {
+        padding: 16px 0;
+        min-width: 0;
+      }
+    }
+
+    .stat-number {
+      font-family: 'Computer Modern Serif', serif;
+      font-size: clamp(38px, 5vw, 52px);
+      font-weight: 400;
+      color: #ffffff;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .stat-label {
+      font-size: clamp(12px, 1.3vw, 16px);
+      font-weight: 400;
+      color: #f3ecec;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    /* --- Sekcja Kart --- */
+    .format-section {
+      background-color: #663737;
+      color: white;
+      font-weight: 500;
+      padding: 100px 60px;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.3);
+    }
+
+    .format-grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .format-section h3 {
+      margin-bottom: 60px;
+      margin-top: 0;
+      font-size: clamp(1.6rem, calc(1.6vw + 1rem), 3.2rem);
+      font-weight: 600;
+      color: white;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+    }
+    @media(max-width: 650px) {
+      .format-section h3 {
+        text-align: left;
+      }
+    }
+
+    .format-cards {
+      display: flex;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .format-card {
+      flex: 1;
+      position: relative;
+      border-radius: 40px;
+      padding: 40px;
+      box-sizing: border-box;
+      overflow: hidden;
+      isolation: isolate;
+
+      background: rgba(255, 255, 255, 0);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: var(--glass-filter-ref);
+      -webkit-backdrop-filter: var(--glass-filter-ref);
+
+      --rim-thickness: 2.5px;
+      --rim-blur: 0.5px;
+      --rim-max: rgba(255, 255, 255, 1);
+      --rim-main: rgba(255, 255, 255, 0.6);
+      --rim-mid: rgba(255, 255, 255, 0.25);
+      --rim-min: rgba(255, 255, 255, 0);
+
+      box-shadow:
+        inset 6px 6px 16px -2px rgba(255, 255, 255, 0.50),
+        5px 5px 12px rgba(0, 0, 0, 0.75);
+    }
+
+    .format-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: var(--rim-thickness);
+      filter: blur(var(--rim-blur));
+      z-index: 1;
+
+      background: conic-gradient(
+        from calc(180deg - var(--corner-angle, 45deg)),
+        var(--rim-main) 0deg,
+        var(--rim-main) calc(2 * var(--corner-angle, 45deg) - 10deg),
+        var(--rim-min) calc(2 * var(--corner-angle, 45deg)),
+        var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
+        var(--rim-mid) 170deg,
+
+        rgba(255, 100, 200, 1.3) 170deg,
+        rgba(100, 220, 255, 1.3) 175deg,
+        var(--rim-max) 180deg,
+        rgba(255, 230, 130, 1.3) 185deg,
+        rgba(180, 120, 255, 1.3) 190deg,
+
+        var(--rim-mid) 190deg,
+        var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
+        var(--rim-min) calc(2 * var(--corner-angle, 45deg) + 180deg),
+        var(--rim-main) calc(2 * var(--corner-angle, 45deg) + 190deg),
+        var(--rim-main) 360deg
+      );
+
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+                  mask-composite: exclude;
+
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .format-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 2;
+
+      box-shadow:
+      inset -3px -3px 8px 0px rgba(0, 0, 0, 0.6),
+      inset 0 0 6px 0px rgba(0, 0, 0, 0.9);
+
+      mix-blend-mode: multiply;
+    }
+
+    .format-item-title,
+    .format-card p {
+      position: relative;
+      z-index: 3;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .format-item-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: clamp(16px, 1.6vw, 18px);
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .format-item-title .icon {
+      width: 22px;
+      height: 22px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+    }
+
+    .format-card p {
+      margin: 0;
+      font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
+      font-weight: 400;
+      line-height: 1.5;
+      color: #f3ecec;
+    }
+
+    @media (max-width: 1000px) {
+      .format-section {
+        padding: 60px min(3rem, 5vw);
+      }
+      .format-section h3 {
+        margin-bottom: 40px;
+      }
+      .format-card {
+        padding: 24px;
+        border-radius: 24px;
+      }
+      .format-cards {
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .format-cards {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        
+        margin-left: calc(-1 * min(3rem, 5vw));
+        margin-right: calc(-1 * min(3rem, 5vw));
+        
+        padding-left: min(3rem, 5vw);
+        padding-right: min(3rem, 5vw);
+        padding-bottom: 16px;
+        
+        scroll-padding-left: min(3rem, 5vw);
+        
+        gap: 16px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .format-cards::before,
+      .format-cards::after {
+        display: none;
+      }
+
+      .format-card {
+        flex: 0 0 min(300px, 78vw);
+        scroll-snap-align: start;
+      }
+    }
+
+    /* --- Sekcja Ceny --- */
+    .price-section {
+      padding: 100px 20px;
+      background-color: #ffffff;
+      position: relative;
+    }
+    @media (max-width: 600px) {
+      .price-section {
+        padding: 60px 16px;
+      }
+    }
+    @media (max-width: 400px) {
+      .price-section {
+        padding: 40px 16px;
+      }
+    }
+
+    .price-container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
       flex-direction: column;
       align-items: center;
     }
-  }
 
-  .stat-item {
-    padding: 30px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    min-width: 140px;
-  }
-  @media (max-width: 600px) {
-    .stat-item {
-      padding: 16px 0;
-      min-width: 0;
+    .price-row {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 16px;
     }
-  }
 
-  .stat-number {
-    font-family: 'Computer Modern Serif', serif;
-    font-size: clamp(38px, 5vw, 52px);
-    font-weight: 400;
-    color: #ffffff;
-    line-height: 1;
-    margin-bottom: 12px;
-  }
+    .price-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
 
-  .stat-label {
-    font-size: clamp(12px, 1.3vw, 16px);
-    font-weight: 400;
-    color: #f3ecec;
-    line-height: 1.3;
-    text-align: center;
-  }
+    .price-title,
+    .price-amount {
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: clamp(2rem, calc(2vw + 1.25rem), 3.2rem);
+      font-weight: 600;
+      color: #000000;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
 
- /* --- Sekcja "Objection busters" --- */
-.format-section {
-  background-color: #663737;
-  color: white;
-  font-weight: 500;
-  padding: 100px 60px;
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 -15px 30px -10px rgba(0, 0, 0, 0.3);
-}
+    .vertical-tick {
+      width: 1px;
+      height: 12px;
+      background-color: #888888;
+      margin: 12px 0 8px 0;
+    }
 
-.format-grid-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  pointer-events: none;
-}
+    .price-subtext {
+      margin: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
+      font-weight: 400;
+      color: #333333;
+      line-height: 1.4;
+    }
 
-.format-section h3 {
-  margin-bottom: 60px;
-  margin-top: 0;
-  font-size: clamp(1.6rem, calc(1.6vw + 1rem), 3.2rem);
-  font-weight: 600;
-  color: white;
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  line-height: 1.22;
-  letter-spacing: -0.02em;
-}
-@media(max-width: 650px) {
-  .format-section h3 {
-    text-align: left;
-  }
-}
+    .price-line {
+      flex: 0 0 auto;
+      width: 40px;
+      height: 1px;
+      background-color: #333;
+      margin-top: 22px;
+    }
 
-.format-cards {
-  display: flex;
-  gap: 24px;
-  position: relative;
-  z-index: 1;
-}
+    .contact-email-wrapper {
+      margin: 70px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+      
+    .contact-email-text {
+      font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
+      color: #333;
+    }
 
-.format-card {
-  flex: 1;
-  position: relative;
-  border-radius: 40px;
-  padding: 40px;
-  box-sizing: border-box;
-  overflow: hidden;
-  isolation: isolate;
-
-  background: rgba(255, 255, 255, 0);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: var(--glass-filter-ref);
-  -webkit-backdrop-filter: var(--glass-filter-ref);
-
-  --rim-thickness: 2.5px;
-  --rim-blur: 0.5px;
-  --rim-max: rgba(255, 255, 255, 1);
-  --rim-main: rgba(255, 255, 255, 0.6);
-  --rim-mid: rgba(255, 255, 255, 0.25);
-  --rim-min: rgba(255, 255, 255, 0);
-
-  box-shadow:
-    inset 6px 6px 16px -2px rgba(255, 255, 255, 0.50),
-    5px 5px 12px rgba(0, 0, 0, 0.75);
-}
-
-.format-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: var(--rim-thickness);
-  filter: blur(var(--rim-blur));
-  z-index: 1;
-
-  background: conic-gradient(
-    from calc(180deg - var(--corner-angle, 45deg)),
-    var(--rim-main) 0deg,
-    var(--rim-main) calc(2 * var(--corner-angle, 45deg) - 10deg),
-    var(--rim-min) calc(2 * var(--corner-angle, 45deg)),
-    var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 10deg),
-    var(--rim-mid) 170deg,
-
-    rgba(255, 100, 200, 1.3) 170deg,
-    rgba(100, 220, 255, 1.3) 175deg,
-    var(--rim-max) 180deg,
-    rgba(255, 230, 130, 1.3) 185deg,
-    rgba(180, 120, 255, 1.3) 190deg,
-
-    var(--rim-mid) 190deg,
-    var(--rim-mid) calc(2 * var(--corner-angle, 45deg) + 170deg),
-    var(--rim-min) calc(2 * var(--corner-angle, 45deg) + 180deg),
-    var(--rim-main) calc(2 * var(--corner-angle, 45deg) + 190deg),
-    var(--rim-main) 360deg
-  );
-
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-              mask-composite: exclude;
-
-  pointer-events: none;
-  mix-blend-mode: screen;
-}
-
-.format-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 2;
-
-  box-shadow:
-  inset -3px -3px 8px 0px rgba(0, 0, 0, 0.6),
-  inset 0 0 6px 0px rgba(0, 0, 0, 0.9);
-
-  mix-blend-mode: multiply;
-}
-
-.format-item-title,
-.format-card p {
-  position: relative;
-  z-index: 3;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-.format-item-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: clamp(16px, 1.6vw, 18px);
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #ffffff;
-}
-
-.format-item-title .icon {
-  width: 22px;
-  height: 22px;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
-}
-
-.format-card p {
-  margin: 0;
-  font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
-  font-weight: 400;
-  line-height: 1.5;
-  color: #f3ecec;
-}
-
-@media (max-width: 1000px) {
-  .format-section {
-    padding: 60px min(3rem, 5vw);
-  }
-  .format-section h3 {
-    margin-bottom: 40px;
-  }
-  .format-card {
-    padding: 24px;
-    border-radius: 24px;
-  }
-  .format-cards {
-    gap: 16px;
-  }
-}
-
-@media (max-width: 767px) {
-  .format-cards {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    
-    /* Rozciąga suwak od krawędzi do krawędzi ekranu */
-    margin-left: calc(-1 * min(3rem, 5vw));
-    margin-right: calc(-1 * min(3rem, 5vw));
-    
-    /* Dodaje wewnątrz odstepy, aby karty po przescrollowaniu nie dotykały krawędzi */
-    padding-left: min(3rem, 5vw);
-    padding-right: min(3rem, 5vw);
-    padding-bottom: 16px;
-    
-    /* Mówi przeglądarce, gdzie ma się zatrzymać pierwsza karta po dociągnięciu */
-    scroll-padding-left: min(3rem, 5vw);
-    
-    gap: 16px;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Wyłączamy zbędne pseudo-elementy z poprzedniego kroku */
-  .format-cards::before,
-  .format-cards::after {
-    display: none;
-  }
-
-  .format-card {
-    flex: 0 0 min(300px, 78vw);
-    scroll-snap-align: start;
-  }
-}
-
-/* --- Sekcja Ceny --- */
-.price-section {
-  padding: 100px 20px;
-  background-color: #ffffff;
-  position: relative;
-}
-@media (max-width: 600px) {
-  .price-section {
-    padding: 60px 16px;
-  }
-}
-@media (max-width: 400px) {
-  .price-section {
-    padding: 40px 16px;
-  }
-}
-
-.price-container {
-  max-width: 800px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.price-row {
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 16px;
-}
-
-.price-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.price-title,
-.price-amount {
-  font-family: 'Inter', Arial, sans-serif;
-  font-size: clamp(2rem, calc(2vw + 1.25rem), 3.2rem);
-  font-weight: 600;
-  color: #000000;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-
-.vertical-tick {
-  width: 1px;
-  height: 12px;
-  background-color: #888888;
-  margin: 12px 0 8px 0;
-}
-
-.price-subtext {
-  margin: 0;
-  font-family: 'Inter', Arial, sans-serif;
-  font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
-  font-weight: 400;
-  color: #333333;
-  line-height: 1.4;
-}
-
-.price-line {
-  flex: 0 0 auto;
-  width: 40px;
-  height: 1px;
-  background-color: #333;
-  margin-top: 22px;
-}
-
-.contact-email-wrapper {
-  margin: 70px auto 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-  
-.contact-email-text {
-  font-size: clamp(1rem, calc(0.5vw + 0.8rem), 1.4rem);
-  color: #333;
-}
-
-@media (max-width: 400px) {
-  .price-container {
-    align-items: flex-start;
-    padding: 0 30px;
-  }
-  .price-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    row-gap: 8px;
-    width: auto;
-  }
-  .price-col {
-    display: contents;
-  }
-  .price-col .vertical-tick {
-    display: none;
-  }
-  .price-title {
-    order: 1;
-  }
-  .price-amount {
-    order: 2;
-  }
-  .price-col.left .price-subtext {
-    order: 0;
-  }
-  .price-col.right .price-subtext {
-    order: 3;
-  }
-  .price-title,
-  .price-amount {
-    text-align: left;
-  }
-  .price-subtext {
-    text-align: left;
-  }
-  .price-line {
-    display: none;
-  }
-  .contact-email-wrapper {
-    align-items: center;
-    justify-content: flex-start;
-  }
-}
-  
-</style>
+    @media (max-width: 400px) {
+      .price-container {
+        align-items: flex-start;
+        padding: 0 30px;
+      }
+      .price-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 8px;
+        width: auto;
+      }
+      .price-col {
+        display: contents;
+      }
+      .price-col .vertical-tick {
+        display: none;
+      }
+      .price-title {
+        order: 1;
+      }
+      .price-amount {
+        order: 2;
+      }
+      .price-col.left .price-subtext {
+        order: 0;
+      }
+      .price-col.right .price-subtext {
+        order: 3;
+      }
+      .price-title,
+      .price-amount {
+        text-align: left;
+      }
+      .price-subtext {
+        text-align: left;
+      }
+      .price-line {
+        display: none;
+      }
+      .contact-email-wrapper {
+        align-items: center;
+        justify-content: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="content-wrapper">
 
-    <div class="hero">
-      <img src="siatka_czerwona_wektor.svg" alt="" class="hero-grid-overlay">
-
-      <div class="corner-note">Krzysztof Gil</div>
-      <!-- Przycisk z obsługą zdarzenia kliknięcia w skrypcie -->
-      <button class="contact-button" id="scrollContactBtn">Kontakt</button>
-
+    <!-- Hero -->
+    <section class="hero">
+      <div class="corner-note">Korki z fizyki</div>
+      <button class="contact-button">Kontakt</button>
       <div class="headline-row">
-        <img src="laura_lewy_wektor.svg" alt="" class="laurel">
-        <h1>Matematyka rozszerzona online<br>Ze 100-procentowym maturzystą.</h1>
-        <img src="laura_prawy_wektor.svg" alt="" class="laurel">
+        <h1>Nagłówek Główny Strony</h1>
       </div>
-
-      <p class="subtitle">Cześć! Jestem studentem pierwszego roku Lotnictwa i Kosmonautyki na Politechnice Warszawskiej i pomogę Ci dostać się na wymarzony kierunek.</p>
-
-      <div class="equation-section">
-        <span id="eq-left"></span><span id="eq-right"></span>
-      </div>
-    </div>
-
-    <div class="profile-section">
-      <h2>Planujesz maturę z matematyki rozszerzonej?</h2>
-      <p>Zajmiemy się bieżącą nauką, traktując maturę jako główny cel lub stworzymy osobny plan przygotowania przed egzaminem.</p>
-      <p>Przewiduję długoterminową pracę z maksymalnie kilkoma osobami.</p>
-    </div>
-
-    <div class="results-section">
-      <img src="siatka_wektor.svg" alt="" class="results-grid-overlay">
-      <p class="results-lead">Napisałem tegoroczną maturę z rezultatami:</p>
+      <p class="subtitle">Podtytuł zawierający opis oferowanych zajęć i podejścia do nauczania.</p>
       
-      <div class="format-card results-card">
-        <div class="stats-container">
-          <div class="stat-item">
-            <span class="stat-number">100%</span>
-            <span class="stat-label">Matematyka<br>podstawowa</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">100%</span>
-            <span class="stat-label">Matematyka<br>rozszerzona</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">97%</span>
-            <span class="stat-label">Fizyka<br>rozszerzona</span>
-          </div>
+      <div class="equation-section">
+        <!-- Desktop Equation -->
+        <div class="eq-desktop">
+          <span id="eq-left-desktop"></span>
+          <span id="eq-right-desktop"></span>
+        </div>
+        <!-- Mobile Equation -->
+        <div class="eq-mobile">
+          <span id="eq-left-mobile"></span>
+          <span id="eq-right-mobile"></span>
         </div>
       </div>
+    </section>
 
-      <p class="results-footer">więc wiem, jak pomóc Tobie w przygotowaniu.</p>
-    </div>
+    <!-- Profil ucznia -->
+    <section class="profile-section">
+      <h2>Dla kogo są te zajęcia?</h2>
+      <p>Tekst opisujący idealnego ucznia oraz wymagania i cele nauki.</p>
+    </section>
 
-    <div class="format-section">
-      <h3>Jak wyglądają korepetycje?</h3>
-      <img src="siatka_wektor.svg" alt="" class="format-grid-overlay">
+    <!-- Wyniki -->
+    <section class="results-section">
+      <p class="results-lead">Nasze dotychczasowe osiągnięcia:</p>
+      <div class="stats-container">
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Zdawalność egzaminów</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">+80%</div>
+          <div class="stat-label">Średni wynik z matury</div>
+        </div>
+      </div>
+      <p class="results-footer">Dołącz do grona zadowolonych uczniów.</p>
+    </section>
+
+    <!-- Karty zalet / Format -->
+    <section class="format-section">
+      <h3>Co nas wyróżnia?</h3>
       <div class="format-cards">
-        
         <div class="format-card">
-          <div class="format-item-title"><img src="zegar_wektor.svg" alt="" class="icon"> Sesje po 90 min</div>
-          <p>Dwa bloki 45 min z 5 minutową przerwą pozwalają na maksymalną objętość i efektywność.</p>
+          <div class="format-item-title">Elastyczność</div>
+          <p>Dopasowujemy tempo pracy do Twoich indywidualnych potrzeb.</p>
         </div>
-
         <div class="format-card">
-          <div class="format-item-title"><img src="zarowka_wektor.svg" alt="" class="icon"> Aktywna nauka</div>
-          <p>Nie prowadzę wykładu. Dobieram zadania z rosnącym poziomem trudności i koryguję tok myślenia, tak że nauka wydaje się naturalna.</p>
-        </div>
-
-        <div class="format-card">
-          <div class="format-item-title"><img src="urzadzenia_wektor.svg" alt="" class="icon"> Wirtualna tablica</div>
-          <p>Piszę na tablecie graficznym, więc widzisz rozwiązania na żywo. Ty rozwiązujesz zadania na kartce i wysyłasz do wspólnego omówienia.</p>
+          <div class="format-item-title">Praktyka</div>
+          <p>Rozwiązujemy zadania maturalne z poprzednich lat.</p>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Dopisany ID "contact-section" do sekcji cenowej na dole -->
-<div class="price-section" id="contact-section">
-  <div class="price-container">
-    <div class="price-row">
-      <div class="price-col left">
-        <span class="price-title">Sesja 90 min</span>
-        <div class="vertical-tick"></div>
-        <p class="price-subtext">Zacznij od pierwszej lekcji za 50 zł.<br>Zero zobowiązań.</p>
+    <!-- Cennik -->
+    <section class="price-section">
+      <div class="price-container">
+        <div class="price-row">
+          <div class="price-col left">
+            <div class="price-title">Zajęcia indywidualne</div>
+            <div class="vertical-tick"></div>
+            <p class="price-subtext">60 minut</p>
+          </div>
+          <div class="price-line"></div>
+          <div class="price-col right">
+            <div class="price-amount">150 zł</div>
+            <div class="vertical-tick"></div>
+            <p class="price-subtext">za lekcję</p>
+          </div>
+        </div>
+        <div class="contact-email-wrapper">
+          <span class="contact-email-text">Napisz do nas: kontakt@example.com</span>
+        </div>
       </div>
+    </section>
 
-      <div class="price-line"></div>
-
-      <div class="price-col right">
-        <span class="price-amount">109 zł</span>
-        <div class="vertical-tick"></div>
-        <p class="price-subtext">czyli ok. 73 zł / 60 min.</p>
-      </div>
-    </div>
-
-    <div class="contact-email-wrapper">
-      <svg class="email-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-      </svg>
-      <span class="contact-email-text">kontakt@krzysztofgil.com</span>
-    </div>
-  </div>
-</div>
   </div>
 
-  <svg id="svg-filters-container" style="position: absolute; width: 0; height: 0;" aria-hidden="true"></svg>
-
-  <script src="katex.min.js"></script>
+  <!-- Skrypty KaTeX i animacji -->
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <script>
-    // Obsługa przewijania do sekcji kontaktowej
-    document.getElementById('scrollContactBtn').addEventListener('click', function() {
-      document.getElementById('contact-section').scrollIntoView({ 
-        behavior: 'smooth' 
-      });
-    });
+    document.addEventListener("DOMContentLoaded", function () {
+      // Renderowanie równania KaTeX
+      const eqLeftDesktop = document.getElementById("eq-left-desktop");
+      const eqRightDesktop = document.getElementById("eq-right-desktop");
+      const eqLeftMobile = document.getElementById("eq-left-mobile");
+      const eqRightMobile = document.getElementById("eq-right-mobile");
 
-    document.addEventListener('DOMContentLoaded', function () {
-      if (window.katex) {
-        katex.render(
-          "\\displaystyle\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta",
-          document.getElementById('eq-left'),
-          { throwOnError: false, displayMode: false }
-        );
-        katex.render(
-          "\\displaystyle \\textcolor{#2E7D4F}{=} 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\textcolor{#4A6FA5}{\\cos}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
-          document.getElementById('eq-right'),
-          { throwOnError: false, displayMode: false }
-        );
-
-        var eqRight = document.getElementById('eq-right');
-        var naturalWidth = eqRight.scrollWidth;
-        setTimeout(function () {
-          eqRight.style.width = naturalWidth + 'px';
-          eqRight.classList.add('revealed');
-        }, 900);
+      if (eqLeftDesktop && katex) {
+        katex.render("F = m \\cdot a", eqLeftDesktop, { throwOnError: false });
       }
+      if (eqRightDesktop && katex) {
+        katex.render("\\Rightarrow a = \\frac{F}{m}", eqRightDesktop, { throwOnError: false });
+      }
+      if (eqLeftMobile && katex) {
+        katex.render("F = m \\cdot a", eqLeftMobile, { throwOnError: false });
+      }
+      if (eqRightMobile && katex) {
+        katex.render("\\Rightarrow a = \\frac{F}{m}", eqRightMobile, { throwOnError: false });
+      }
+
+      // Animacja odkrywania prawego równania
+      setTimeout(() => {
+        if (eqRightDesktop) {
+          eqRightDesktop.style.width = eqRightDesktop.scrollWidth + "px";
+          eqRightDesktop.classList.add("revealed");
+        }
+        if (eqRightMobile) {
+          eqRightMobile.style.width = eqRightMobile.scrollWidth + "px";
+          eqRightMobile.classList.add("revealed");
+        }
+      }, 500);
     });
   </script>
-
-  <script>
-    function updateCornerAnglesAndRefraction() {
-      const cards = document.querySelectorAll('.format-card');
-      const svgContainer = document.getElementById('svg-filters-container');
-      
-      svgContainer.innerHTML = '';
-
-      cards.forEach((card, index) => {
-        const w = card.offsetWidth;
-        const h = card.offsetHeight;
-        if (w === 0 || h === 0) return;
-
-        const angle = Math.atan2(w, h) * (180 / Math.PI);
-        card.style.setProperty('--corner-angle', angle + 'deg');
-
-        const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        
-        const imgData = ctx.createImageData(w, h);
-        const data = imgData.data;
-
-        const cornerRadius = 40; 
-        const rimWidth = 60;     
-
-        for (let y = 0; y < h; y++) {
-          for (let x = 0; x < w; x++) {
-            let qx = Math.abs(x - w / 2) - (w / 2 - cornerRadius);
-            let qy = Math.abs(y - h / 2) - (h / 2 - cornerRadius);
-            
-            let distCorner = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2);
-            let distEdge = distCorner + Math.min(Math.max(qx, qy), 0) - cornerRadius;
-            let depthFromBorder = -distEdge;
-
-            let shiftX = 0;
-            let shiftY = 0;
-
-            if (depthFromBorder >= 0 && depthFromBorder <= rimWidth) {
-              let normalizedDist = depthFromBorder / rimWidth;
-              let lensProfile = Math.sin(normalizedDist * Math.PI) * (1 - normalizedDist);
-
-              let nx = 0, ny = 0;
-              if (qx > 0 || qy > 0) {
-                let len = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) || 1;
-                nx = (Math.max(qx, 0) / len) * Math.sign(x - w / 2);
-                ny = (Math.max(qy, 0) / len) * Math.sign(y - h / 2);
-              } else {
-                if (qx > qy) nx = Math.sign(x - w / 2);
-                else ny = Math.sign(y - h / 2);
-              }
-
-              shiftX = nx * lensProfile;
-              shiftY = ny * lensProfile;
-            }
-
-            let redChannel   = Math.min(255, Math.max(0, 128 + shiftX * 127));
-            let greenChannel = Math.min(255, Math.max(0, 128 + shiftY * 127));
-            let blueChannel  = 128;
-
-            let pixelIndex = (y * w + x) * 4;
-            data[pixelIndex]     = redChannel;
-            data[pixelIndex + 1] = greenChannel;
-            data[pixelIndex + 2] = blueChannel;
-            data[pixelIndex + 3] = 255;
-          }
-        }
-
-        ctx.putImageData(imgData, 0, 0);
-        const dataUrl = canvas.toDataURL('image/png');
-
-        const filterId = `glass-lens-${index}`;
-        const filterEl = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-        filterEl.setAttribute('id', filterId);
-        filterEl.setAttribute('x', '0%');
-        filterEl.setAttribute('y', '0%');
-        filterEl.setAttribute('width', '100%');
-        filterEl.setAttribute('height', '100%');
-        filterEl.setAttribute('filterUnits', 'objectBoundingBox');
-
-        filterEl.innerHTML = `
-          <feImage href="${dataUrl}" result="displacementMap" preserveAspectRatio="none" />
-          <feDisplacementMap in="SourceGraphic" in2="displacementMap" scale="60" xChannelSelector="R" yChannelSelector="G" />
-        `;
-        svgContainer.appendChild(filterEl);
-
-        card.style.setProperty('--glass-filter-ref', `url(#${filterId})`);
-      });
-    }
-
-    window.addEventListener('load', updateCornerAnglesAndRefraction);
-    window.addEventListener('resize', updateCornerAnglesAndRefraction);
-  </script>  
 </body>
 </html>
+
