@@ -851,50 +851,54 @@
   </script>
 
   <script>
+    let lensGeneration = 0;
+
     function updateCornerAnglesAndRefraction() {
       const cards = document.querySelectorAll('.format-card');
       const svgContainer = document.getElementById('svg-filters-container');
-      
+      const SVG_NS = 'http://www.w3.org/2000/svg';
+
       svgContainer.innerHTML = '';
+      lensGeneration++;
 
       cards.forEach((card, index) => {
-        const w = card.offsetWidth;
-        const h = card.offsetHeight;
+        const w = Math.round(card.offsetWidth);
+        const h = Math.round(card.offsetHeight);
         if (w === 0 || h === 0) return;
 
+        // kąt do obramowania (rim) liczony z wymiarów TEJ karty
         const angle = Math.atan2(w, h) * (180 / Math.PI);
         card.style.setProperty('--corner-angle', angle + 'deg');
+
+        // promień rogu z CSS (40px desktop, 24px na mniejszych ekranach)
+        const cornerRadius = parseFloat(getComputedStyle(card).borderTopLeftRadius) || 40;
+        const rimWidth = Math.min(60, Math.min(w, h) / 2);
 
         const canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
         const ctx = canvas.getContext('2d');
-        
         const imgData = ctx.createImageData(w, h);
         const data = imgData.data;
 
-        const cornerRadius = 40; 
-        const rimWidth = 60;     
-
         for (let y = 0; y < h; y++) {
           for (let x = 0; x < w; x++) {
-            let qx = Math.abs(x - w / 2) - (w / 2 - cornerRadius);
-            let qy = Math.abs(y - h / 2) - (h / 2 - cornerRadius);
-            
-            let distCorner = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2);
-            let distEdge = distCorner + Math.min(Math.max(qx, qy), 0) - cornerRadius;
-            let depthFromBorder = -distEdge;
+            const qx = Math.abs(x - w / 2) - (w / 2 - cornerRadius);
+            const qy = Math.abs(y - h / 2) - (h / 2 - cornerRadius);
 
-            let shiftX = 0;
-            let shiftY = 0;
+            const distCorner = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2);
+            const distEdge = distCorner + Math.min(Math.max(qx, qy), 0) - cornerRadius;
+            const depthFromBorder = -distEdge;
+
+            let shiftX = 0, shiftY = 0;
 
             if (depthFromBorder >= 0 && depthFromBorder <= rimWidth) {
-              let normalizedDist = depthFromBorder / rimWidth;
-              let lensProfile = Math.sin(normalizedDist * Math.PI) * (1 - normalizedDist);
+              const normalizedDist = depthFromBorder / rimWidth;
+              const lensProfile = Math.sin(normalizedDist * Math.PI) * (1 - normalizedDist);
 
               let nx = 0, ny = 0;
               if (qx > 0 || qy > 0) {
-                let len = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) || 1;
+                const len = Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) || 1;
                 nx = (Math.max(qx, 0) / len) * Math.sign(x - w / 2);
                 ny = (Math.max(qy, 0) / len) * Math.sign(y - h / 2);
               } else {
@@ -906,34 +910,47 @@
               shiftY = ny * lensProfile;
             }
 
-            let redChannel   = Math.min(255, Math.max(0, 128 + shiftX * 127));
-            let greenChannel = Math.min(255, Math.max(0, 128 + shiftY * 127));
-            let blueChannel  = 128;
-
-            let pixelIndex = (y * w + x) * 4;
-            data[pixelIndex]     = redChannel;
-            data[pixelIndex + 1] = greenChannel;
-            data[pixelIndex + 2] = blueChannel;
-            data[pixelIndex + 3] = 255;
+            const i = (y * w + x) * 4;
+            data[i]     = Math.min(255, Math.max(0, 128 + shiftX * 127));
+            data[i + 1] = Math.min(255, Math.max(0, 128 + shiftY * 127));
+            data[i + 2] = 128;
+            data[i + 3] = 255;
           }
         }
 
         ctx.putImageData(imgData, 0, 0);
         const dataUrl = canvas.toDataURL('image/png');
 
-        const filterId = `glass-lens-${index}`;
-        const filterEl = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-        filterEl.setAttribute('id', filterId);
-        filterEl.setAttribute('x', '0%');
-        filterEl.setAttribute('y', '0%');
-        filterEl.setAttribute('width', '100%');
-        filterEl.setAttribute('height', '100%');
-        filterEl.setAttribute('filterUnits', 'objectBoundingBox');
+        const filterId = `glass-lens-${lensGeneration}-${index}`;
 
-        filterEl.innerHTML = `
-          <feImage href="${dataUrl}" result="displacementMap" preserveAspectRatio="none" />
-          <feDisplacementMap in="SourceGraphic" in2="displacementMap" scale="60" xChannelSelector="R" yChannelSelector="G" />
-        `;
+        const filterEl = document.createElementNS(SVG_NS, 'filter');
+        filterEl.setAttribute('id', filterId);
+        filterEl.setAttribute('filterUnits', 'userSpaceOnUse');
+        filterEl.setAttribute('primitiveUnits', 'userSpaceOnUse');
+        filterEl.setAttribute('color-interpolation-filters', 'sRGB');
+        filterEl.setAttribute('x', '0');
+        filterEl.setAttribute('y', '0');
+        filterEl.setAttribute('width', w);
+        filterEl.setAttribute('height', h);
+
+        const feImage = document.createElementNS(SVG_NS, 'feImage');
+        feImage.setAttribute('href', dataUrl);
+        feImage.setAttribute('x', '0');
+        feImage.setAttribute('y', '0');
+        feImage.setAttribute('width', w);
+        feImage.setAttribute('height', h);
+        feImage.setAttribute('preserveAspectRatio', 'none');
+        feImage.setAttribute('result', 'displacementMap');
+
+        const feDisp = document.createElementNS(SVG_NS, 'feDisplacementMap');
+        feDisp.setAttribute('in', 'SourceGraphic');
+        feDisp.setAttribute('in2', 'displacementMap');
+        feDisp.setAttribute('scale', '60');
+        feDisp.setAttribute('xChannelSelector', 'R');
+        feDisp.setAttribute('yChannelSelector', 'G');
+
+        filterEl.appendChild(feImage);
+        filterEl.appendChild(feDisp);
         svgContainer.appendChild(filterEl);
 
         card.style.setProperty('--glass-filter-ref', `url(#${filterId})`);
