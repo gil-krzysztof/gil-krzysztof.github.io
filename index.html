@@ -408,7 +408,7 @@
   position: relative;
   z-index: 1;
 
-  max-width: 1500px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -841,11 +841,27 @@
         );
 
         var eqRight = document.getElementById('eq-right');
-        var naturalWidth = eqRight.scrollWidth;
-        setTimeout(function () {
+
+        // wymuszamy layout, żeby przeglądarka zaczęła ładować fonty KaTeX
+        void eqRight.offsetWidth;
+
+        // szerokość mierzymy dopiero, gdy fonty KaTeX są załadowane (i po 900 ms opóźnienia animacji)
+        var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+        var delay = new Promise(function (resolve) { setTimeout(resolve, 900); });
+
+        Promise.all([fontsReady, delay]).then(function () {
+          var naturalWidth = eqRight.scrollWidth;
           eqRight.style.width = naturalWidth + 'px';
           eqRight.classList.add('revealed');
-        }, 900);
+
+          // po animacji szerokość wraca do "auto", żeby wzór dalej centrował się
+          // przy zmianie rozmiaru okna i przy późniejszym ładowaniu fontów
+          eqRight.addEventListener('transitionend', function onEnd(e) {
+            if (e.propertyName !== 'width') return;
+            eqRight.style.width = 'auto';
+            eqRight.removeEventListener('transitionend', onEnd);
+          });
+        });
       }
     });
   </script>
