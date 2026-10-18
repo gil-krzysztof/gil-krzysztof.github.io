@@ -857,9 +857,11 @@
     // srgb: true       -> interpolacja kolorów w sRGB (neutralna mapa = brak przesunięcia)
     // srgb: false      -> domyślna linearRGB (oryginalne zachowanie)
     // smooth           -> promień wygładzania pola głębokości w px (większy = gładsze rogi)
+    // strength         -> siła załamania, 0..0.95 (większa = mocniejsza soczewka, ale przy ok. >0.6
+    //                     cienkie linie tła zaczynają się przerywać; 0.5 = linie zostają ciągłe)
     const LENS_PRESETS = {
-      results: { scale: 60, rimWidth: 60, smooth: 8, userSpace: false, srgb: false }, // boks z wynikami
-      cards:   { scale: 60, rimWidth: 60, smooth: 8, userSpace: true,  srgb: true  }  // objection busters
+      results: { strength: 0.5, rimWidth: 60, smooth: 8, userSpace: false, srgb: false }, // boks z wynikami
+      cards:   { strength: 0.5, rimWidth: 60, smooth: 8, userSpace: true,  srgb: true  }  // objection busters
     };
 
     // Rozmycie pudełkowe (running sum, krawędzie powielane)
@@ -953,7 +955,20 @@
         // 2) wygładzenie pola głębokości (usuwa załamania na osi symetrii rogów i szpic w środku łuku)
         smoothField(depth, tmp, GW, GH, blurR);
 
-        // 3) przesunięcie = profil soczewki * gradient wygładzonej głębokości (w kierunku na zewnątrz)
+        // 3) przesunięcie = A(głębokość) * gradient wygładzonej głębokości (w kierunku na zewnątrz).
+        //    A(d) = strength * d * (1 - d/rim)^2 gwarantuje, że odwzorowanie jest monotoniczne:
+        //    tło nigdy się nie składa ani nie jest próbkowane spoza karty, więc linie nie pękają.
+        const maxShift = preset.strength * rimWidth * 4 / 27;      // maksymalne przesunięcie w px
+        const dispScale = Math.max(4, 2 * maxShift * 1.15);         // zakres feDisplacementMap w px
+
+        // wartość bajtu mapy dla przesunięcia s (px); w trybie linearRGB uwzględnia krzywą gamma,
+        // żeby przesunięcie było dokładnie takie samo w obu trybach i zerowe w neutralnym punkcie
+        const toByte = (shift) => {
+          let v = 0.5 + shift / dispScale;
+          if (!preset.srgb) v = v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055;
+          return v * 255;
+        };
+
         const canvas = document.createElement('canvas');
         canvas.width = mapW;
         canvas.height = mapH;
@@ -969,16 +984,16 @@
             let shiftX = 0, shiftY = 0;
             if (d > 0 && d < rimWidth) {
               const t = d / rimWidth;
-              const lens = Math.sin(t * Math.PI) * (1 - t);
+              const A = preset.strength * d * (1 - t) * (1 - t);
               const gxv = (depth[j + 1] - depth[j - 1]) * res * 0.5;
               const gyv = (depth[j + GW] - depth[j - GW]) * res * 0.5;
-              shiftX = -gxv * lens;
-              shiftY = -gyv * lens;
+              shiftX = -gxv * A;
+              shiftY = -gyv * A;
             }
 
             const i = (y * mapW + x) * 4;
-            data[i]     = 128 + shiftX * 127;
-            data[i + 1] = 128 + shiftY * 127;
+            data[i]     = toByte(shiftX);
+            data[i + 1] = toByte(shiftY);
             data[i + 2] = 128;
             data[i + 3] = 255;
           }
@@ -1023,7 +1038,7 @@
         const feDisp = document.createElementNS(SVG_NS, 'feDisplacementMap');
         feDisp.setAttribute('in', 'SourceGraphic');
         feDisp.setAttribute('in2', 'displacementMap');
-        feDisp.setAttribute('scale', preset.scale * radiusScale);
+        feDisp.setAttribute('scale', dispScale);
         feDisp.setAttribute('xChannelSelector', 'R');
         feDisp.setAttribute('yChannelSelector', 'G');
 
