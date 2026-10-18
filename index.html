@@ -859,18 +859,18 @@
         var eq = mq.matches ? EQ_SMALL : EQ_LARGE;
         var myRun = ++runId;
 
-        // reset animacji (bez animowanego cofania)
+        // reset animacji do stanu początkowego (bez animowanego cofania)
         eqRight.style.transition = 'none';
         eqRight.classList.remove('revealed');
-        eqRight.style.width = '0';
-        void eqRight.offsetWidth;
-        eqRight.style.transition = '';
+        eqRight.style.width = '0px';
 
         katex.render(eq.left,  eqLeft,  { throwOnError: false, displayMode: false });
         katex.render(eq.right, eqRight, { throwOnError: false, displayMode: false });
 
-        // wymuszamy layout, żeby przeglądarka zaczęła ładować fonty KaTeX
+        // wymuszamy layout w stanie początkowym (przy wyłączonych przejściach),
+        // żeby przeglądarka zaczęła ładować fonty KaTeX i zapamiętała stan startowy
         void eqRight.offsetWidth;
+        eqRight.style.transition = '';
 
         // szerokość mierzymy dopiero, gdy fonty KaTeX są załadowane (i po 900 ms opóźnienia animacji)
         var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
@@ -879,23 +879,25 @@
         Promise.all([fontsReady, delay]).then(function () {
           if (myRun !== runId) return; // wzór został w międzyczasie zmieniony
 
-          // mierzymy naturalną szerokość przy width: auto
-          eqRight.style.transition = 'none';
-          eqRight.style.width = 'auto';
+          // przy width: 0 scrollWidth i tak zwraca pełną szerokość zawartości
           var naturalWidth = eqRight.scrollWidth;
-          eqRight.style.width = '0';
-          void eqRight.offsetWidth;
-          eqRight.style.transition = '';
 
-          eqRight.style.width = naturalWidth + 'px';
-          eqRight.classList.add('revealed');
+          // dwie klatki, żeby stan startowy (width: 0, przesunięcie w górę) na pewno został wyrenderowany
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              if (myRun !== runId) return;
 
-          // po animacji szerokość wraca do "auto", żeby wzór dalej centrował się
-          // przy zmianie rozmiaru okna i przy późniejszym ładowaniu fontów
-          eqRight.addEventListener('transitionend', function onEnd(e) {
-            if (e.propertyName !== 'width') return;
-            if (myRun === runId) eqRight.style.width = 'auto';
-            eqRight.removeEventListener('transitionend', onEnd);
+              eqRight.style.width = naturalWidth + 'px';
+              eqRight.classList.add('revealed');
+
+              // po animacji szerokość wraca do "auto", żeby wzór dalej centrował się
+              // przy zmianie rozmiaru okna i przy późniejszym ładowaniu fontów
+              eqRight.addEventListener('transitionend', function onEnd(e) {
+                if (e.propertyName !== 'width') return;
+                if (myRun === runId) eqRight.style.width = 'auto';
+                eqRight.removeEventListener('transitionend', onEnd);
+              });
+            });
           });
         });
       }
