@@ -828,19 +828,39 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-      if (window.katex) {
-        katex.render(
-          "\\displaystyle\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta",
-          document.getElementById('eq-left'),
-          { throwOnError: false, displayMode: false }
-        );
-        katex.render(
-          "\\displaystyle \\textcolor{#2E7D4F}{=} 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\textcolor{#4A6FA5}{\\cos}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}",
-          document.getElementById('eq-right'),
-          { throwOnError: false, displayMode: false }
-        );
+      if (!window.katex) return;
 
-        var eqRight = document.getElementById('eq-right');
+      var mq = window.matchMedia('(max-width: 450px)');
+      var eqLeft  = document.getElementById('eq-left');
+      var eqRight = document.getElementById('eq-right');
+
+      // Wzór dla ekranów do 450px: pochodna funkcji złożonej
+      var EQ_SMALL = {
+        left:  "\\displaystyle (g\\textcolor{#4A6FA5}{\\circ}f)'(x)",
+        right: "\\displaystyle \\textcolor{#2E7D4F}{=} g'{\\color{#D9782B}\\left(\\color{black}f(x)\\color{#D9782B}\\right)}\\textcolor{#4A6FA5}{\\cdot}f'(x)"
+      };
+
+      // Wzór dla większych ekranów: suma sinusów
+      var EQ_LARGE = {
+        left:  "\\displaystyle\\textcolor{#4A6FA5}{\\sin} \\alpha \\textcolor{#4A6FA5}{+} \\textcolor{#4A6FA5}{\\sin} \\beta",
+        right: "\\displaystyle \\textcolor{#2E7D4F}{=} 2\\textcolor{#4A6FA5}{\\sin}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{+}\\beta}{2}}\\color{#D9782B}\\right)}\\textcolor{#4A6FA5}{\\cos}{\\color{#D9782B}\\left(\\color{black}{\\frac{\\alpha\\textcolor{#4A6FA5}{-}\\beta}{2}}\\color{#D9782B}\\right)}"
+      };
+
+      var runId = 0;
+
+      function renderEquation() {
+        var eq = mq.matches ? EQ_SMALL : EQ_LARGE;
+        var myRun = ++runId;
+
+        // reset animacji (bez animowanego cofania)
+        eqRight.style.transition = 'none';
+        eqRight.classList.remove('revealed');
+        eqRight.style.width = '0';
+        void eqRight.offsetWidth;
+        eqRight.style.transition = '';
+
+        katex.render(eq.left,  eqLeft,  { throwOnError: false, displayMode: false });
+        katex.render(eq.right, eqRight, { throwOnError: false, displayMode: false });
 
         // wymuszamy layout, żeby przeglądarka zaczęła ładować fonty KaTeX
         void eqRight.offsetWidth;
@@ -850,7 +870,16 @@
         var delay = new Promise(function (resolve) { setTimeout(resolve, 900); });
 
         Promise.all([fontsReady, delay]).then(function () {
+          if (myRun !== runId) return; // wzór został w międzyczasie zmieniony
+
+          // mierzymy naturalną szerokość przy width: auto
+          eqRight.style.transition = 'none';
+          eqRight.style.width = 'auto';
           var naturalWidth = eqRight.scrollWidth;
+          eqRight.style.width = '0';
+          void eqRight.offsetWidth;
+          eqRight.style.transition = '';
+
           eqRight.style.width = naturalWidth + 'px';
           eqRight.classList.add('revealed');
 
@@ -858,11 +887,17 @@
           // przy zmianie rozmiaru okna i przy późniejszym ładowaniu fontów
           eqRight.addEventListener('transitionend', function onEnd(e) {
             if (e.propertyName !== 'width') return;
-            eqRight.style.width = 'auto';
+            if (myRun === runId) eqRight.style.width = 'auto';
             eqRight.removeEventListener('transitionend', onEnd);
           });
         });
       }
+
+      renderEquation();
+
+      // przełączanie wzoru po przekroczeniu progu 450px
+      if (mq.addEventListener) mq.addEventListener('change', renderEquation);
+      else mq.addListener(renderEquation); // starsze przeglądarki
     });
   </script>
 
