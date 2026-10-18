@@ -183,6 +183,13 @@
     color: black;
     white-space: nowrap;
   }
+  /* Krótszy wzór (do 450px) może być większy: skaluje się z szerokością ekranu,
+     ale wciąż mieści się w całości (ok. 12,5em szerokości wzoru przy 6.5vw < 90vw dostępnych) */
+  @media (max-width: 450px) {
+    .equation-section .katex {
+      font-size: clamp(1.1rem, 6.5vw, 2rem);
+    }
+  }
 
   #eq-right {
     display: inline-block;
