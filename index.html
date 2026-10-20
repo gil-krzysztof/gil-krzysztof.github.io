@@ -924,11 +924,8 @@
           );
           var aOpacity = eqRight.animate([{ opacity: 0 }, { opacity: 1 }], T_OPACITY);
           var aMove = eqRight.animate(
-            [
-              { transform: 'translate3d(0, -28px, 0)' },
-              { transform: 'translate3d(0, 0, 0)' }
-            ],
-          T_MOVE
+            [{ transform: 'translateY(-28px)' }, { transform: 'translateY(0)' }],
+            T_MOVE
           );
 
           Promise.all([aWidth.finished, aOpacity.finished, aMove.finished])
